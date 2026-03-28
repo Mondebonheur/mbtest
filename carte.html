@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zones d'intervention — ONG Monde et Bonheur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="mb-styles.css">
+<style>
+:root{
+  --v:#1a5c3a;--vc:#2d8a58;--vp:#e8f5ee;--vd:#0d3320;
+  --o:#c8860a;--oc:#f5a623;--op:#fdf3e3;
+  --br:#3d2b1f;--wh:#fdfcf8;--gr:#f0ede6;
+  --tx:#1a1a18;--td:#4a4a44;--tp:#8a8a82;
+  --rouge:#c0392b;--haut:64px;--r:14px;
+  --sh:0 4px 24px rgba(0,0,0,.08);
+  --sh-lg:0 20px 60px rgba(0,0,0,.14);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--wh);color:var(--tx);overflow-x:hidden;padding-top:var(--nav-h);}
+[data-lang="fr"] .en{display:none!important;}
+[data-lang="en"] .fr{display:none!important;}
+a{text-decoration:none;}
+
+/* ── HEADER ── */
+.site-header{position:fixed;top:0;left:0;right:0;z-index:900;height:var(--haut);background:rgba(253,252,248,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(26,92,58,.1);display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;}
+.h-logo{display:flex;align-items:center;gap:10px;}
+.h-disk{width:38px;height:38px;border-radius:50%;background:var(--v);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;font-size:12px;color:white;border:2px solid var(--vc);}
+.h-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--v);}
+.h-sub{font-size:10px;color:var(--tp);}
+.h-right{display:flex;align-items:center;gap:.8rem;}
+.lang-toggle{display:flex;background:var(--gr);border-radius:20px;padding:3px;border:1px solid rgba(26,92,58,.1);}
+.lang-btn{padding:4px 11px;border-radius:16px;border:none;background:none;font-size:11px;font-weight:700;cursor:pointer;color:var(--tp);font-family:'Space Mono',monospace;transition:all .2s;}
+.lang-btn.active{background:var(--v);color:white;}
+.btn-don-hdr{display:flex;align-items:center;gap:6px;background:var(--rouge);color:white;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btn-don-hdr:hover{background:#a93226;}
+.back-link{font-size:13px;color:var(--td);padding:7px 12px;border-radius:8px;border:1px solid rgba(26,92,58,.12);transition:all .2s;display:flex;align-items:center;gap:5px;}
+.back-link:hover{background:var(--vp);color:var(--v);}
+
+/* ── HERO ── */
+.map-hero{
+  padding:calc(var(--haut)+60px) 8% 60px;
+  background:linear-gradient(160deg,var(--vd) 0%,#1e4d2a 55%,rgba(200,134,10,.35) 100%);
+  text-align:center;position:relative;overflow:hidden;
+}
+.map-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 110%,rgba(45,138,88,.3) 0%,transparent 70%);}
+.map-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(transparent,var(--wh));}
+.hero-lbl{display:inline-flex;align-items:center;gap:8px;background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);color:#f5d087;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;padding:5px 14px;border-radius:20px;margin-bottom:1.2rem;position:relative;}
+.map-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;color:white;line-height:1.1;margin-bottom:1rem;position:relative;}
+.map-hero h1 em{font-style:italic;color:#f5d087;}
+.map-hero p{font-size:clamp(.95rem,1.4vw,1.05rem);color:rgba(255,255,255,.77);max-width:560px;margin:0 auto 0;line-height:1.8;font-weight:300;position:relative;}
+
+/* ── STATS BAND ── */
+.stats-band{background:var(--v);display:flex;justify-content:center;gap:0;flex-wrap:wrap;}
+.stat-item{padding:1rem 2rem;text-align:center;border-right:1px solid rgba(255,255,255,.1);}
+.stat-item:last-child{border-right:none;}
+.stat-num{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;color:#f5d087;line-height:1;display:block;}
+.stat-lbl{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px;}
+
+/* ── LAYOUT CARTE ── */
+.carte-layout{
+  display:grid;grid-template-columns:1fr 420px;
+  gap:0;min-height:620px;
+  background:var(--gr);
+}
+
+/* ── CARTE SVG GAUCHE ── */
+.carte-left{
+  padding:2.5rem;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#0d1f14,#1a3d22);
+  position:relative;overflow:hidden;
+}
+.carte-left::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(45,138,88,.12) 0%,transparent 70%);
+}
+.carte-container{position:relative;width:100%;max-width:480px;}
+
+/* Points interactifs */
+.zone-pin{
+  position:absolute;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  transform:translate(-50%,-100%);
+  transition:transform .2s;
+  z-index:10;
+}
+.zone-pin:hover{transform:translate(-50%,-100%) scale(1.12);}
+.zone-pin.active .pin-circle{box-shadow:0 0 0 6px rgba(245,166,35,.35),0 0 0 12px rgba(245,166,35,.12);}
+.pin-circle{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--v);border:3px solid var(--oc);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;box-shadow:0 4px 16px rgba(0,0,0,.4);
+  transition:all .25s;
+  animation:pinPulse 3s ease-in-out infinite;
+}
+.zone-pin.active .pin-circle{background:var(--oc);border-color:white;animation:none;}
+.pin-tail{width:3px;height:10px;background:var(--oc);border-radius:0 0 2px 2px;}
+.pin-label{
+  background:rgba(13,32,20,.88);backdrop-filter:blur(6px);
+  border:1px solid rgba(245,166,35,.3);border-radius:6px;
+  padding:3px 8px;font-size:9px;font-weight:700;color:#f5d087;
+  font-family:'Space Mono',monospace;letter-spacing:.06em;
+  white-space:nowrap;margin-top:4px;opacity:0;
+  transition:opacity .2s;
+}
+.zone-pin:hover .pin-label,.zone-pin.active .pin-label{opacity:1;}
+
+/* Rayon de rayonnement animé */
+.pin-ring{
+  position:absolute;width:60px;height:60px;border-radius:50%;
+  border:2px solid rgba(245,166,35,.25);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  animation:ringExpand 3s ease-out infinite;
+  pointer-events:none;
+}
+
+@keyframes pinPulse{0%,100%{box-shadow:0 4px 16px rgba(0,0,0,.4)}50%{box-shadow:0 4px 20px rgba(245,166,35,.4),0 0 0 4px rgba(245,166,35,.15)}}
+@keyframes ringExpand{0%{width:38px;height:38px;opacity:.7}100%{width:80px;height:80px;opacity:0}}
+
+/* Légende carte */
+.carte-legend{
+  position:absolute;bottom:1.5rem;left:1.5rem;
+  background:rgba(13,32,20,.85);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.1);border-radius:10px;
+  padding:.8rem 1rem;
+}
+.cl-title{font-family:'Space Mono',monospace;font-size:8px;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;}
+.cl-item{display:flex;align-items:center;gap:.5rem;font-size:11px;color:rgba(255,255,255,.7);margin-bottom:.3rem;}
+.cl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* ── PANNEAU DROIT ── */
+.carte-right{
+  background:var(--wh);border-left:1px solid rgba(26,92,58,.1);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.zones-list{display:flex;flex-direction:column;border-bottom:1px solid rgba(26,92,58,.07);}
+.zone-tab{
+  display:flex;align-items:center;gap:.8rem;
+  padding:.9rem 1.4rem;cursor:pointer;
+  border-bottom:1px solid rgba(26,92,58,.05);
+  transition:all .2s;position:relative;
+}
+.zone-tab:hover{background:var(--vp);}
+.zone-tab.active{background:var(--vp);border-left:4px solid var(--v);}
+.zone-tab:not(.active){border-left:4px solid transparent;}
+.zt-icon{font-size:1.4rem;flex-shrink:0;}
+.zt-name{font-size:13.5px;font-weight:700;color:var(--tx);line-height:1.2;}
+.zt-region{font-size:11px;color:var(--tp);margin-top:1px;}
+.zt-badge{margin-left:auto;font-family:'Space Mono',monospace;font-size:9px;background:var(--vp);border:1px solid rgba(26,92,58,.15);color:var(--v);padding:2px 7px;border-radius:10px;white-space:nowrap;}
+.zone-tab.active .zt-badge{background:var(--v);color:white;border-color:var(--v);}
+
+/* Fiche zone */
+.zone-detail{flex:1;overflow-y:auto;padding:1.4rem;}
+.zd-header{margin-bottom:1.2rem;}
+.zd-region{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--o);text-transform:uppercase;margin-bottom:.4rem;}
+.zd-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;line-height:1.2;margin-bottom:.5rem;}
+.zd-desc{font-size:13.5px;color:var(--td);line-height:1.7;}
+.zd-img{width:100%;height:160px;object-fit:cover;border-radius:10px;margin:1rem 0;background:var(--vp);}
+.zd-img-placeholder{width:100%;height:160px;border-radius:10px;background:linear-gradient(135deg,var(--vp),var(--gr));display:flex;align-items:center;justify-content:center;font-size:3rem;margin:1rem 0;}
+.zd-actions{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.2rem;}
+.zd-action{display:flex;align-items:flex-start;gap:.6rem;font-size:13px;color:var(--td);line-height:1.5;}
+.zd-action-ic{font-size:1rem;width:22px;flex-shrink:0;margin-top:1px;}
+.zd-stats-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1.2rem;}
+.zd-stat{background:var(--vp);border-radius:9px;padding:.8rem;text-align:center;border:1px solid rgba(26,92,58,.08);}
+.zd-stat-num{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--v);line-height:1;display:block;}
+.zd-stat-lbl{font-size:10.5px;color:var(--td);margin-top:2px;line-height:1.3;}
+.zd-cta{width:100%;padding:11px;background:var(--v);color:white;border:none;border-radius:9px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem;}
+.zd-cta:hover{background:var(--vc);}
+.zd-next{width:100%;padding:9px;background:white;color:var(--v);border:1.5px solid rgba(26,92,58,.2);border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem;margin-top:.5rem;}
+.zd-next:hover{background:var(--vp);}
+
+/* ── SECTION EXPANSION ── */
+.expansion-section{padding:70px 8%;background:white;}
+.exp-inner{max-width:1100px;margin:0 auto;}
+.section-lbl{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;color:var(--o);text-transform:uppercase;margin-bottom:.7rem;}
+.exp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2rem;}
+.exp-card{border:1.5px solid rgba(26,92,58,.1);border-radius:var(--r);padding:1.4rem;background:white;text-align:center;transition:all .25s;}
+.exp-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:rgba(26,92,58,.2);}
+.exp-flag{font-size:2.2rem;margin-bottom:.5rem;}
+.exp-pays{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:.3rem;}
+.exp-status{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.07em;padding:3px 9px;border-radius:10px;display:inline-block;margin-bottom:.6rem;}
+.exp-status.actif{background:var(--vp);color:var(--v);}
+.exp-status.planifie{background:var(--op);color:var(--o);}
+.exp-status.prospect{background:var(--gr);color:var(--tp);}
+.exp-desc{font-size:12px;color:var(--td);line-height:1.5;}
+
+/* ── TIMELINE ── */
+.timeline-section{padding:70px 8%;background:var(--gr);}
+.tl-inner{max-width:900px;margin:0 auto;}
+.tl-items{display:flex;flex-direction:column;gap:0;margin-top:2rem;position:relative;}
+.tl-items::before{content:'';position:absolute;left:28px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--vc),var(--oc));}
+.tl-item{display:flex;gap:1.5rem;padding-bottom:2.2rem;position:relative;}
+.tl-dot{width:58px;height:58px;border-radius:50%;border:3px solid var(--vc);background:white;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;z-index:1;box-shadow:0 0 0 4px var(--gr);}
+.tl-item.done .tl-dot{background:var(--v);border-color:var(--v);}
+.tl-item.current .tl-dot{background:var(--oc);border-color:var(--oc);box-shadow:0 0 0 6px rgba(245,166,35,.2),0 0 0 4px var(--gr);}
+.tl-content{flex:1;padding-top:.6rem;}
+.tl-year{font-family:'Space Mono',monospace;font-size:10px;color:var(--o);letter-spacing:.1em;margin-bottom:.3rem;}
+.tl-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:.3rem;}
+.tl-desc{font-size:13.5px;color:var(--td);line-height:1.6;}
+
+/* ── CTA ── */
+.cta-finale{background:linear-gradient(135deg,var(--vd),var(--v));padding:70px 8%;text-align:center;}
+.cta-finale h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;color:white;margin-bottom:1rem;}
+.cta-finale p{font-size:15px;color:rgba(255,255,255,.72);max-width:520px;margin:0 auto 2rem;line-height:1.8;}
+.cta-btns{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;}
+.btn-w{display:inline-flex;align-items:center;gap:8px;background:white;color:var(--v);padding:13px 26px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .25s;}
+.btn-w:hover{background:var(--op);transform:translateY(-2px);}
+.btn-o{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);color:white;padding:13px 26px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;border:1.5px solid rgba(255,255,255,.22);font-family:'DM Sans',sans-serif;transition:all .25s;}
+.btn-o:hover{background:rgba(255,255,255,.18);transform:translateY(-2px);}
+.mini-footer{background:#0f1a12;color:rgba(255,255,255,.45);padding:28px 8%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;font-size:12px;}
+.mini-footer a{color:rgba(255,255,255,.3);}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;}
+.reveal.visible{opacity:1;transform:none;}
+
+/* Responsive */
+@media(max-width:960px){.carte-layout{grid-template-columns:1fr;}.carte-left{min-height:400px;}.carte-right{border-left:none;border-top:1px solid rgba(26,92,58,.1);}.exp-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.exp-grid{grid-template-columns:1fr 1fr;}.stats-band{gap:0;}.stat-item{padding:.8rem 1rem;flex:1;min-width:50%;}:root{--haut:56px;}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+
+
+<!-- HERO -->
+<section class="map-hero">
+  <div class="hero-lbl"><span class="fr">📍 PRÉSENCE TERRAIN · CAMEROUN & AFRIQUE</span><span class="en">📍 FIELD PRESENCE · CAMEROON & AFRICA</span></div>
+  <h1 class="fr">Là où nous agissons.<br><em>Là où l'impact est réel.</em></h1>
+  <h1 class="en">Where we act.<br><em>Where the impact is real.</em></h1>
+  <p class="fr">20 ans d'ancrage local dans 5 zones d'intervention au Cameroun. Chaque point sur cette carte représente des familles, des enfants, des coopératives — et des transformations mesurables.</p>
+  <p class="en">20 years of local presence across 5 intervention zones in Cameroon. Every point on this map represents families, children, cooperatives — and measurable transformations.</p>
+</section>
+
+<!-- STATS BAND -->
+<div class="stats-band">
+  <div class="stat-item"><span class="stat-num">5</span><div class="stat-lbl fr">Zones d'intervention actives</div><div class="stat-lbl en">Active intervention zones</div></div>
+  <div class="stat-item"><span class="stat-num">10 000+</span><div class="stat-lbl fr">Vies impactées depuis 2006</div><div class="stat-lbl en">Lives impacted since 2006</div></div>
+  <div class="stat-item"><span class="stat-num">3</span><div class="stat-lbl fr">Régions du Cameroun couvertes</div><div class="stat-lbl en">Cameroonian regions covered</div></div>
+  <div class="stat-item"><span class="stat-num">2030</span><div class="stat-lbl fr">Objectif : 7 pays panafricains</div><div class="stat-lbl en">Target: 7 pan-African countries</div></div>
+</div>
+
+<!-- CARTE INTERACTIVE -->
+<div class="carte-layout">
+
+  <!-- GAUCHE : Carte SVG -->
+  <div class="carte-left">
+    <div class="carte-container" id="carte-container">
+
+      <!-- CARTE SVG DU CAMEROUN (silhouette simplifiée) -->
+      <svg id="carte-svg" viewBox="0 0 400 480" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
+        <!-- Fond mer -->
+        <rect width="400" height="480" fill="transparent"/>
+        <!-- Silhouette Cameroun -->
+        <path id="cameroun-path"
+          d="M 155 20
+             L 200 18 L 245 25 L 280 35 L 310 50
+             L 330 70 L 340 90 L 345 115
+             L 340 135 L 325 150 L 315 170
+             L 310 195 L 305 215 L 308 235
+             L 315 255 L 318 275 L 310 295
+             L 295 315 L 275 335 L 255 355
+             L 235 375 L 215 395 L 195 415
+             L 175 430 L 158 440
+             L 140 430 L 120 415
+             L 105 395 L 90 375
+             L 78 355 L 68 330
+             L 60 305 L 55 280
+             L 52 255 L 55 230
+             L 60 205 L 65 180
+             L 68 155 L 65 130
+             L 62 105 L 60 80
+             L 65 60 L 75 42
+             L 90 28 L 110 21
+             Z"
+          fill="#1e4d2a" stroke="#2d8a58" stroke-width="1.5" opacity=".9"/>
+
+        <!-- Frontières régions (lignes subtiles) -->
+        <path d="M155 200 Q200 190 245 200" stroke="rgba(255,255,255,.06)" stroke-width="1" fill="none"/>
+        <path d="M80 280 Q160 270 240 280 Q300 275 320 280" stroke="rgba(255,255,255,.06)" stroke-width="1" fill="none"/>
+        <path d="M100 340 Q200 330 300 340" stroke="rgba(255,255,255,.06)" stroke-width="1" fill="none"/>
+
+        <!-- Texture forêt subtile -->
+        <circle cx="200" cy="350" r="60" fill="rgba(45,138,88,.08)"/>
+        <circle cx="170" cy="380" r="40" fill="rgba(45,138,88,.06)"/>
+        <circle cx="230" cy="370" r="45" fill="rgba(45,138,88,.07)"/>
+
+        <!-- Labels régions -->
+        <text x="190" y="95" text-anchor="middle" font-family="Space Mono,monospace" font-size="7.5" fill="rgba(255,255,255,.18)" letter-spacing=".8">NORD</text>
+        <text x="195" y="205" text-anchor="middle" font-family="Space Mono,monospace" font-size="7.5" fill="rgba(255,255,255,.18)" letter-spacing=".8">CENTRE</text>
+        <text x="270" y="270" text-anchor="middle" font-family="Space Mono,monospace" font-size="7" fill="rgba(255,255,255,.15)" letter-spacing=".5">EST</text>
+        <text x="160" y="395" text-anchor="middle" font-family="Space Mono,monospace" font-size="7.5" fill="rgba(255,255,255,.18)" letter-spacing=".8">SUD</text>
+
+        <!-- Yaoundé (repère) -->
+        <circle cx="195" cy="232" r="4" fill="rgba(255,255,255,.2)" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+        <text x="205" y="236" font-family="DM Sans,sans-serif" font-size="9" fill="rgba(255,255,255,.3)">Yaoundé</text>
+      </svg>
+
+      <!-- PINS (positionnés en % de la carte) -->
+      <!-- Batchenga : Région Centre, légèrement au nord de Yaoundé -->
+      <div class="zone-pin active" id="pin-batchenga"
+           style="left:49%;top:45%"
+           onclick="selectZone('batchenga')">
+        <div style="position:relative"><div class="pin-ring"></div><div class="pin-circle">🌾</div></div>
+        <div class="pin-tail"></div>
+        <div class="pin-label">BATCHENGA</div>
+      </div>
+
+      <!-- Bondjock : Nyong-et-Kéllé, ouest de Yaoundé -->
+      <div class="zone-pin" id="pin-bondjock"
+           style="left:35%;top:52%"
+           onclick="selectZone('bondjock')">
+        <div style="position:relative"><div class="pin-ring"></div><div class="pin-circle">🏗️</div></div>
+        <div class="pin-tail"></div>
+        <div class="pin-label">BONDJOCK</div>
+      </div>
+
+      <!-- Lomié : Région Est -->
+      <div class="zone-pin" id="pin-lomie"
+           style="left:70%;top:60%"
+           onclick="selectZone('lomie')">
+        <div style="position:relative"><div class="pin-ring"></div><div class="pin-circle">🌿</div></div>
+        <div class="pin-tail"></div>
+        <div class="pin-label">LOMIÉ / ABAKOUM</div>
+      </div>
+
+      <!-- Kribi : Région Sud, côte -->
+      <div class="zone-pin" id="pin-kribi"
+           style="left:32%;top:75%"
+           onclick="selectZone('kribi')">
+        <div style="position:relative"><div class="pin-ring"></div><div class="pin-circle">🌊</div></div>
+        <div class="pin-tail"></div>
+        <div class="pin-label">KRIBI</div>
+      </div>
+
+      <!-- Yaoundé : Siège opérationnel -->
+      <div class="zone-pin" id="pin-yaounde"
+           style="left:48%;top:50%"
+           onclick="selectZone('yaounde')">
+        <div style="position:relative"><div class="pin-ring"></div><div class="pin-circle">🏛️</div></div>
+        <div class="pin-tail"></div>
+        <div class="pin-label">YAOUNDÉ</div>
+      </div>
+
+      <!-- Légende -->
+      <div class="carte-legend">
+        <div class="cl-title fr">LÉGENDE</div>
+        <div class="cl-title en">LEGEND</div>
+        <div class="cl-item"><div class="cl-dot" style="background:var(--oc)"></div><span class="fr">Zone active</span><span class="en">Active zone</span></div>
+        <div class="cl-item"><div class="cl-dot" style="background:var(--vc)"></div><span class="fr">Siège opérationnel</span><span class="en">Operational HQ</span></div>
+        <div class="cl-item"><div class="cl-dot" style="background:rgba(255,255,255,.3)"></div><span class="fr">Cliquez pour explorer</span><span class="en">Click to explore</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DROITE : Panneau zones -->
+  <div class="carte-right">
+
+    <!-- Liste des zones -->
+    <div class="zones-list">
+      <div class="zone-tab active" id="tab-batchenga" onclick="selectZone('batchenga')">
+        <div class="zt-icon">🌾</div>
+        <div><div class="zt-name">Batchenga</div><div class="zt-region fr">Région du Centre</div><div class="zt-region en">Central Region</div></div>
+        <div class="zt-badge fr">ACTIF</div><div class="zt-badge en">ACTIVE</div>
+      </div>
+      <div class="zone-tab" id="tab-bondjock" onclick="selectZone('bondjock')">
+        <div class="zt-icon">🏗️</div>
+        <div><div class="zt-name">Bondjock</div><div class="zt-region fr">Nyong-et-Kéllé</div><div class="zt-region en">Nyong-et-Kéllé</div></div>
+        <div class="zt-badge fr">ACTIF</div><div class="zt-badge en">ACTIVE</div>
+      </div>
+      <div class="zone-tab" id="tab-lomie" onclick="selectZone('lomie')">
+        <div class="zt-icon">🌿</div>
+        <div><div class="zt-name">Lomié / Abakoum</div><div class="zt-region fr">Région de l'Est · Baka</div><div class="zt-region en">Eastern Region · Baka</div></div>
+        <div class="zt-badge fr">ACTIF</div><div class="zt-badge en">ACTIVE</div>
+      </div>
+      <div class="zone-tab" id="tab-kribi" onclick="selectZone('kribi')">
+        <div class="zt-icon">🌊</div>
+        <div><div class="zt-name">Kribi</div><div class="zt-region fr">Région du Sud · Côte</div><div class="zt-region en">Southern Region · Coast</div></div>
+        <div class="zt-badge fr">ACTIF</div><div class="zt-badge en">ACTIVE</div>
+      </div>
+      <div class="zone-tab" id="tab-yaounde" onclick="selectZone('yaounde')">
+        <div class="zt-icon">🏛️</div>
+        <div><div class="zt-name">Yaoundé</div><div class="zt-region fr">Siège opérationnel MB</div><div class="zt-region en">MB Operational HQ</div></div>
+        <div class="zt-badge" style="background:var(--op);color:var(--o);border-color:rgba(200,134,10,.2)" class="fr">SIÈGE</div>
+      </div>
+    </div>
+
+    <!-- Fiche détail -->
+    <div class="zone-detail" id="zone-detail">
+      <!-- contenu injecté par JS -->
+    </div>
+
+  </div>
+</div>
+
+<!-- EXPANSION PANAFRICAINE -->
+<section class="expansion-section">
+  <div class="exp-inner">
+    <div class="section-lbl reveal"><span class="fr">VISION 2026–2030 · EXPANSION PANAFRICAINE</span><span class="en">VISION 2026–2030 · PAN-AFRICAN EXPANSION</span></div>
+    <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.5rem);font-weight:700;line-height:1.2;margin-bottom:.8rem">
+      <span class="fr">Le Cameroun est notre laboratoire.<br>L'Afrique est notre destin.</span>
+      <span class="en">Cameroon is our laboratory.<br>Africa is our destiny.</span>
+    </h2>
+    <p class="reveal" style="font-size:15px;color:var(--td);line-height:1.8;max-width:600px;margin-bottom:0">
+      <span class="fr">Les mêmes problèmes que nous résolvons au Cameroun — déforestation, pluies imprévisibles, manque d'électricité rurale — existent identiquement chez nos voisins. La stratégie : transférer le modèle documenté, pas le réinventer.</span>
+      <span class="en">The same problems we solve in Cameroon — deforestation, unpredictable rainfall, lack of rural electricity — exist identically in our neighbours. The strategy: transfer the documented model, don't reinvent it.</span>
+    </p>
+    <div class="exp-grid">
+      <div class="exp-card reveal">
+        <div class="exp-flag">🇨🇲</div>
+        <div class="exp-pays">Cameroun</div>
+        <div class="exp-status actif fr">● OPÉRATIONNEL</div><div class="exp-status actif en">● OPERATIONAL</div>
+        <div class="exp-desc fr">Laboratoire pilote depuis 2006. Modèle validé sur 5 zones, 10 000+ bénéficiaires.</div>
+        <div class="exp-desc en">Pilot laboratory since 2006. Model validated across 5 zones, 10,000+ beneficiaries.</div>
+      </div>
+      <div class="exp-card reveal">
+        <div class="exp-flag">🇷🇼</div>
+        <div class="exp-pays">Rwanda</div>
+        <div class="exp-status planifie fr">◐ PLANIFIÉ 2026</div><div class="exp-status planifie en">◐ PLANNED 2026</div>
+        <div class="exp-desc fr">Fort potentiel agricole. Gouvernement favorable aux énergies propres rurales.</div>
+        <div class="exp-desc en">Strong agricultural potential. Government supportive of rural clean energy.</div>
+      </div>
+      <div class="exp-card reveal">
+        <div class="exp-flag">🇬🇦</div>
+        <div class="exp-pays">Gabon</div>
+        <div class="exp-status planifie fr">◐ PLANIFIÉ 2027</div><div class="exp-status planifie en">◐ PLANNED 2027</div>
+        <div class="exp-desc fr">Bassin du Congo partagé. Mêmes enjeux de déforestation et de cuisine au bois.</div>
+        <div class="exp-desc en">Shared Congo Basin. Same deforestation and firewood cooking challenges.</div>
+      </div>
+      <div class="exp-card reveal">
+        <div class="exp-flag">🇨🇩</div>
+        <div class="exp-pays">RDC</div>
+        <div class="exp-status planifie fr">◐ PLANIFIÉ 2027</div><div class="exp-status planifie en">◐ PLANNED 2027</div>
+        <div class="exp-desc fr">Plus grande forêt tropicale d'Afrique. Urgence absolue sur la déforestation rurale.</div>
+        <div class="exp-desc en">Africa's largest tropical forest. Absolute urgency on rural deforestation.</div>
+      </div>
+      <div class="exp-card reveal">
+        <div class="exp-flag">🇹🇩</div>
+        <div class="exp-pays">Tchad</div>
+        <div class="exp-status prospect fr">○ PROSPECTION</div><div class="exp-status prospect en">○ PROSPECTING</div>
+        <div class="exp-desc fr">Zone sahélienne. Biogaz et séchoir solaire prioritaires pour adaptation climatique.</div>
+        <div class="exp-desc en">Sahelian zone. Biogas and solar dryer priorities for climate adaptation.</div>
+      </div>
+      <div class="exp-card reveal">
+        <div class="exp-flag">🇳🇬</div>
+        <div class="exp-pays">Nigéria</div>
+        <div class="exp-status prospect fr">○ PROSPECTION</div><div class="exp-status prospect en">○ PROSPECTING</div>
+        <div class="exp-desc fr">Marché massif. Forte diaspora partenaire. MetaScript déjà demandé par 3 États.</div>
+        <div class="exp-desc en">Massive market. Strong partner diaspora. MetaScript already requested by 3 states.</div>
+      </div>
+      <div class="exp-card reveal">
+        <div class="exp-flag">🇨🇮</div>
+        <div class="exp-pays">Côte d'Ivoire</div>
+        <div class="exp-status prospect fr">○ PROSPECTION</div><div class="exp-status prospect en">○ PROSPECTING</div>
+        <div class="exp-desc fr">Secteur cacao majeur. Séchoir Flash = opportunité économique directe pour les producteurs.</div>
+        <div class="exp-desc en">Major cocoa sector. Flash Dryer = direct economic opportunity for producers.</div>
+      </div>
+      <div class="exp-card reveal">
+        <div class="exp-flag">🌍</div>
+        <div class="exp-pays fr">+ 2 pays à définir</div>
+        <div class="exp-pays en">+ 2 more to define</div>
+        <div class="exp-status prospect fr">○ EN ÉTUDE</div><div class="exp-status prospect en">○ UNDER REVIEW</div>
+        <div class="exp-desc fr">RCA et Congo en évaluation. Partenariats locaux identifiés.</div>
+        <div class="exp-desc en">CAR and Congo under evaluation. Local partnerships identified.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline-section">
+  <div class="tl-inner">
+    <div class="section-lbl"><span class="fr">CHRONOLOGIE · 20 ANS DE TERRAIN</span><span class="en">TIMELINE · 20 YEARS IN THE FIELD</span></div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.4rem);font-weight:700;margin-bottom:0">
+      <span class="fr">De la promesse d'une mère<br>à l'ambition d'un continent</span>
+      <span class="en">From a mother's promise<br>to a continent's ambition</span>
+    </h2>
+    <div class="tl-items">
+      <div class="tl-item done">
+        <div class="tl-dot">🌱</div>
+        <div class="tl-content">
+          <div class="tl-year">2005 – 2006</div>
+          <div class="tl-title fr">Fondation — Chancelade &amp; Yaoundé</div>
+          <div class="tl-title en">Foundation — Chancelade &amp; Yaoundé</div>
+          <div class="tl-desc fr">Création de l'ONG (ex-EFEACAM). Agrément MINATD N°00000404. Premiers projets humanitaires d'urgence.</div>
+          <div class="tl-desc en">NGO creation (ex-EFEACAM). MINATD approval N°00000404. First emergency humanitarian projects.</div>
+        </div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-dot">👩</div>
+        <div class="tl-content">
+          <div class="tl-year">2008 – 2010</div>
+          <div class="tl-title fr">Batchenga — La CUMA &amp; le pivot technologique</div>
+          <div class="tl-title en">Batchenga — The CUMA &amp; tech pivot</div>
+          <div class="tl-desc fr">Structuration des femmes en coopérative. Découverte de la biométhanisation. Pivot de l'humanitaire vers le développement durable industriel.</div>
+          <div class="tl-desc en">Women organised into cooperative. Discovery of biodigestion. Pivot from humanitarian aid to industrial sustainable development.</div>
+        </div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-dot">📚</div>
+        <div class="tl-content">
+          <div class="tl-year">2013 – 2016</div>
+          <div class="tl-title fr">Lomié / Abakoum — École des Pygmées Baka</div>
+          <div class="tl-title en">Lomié / Abakoum — Baka Pygmies School</div>
+          <div class="tl-desc fr">Construction de l'école primaire. Effectifs : 40 → 100+ élèves réguliers. Projet porcherie et ferme avicole à Nkoltima.</div>
+          <div class="tl-desc en">Primary school construction. Enrolment: 40 → 100+ regular pupils. Pig farm and poultry project at Nkoltima.</div>
+        </div>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-dot">🔥</div>
+        <div class="tl-content">
+          <div class="tl-year">2019 – 2022</div>
+          <div class="tl-title fr">Bondjock — Lycée &amp; Méthaniseur Pilote</div>
+          <div class="tl-title en">Bondjock — High School &amp; Pilot Digester</div>
+          <div class="tl-desc fr">Construction des fondations du bloc administratif du Lycée. Lancement du projet méthaniseur pilote. Développement de MetaScript.</div>
+          <div class="tl-desc en">Construction of high school administrative block foundations. Launch of pilot digester project. MetaScript development begins.</div>
+        </div>
+      </div>
+      <div class="tl-item current">
+        <div class="tl-dot">🚀</div>
+        <div class="tl-content">
+          <div class="tl-year">2026 — MAINTENANT</div>
+          <div class="tl-title fr">Changement d'échelle — Les 20 Ans &amp; le Gala de l'Impact</div>
+          <div class="tl-title en">Scale-up — 20th Anniversary &amp; Impact Gala</div>
+          <div class="tl-desc fr">Industrialisation des 4 technologies. Objectif : 500M FCFA levés en Novembre 2026. Déploiement dans 7 pays d'Afrique d'ici 2030.</div>
+          <div class="tl-desc en">Industrialisation of 4 technologies. Target: 500M FCFA raised November 2026. Deployment in 7 African countries by 2030.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-finale">
+  <h2 class="fr">Chaque zone a besoin de vous.</h2>
+  <h2 class="en">Every zone needs you.</h2>
+  <p class="fr">Que vous soyez à Paris, à Yaoundé ou à Lagos — vous pouvez choisir une zone, un projet, et voir votre impact exactement là où il se passe.</p>
+  <p class="en">Whether you're in Paris, Yaoundé or Lagos — you can choose a zone, a project, and see your impact exactly where it happens.</p>
+  <div class="cta-btns">
+    <button class="btn-w" onclick="location.href='don.html'">❤️ <span class="fr">Choisir une zone &amp; donner</span><span class="en">Choose a zone &amp; give</span></button>
+    <button class="btn-o" onclick="location.href='partenaires.html'">🤝 <span class="fr">Devenir partenaire terrain</span><span class="en">Become a field partner</span></button>
+  </div>
+</section>
+
+<footer class="mini-footer">
+  <span>© 2026 ONG Monde et Bonheur · <a href="mailto:courrielmondeetbonheur@gmail.com">courrielmondeetbonheur@gmail.com</a> · +237 682 18 03 63</span>
+  <div style="display:flex;gap:1.2rem;flex-wrap:wrap">
+    <a href="index.html" class="fr">← Accueil</a><a href="index.html" class="en">← Home</a>
+    <a href="don.html"><span class="fr">Faire un don</span><span class="en">Donate</span></a>
+    <a href="technologies.html"><span class="fr">Nos technologies</span><span class="en">Our technologies</span></a>
+  </div>
+</footer>
+
+<script>
+/* ── DONNÉES ZONES ── */
+const ZONES = {
+  batchenga:{
+    icon:'🌾',
+    region:{fr:'Région du Centre · Cameroun',en:'Central Region · Cameroon'},
+    title:{fr:'Batchenga',en:'Batchenga'},
+    desc:{
+      fr:'Premier terrain d\'expérimentation de MB pour l\'autonomisation rurale. Batchenga est devenu notre vitrine de l\'agriculture féminine structurée et de la mécanisation coopérative.',
+      en:'MB\'s first field experiment in rural empowerment. Batchenga has become our showcase for structured women\'s agriculture and cooperative mechanisation.'
+    },
+    img:'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=600&q=70',
+    actions:{
+      fr:['🌾 Structuration de la CUMA — coopérative d\'utilisation de matériel agricole','🌳 Reboisement en Teck : +40% surfaces cultivées, épargne verte pour le village','👩 Formation des femmes en gestion d\'entreprise agricole','♻️ Lancement des premières unités de biométhanisation pilotes','🚜 Mécanisation partagée — accès au matériel pour toutes les productrices'],
+      en:['🌾 CUMA structuring — shared agricultural equipment cooperative','🌳 Teak reforestation: +40% cultivated area, green savings for the village','👩 Women\'s training in agricultural business management','♻️ Launch of first pilot biodigestion units','🚜 Shared mechanisation — equipment access for all producers']
+    },
+    stats:[{num:'40%',lbl:{fr:'surfaces cultivées en +',en:'more cultivated area'}},{num:'1 CUMA',lbl:{fr:'coopérative active',en:'active cooperative'}}],
+    cta:{fr:'Financer Batchenga',en:'Fund Batchenga'},
+    next:'bondjock'
+  },
+  bondjock:{
+    icon:'🏗️',
+    region:{fr:'Nyong-et-Kéllé · Région du Centre',en:'Nyong-et-Kéllé · Central Region'},
+    title:{fr:'Bondjock',en:'Bondjock'},
+    desc:{
+      fr:'Incubateur technologique MB. Bondjock est destiné à devenir notre vitrine industrielle : un lycée rural qui produit sa propre énergie à partir de ses déchets.',
+      en:'MB\'s technology incubator. Bondjock is set to become our industrial showcase: a rural high school producing its own energy from its waste.'
+    },
+    img:'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=600&q=70',
+    actions:{
+      fr:['🏫 Construction des fondations du bloc administratif du Lycée de Bondjock','⚡ Étude et lancement du Projet Méthaniseur Pilote (déchets → électricité)','💻 Déploiement de MetaScript dans les classes de Sciences','🔬 Formation des enseignants au laboratoire virtuel','🌱 Jardins pédagogiques irrigués au digestat'],
+      en:['🏫 Construction of Bondjock High School administrative block foundations','⚡ Study and launch of Pilot Digester Project (waste → electricity)','💻 MetaScript deployment in Science classes','🔬 Teacher training for the virtual laboratory','🌱 Pedagogical gardens irrigated with digestate']
+    },
+    stats:[{num:'1',lbl:{fr:'Lycée renforcé',en:'High school reinforced'}},{num:'2026',lbl:{fr:'Méthaniseur opérationnel',en:'Digester operational'}}],
+    cta:{fr:'Financer Bondjock',en:'Fund Bondjock'},
+    next:'lomie'
+  },
+  lomie:{
+    icon:'🌿',
+    region:{fr:'Région de l\'Est · Peuple Baka',en:'Eastern Region · Baka People'},
+    title:{fr:'Lomié / Abakoum',en:'Lomié / Abakoum'},
+    desc:{
+      fr:'Notre intervention la plus humaine. Les Pygmées Baka, marginalisés depuis des générations, voient aujourd\'hui leurs enfants aller à l\'école en dur et leur communauté se sédentariser avec dignité.',
+      en:'Our most human intervention. The Baka Pygmies, marginalised for generations, now see their children attending a real school and their community settling with dignity.'
+    },
+    img:'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&q=70',
+    actions:{
+      fr:['🏫 Construction de l\'école primaire en matériaux durables (40 → 100+ élèves)','🥗 Accompagnement agricole : champs de manioc communautaires','📚 Fourniture de matériel scolaire et suivi pédagogique','🌍 Intégration républicaine dans le respect de la culture Baka','🐷 Projet ferme avicole et porcherie à Nkoltima'],
+      en:['🏫 Primary school construction in durable materials (40 → 100+ pupils)','🥗 Agricultural support: communal cassava fields','📚 School supplies and pedagogical follow-up','🌍 Civic integration respecting Baka culture','🐷 Poultry and pig farm project at Nkoltima']
+    },
+    stats:[{num:'100+',lbl:{fr:'élèves Baka réguliers',en:'regular Baka pupils'}},{num:'×2.5',lbl:{fr:'effectifs depuis MB',en:'enrolment since MB'}}],
+    cta:{fr:'Soutenir les Baka',en:'Support the Baka'},
+    next:'kribi'
+  },
+  kribi:{
+    icon:'🌊',
+    region:{fr:'Région du Sud · Côte Atlantique',en:'Southern Region · Atlantic Coast'},
+    title:{fr:'Kribi',en:'Kribi'},
+    desc:{
+      fr:'Zone de développement environnemental et d\'écotourisme solidaire. Kribi combine protection du littoral atlantique, projets de pêche durable et valorisation du potentiel touristique local.',
+      en:'Environmental development and solidarity eco-tourism zone. Kribi combines protection of the Atlantic coastline, sustainable fishing projects and development of local tourism potential.'
+    },
+    img:'https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?w=600&q=70',
+    actions:{
+      fr:['🌊 Projets environnementaux de préservation du littoral atlantique','🐟 Séchoirs Flash pour les coopératives de pêcheurs (poisson fumé)','🌿 Reboisement des mangroves et zones côtières','♻️ Gestion écologique des déchets de pêche','🏡 Développement de l\'écotourisme solidaire local'],
+      en:['🌊 Environmental projects to preserve the Atlantic coastline','🐟 Flash Dryers for fishermen\'s cooperatives (smoked fish)','🌿 Mangrove and coastal zone reforestation','♻️ Ecological management of fishing waste','🏡 Local solidarity eco-tourism development']
+    },
+    stats:[{num:'3',lbl:{fr:'projets environnementaux',en:'environmental projects'}},{num:'2026',lbl:{fr:'Séchoir Flash côtier',en:'Coastal Flash Dryer'}}],
+    cta:{fr:'Soutenir Kribi',en:'Support Kribi'},
+    next:'yaounde'
+  },
+  yaounde:{
+    icon:'🏛️',
+    region:{fr:'Centre · Siège Opérationnel MB',en:'Centre · MB Operational HQ'},
+    title:{fr:'Yaoundé',en:'Yaoundé'},
+    desc:{
+      fr:'Siège opérationnel de Monde et Bonheur au Cameroun (BP 17663). Coordination de toutes les interventions terrain, relations institutionnelles avec MINATD, MINREX, et gestion des partenariats locaux.',
+      en:'Monde et Bonheur\'s operational headquarters in Cameroon (BP 17663). Coordination of all field operations, institutional relations with MINATD, MINREX, and management of local partnerships.'
+    },
+    img:'https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=600&q=70',
+    actions:{
+      fr:['🏛️ Coordination de toutes les zones d\'intervention MB','📋 Gestion des accréditations : MINATD, MINREX, FORIM','📊 Rapports d\'activité annuels et audits financiers','🤝 Relations partenariales avec les ambassades et institutions','💻 Centre de formation MetaScript pour les enseignants'],
+      en:['🏛️ Coordination of all MB intervention zones','📋 Accreditation management: MINATD, MINREX, FORIM','📊 Annual activity reports and financial audits','🤝 Partnership relations with embassies and institutions','💻 MetaScript training centre for teachers']
+    },
+    stats:[{num:'20',lbl:{fr:'ans d\'ancrage local',en:'years of local roots'}},{num:'3',lbl:{fr:'accréditations officielles',en:'official accreditations'}}],
+    cta:{fr:'Contacter le siège',en:'Contact headquarters'},
+    next:'batchenga'
+  }
+};
+
+let currentZone = 'batchenga';
+
+function selectZone(id){
+  currentZone = id;
+  // Tabs
+  document.querySelectorAll('.zone-tab').forEach(t=>t.classList.remove('active'));
+  const tab = document.getElementById('tab-'+id);
+  if(tab) tab.classList.add('active');
+  // Pins
+  document.querySelectorAll('.zone-pin').forEach(p=>p.classList.remove('active'));
+  const pin = document.getElementById('pin-'+id);
+  if(pin) pin.classList.add('active');
+  // Render fiche
+  renderZone(id);
+}
+
+function renderZone(id){
+  const z = ZONES[id];
+  const l = document.documentElement.getAttribute('data-lang')||'fr';
+  const actions = z.actions[l].map(a=>`
+    <div class="zd-action">
+      <span class="zd-action-ic">${a.slice(0,2)}</span>
+      <span>${a.slice(2).trim()}</span>
+    </div>`).join('');
+  const stats = z.stats.map(s=>`
+    <div class="zd-stat">
+      <span class="zd-stat-num">${s.num}</span>
+      <div class="zd-stat-lbl">${s.lbl[l]}</div>
+    </div>`).join('');
+  const nextZ = ZONES[z.next];
+  const nextLabel = l==='fr'
+    ? `Voir ${nextZ.title.fr} →`
+    : `See ${nextZ.title.en} →`;
+
+  document.getElementById('zone-detail').innerHTML = `
+    <div class="zd-header">
+      <div class="zd-region">${z.region[l]}</div>
+      <div class="zd-title">${z.icon} ${z.title[l]}</div>
+      <div class="zd-desc">${z.desc[l]}</div>
+    </div>
+    <img class="zd-img" src="${z.img}" alt="${z.title[l]}" loading="lazy"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="zd-img-placeholder" style="display:none">${z.icon}</div>
+    <div class="zd-actions">${actions}</div>
+    <div class="zd-stats-row">${stats}</div>
+    <button class="zd-cta" onclick="location.href='don.html'">
+      ❤️ ${z.cta[l]}
+    </button>
+    <button class="zd-next" onclick="selectZone('${z.next}')">
+      ${nextLabel}
+    </button>
+  `;
+}
+
+/* ── Langue ── */
+function setLang(l){
+  document.documentElement.setAttribute('data-lang',l);
+  document.getElementById('btnFR').classList.toggle('active',l==='fr');
+  document.getElementById('btnEN').classList.toggle('active',l==='en');
+  renderZone(currentZone);
+}
+
+/* ── Scroll reveal ── */
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersec
+
+ting){setTimeout(()=>e.target.classList.add('visible'),i*80);obs.unobserve(e.target);}
+  });
+},{threshold:.07});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+<script src="mb-nav.js"></script>
+<script src="mb-faq.js"></script>
+</body>
+</html>

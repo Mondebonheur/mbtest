@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ONG Monde et Bonheur — Technologies vertes pour l'Afrique. 20 ans d'impact. Cameroun & France.">
+<title>Monde et Bonheur — Innovation Climatique pour l'Afrique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="mb-styles.css">
+<style>
+/* ============================================================
+   VARIABLES & RESET
+============================================================ */
+:root{
+  --vert:#1a5c3a;--vert-clair:#2d8a58;--vert-pale:#e8f5ee;
+  --or:#c8860a;--or-clair:#f5a623;--or-pale:#fdf3e3;
+  --brun:#3d2b1f;--blanc:#fdfcf8;--gris:#f0ede6;
+  --texte:#1a1a18;--texte-doux:#4a4a44;--texte-pale:#8a8a82;
+  --rouge:#c0392b;--haut:68px;
+  --radius:12px;--shadow:0 4px 24px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{padding-top:var(--nav-h);font-family:'DM Sans',sans-serif;background:var(--wh,#fdfcf8);color:var(--tx,#1a1a18);overflow-x:hidden;}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+
+/* ============================================================
+   LANGUE
+============================================================ */
+[data-lang="fr"] .en{display:none!important;}
+[data-lang="en"] .fr{display:none!important;}
+
+/* ============================================================
+   HEADER / NAV
+============================================================ */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  height:var(--haut);background:rgba(253,252,248,.97);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(26,92,58,.1);
+  transition:box-shadow .3s;
+}
+header.scrolled{box-shadow:0 2px 20px rgba(0,0,0,.08);}
+.nav-inner{
+  max-width:1300px;margin:0 auto;padding:0 1.5rem;
+  height:100%;display:flex;align-items:center;gap:1rem;
+}
+.nav-logo{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.logo-disk{
+  width:44px;height:44px;border-radius:50%;background:var(--vert);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-weight:900;font-size:14px;
+  color:white;border:2px solid var(--vert-clair);flex-shrink:0;
+}
+.logo-txt{line-height:1.15;}
+.logo-txt strong{font-family:'Playfair Display',serif;font-size:15px;color:var(--vert);font-weight:700;}
+.logo-txt span{display:block;font-size:10px;color:var(--texte-pale);letter-spacing:.06em;margin-top:1px;}
+
+/* Desktop nav */
+.nav-menu{display:flex;align-items:center;gap:.1rem;list-style:none;margin-left:auto;}
+.nav-menu>li{position:relative;}
+.nav-menu>li>a,.nav-menu>li>button{
+  display:flex;align-items:center;gap:4px;
+  font-size:13.5px;font-weight:500;color:var(--texte-doux);
+  padding:.5rem .7rem;border-radius:6px;border:none;background:none;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:background .15s,color .15s;white-space:nowrap;
+}
+.nav-menu>li>a:hover,.nav-menu>li>button:hover{background:var(--vert-pale);color:var(--vert);}
+.nav-menu>li>a.active,.nav-menu>li>button.active{color:var(--vert);font-weight:600;}
+.chevron{font-size:10px;transition:transform .2s;opacity:.6;}
+.nav-menu>li:hover .chevron{transform:rotate(180deg);}
+
+/* Dropdown */
+.dropdown{
+  display:none;position:absolute;top:calc(100% + 6px);left:0;
+  background:white;border:1px solid rgba(26,92,58,.1);border-radius:var(--radius);
+  box-shadow:0 12px 40px rgba(0,0,0,.12);min-width:220px;
+  padding:.5rem;z-index:100;
+}
+.nav-menu>li:hover .dropdown{display:block;}
+.dropdown a{
+  display:flex;align-items:center;gap:10px;
+  padding:.6rem .8rem;border-radius:8px;font-size:13.5px;
+  color:var(--texte-doux);transition:background .15s;
+}
+.dropdown a:hover{background:var(--vert-pale);color:var(--vert);}
+.dropdown a .dd-icon{font-size:16px;width:20px;text-align:center;}
+
+.nav-right{display:flex;align-items:center;gap:.6rem;flex-shrink:0;}
+
+/* Langue */
+.lang-toggle{display:flex;align-items:center;background:var(--gris);border-radius:20px;padding:3px;border:1px solid rgba(26,92,58,.1);}
+.lang-btn{padding:4px 11px;border-radius:16px;border:none;background:none;font-size:11px;font-weight:700;cursor:pointer;color:var(--texte-pale);font-family:'Space Mono',monospace;transition:all .2s;}
+.lang-btn.active{background:var(--vert);color:white;}
+
+/* Bouton Don header */
+.btn-don{
+  display:flex;align-items:center;gap:7px;
+  background:var(--rouge);color:white;border:none;cursor:pointer;
+  padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;
+  font-family:'DM Sans',sans-serif;transition:all .25s;
+  white-space:nowrap;overflow:hidden;min-width:130px;
+}
+.btn-don:hover{background:#a93226;transform:scale(1.02);}
+.don-state{display:flex;align-items:center;gap:7px;transition:all .2s;}
+.don-state-hover{display:none;align-items:center;gap:7px;}
+.btn-don:hover .don-state{display:none;}
+.btn-don:hover .don-state-hover{display:flex;}
+
+/* Don flottant */
+.don-float{
+  position:fixed;bottom:24px;right:24px;z-index:800;
+  background:var(--rouge);color:white;border:none;border-radius:50px;
+  padding:12px 22px;font-size:14px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:9px;
+  box-shadow:0 8px 28px rgba(192,57,43,.4);transition:all .25s;text-decoration:none;
+}
+.don-float:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(192,57,43,.5);}
+.don-float .f-heart{transition:all .2s;}
+.don-float .f-smile{display:none;}
+.don-float:hover .f-heart{display:none;}
+.don-float:hover .f-smile{display:block;}
+.don-float .f-txt-default{display:block;}
+.don-float .f-txt-hover{display:none;}
+.don-float:hover .f-txt-default{display:none;}
+.don-float:hover .f-txt-hover{display:block;}
+
+/* Hamburger */
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px;}
+.hamburger span{width:22px;height:2px;background:var(--texte);border-radius:2px;transition:all .3s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+
+/* Mobile menu */
+.mobile-menu{
+  display:none;position:fixed;inset:0;top:var(--haut);
+  background:white;z-index:850;overflow-y:auto;
+  padding:1.5rem;flex-direction:column;gap:.5rem;
+}
+.mobile-menu.open{display:flex;}
+.mobile-menu a,.mobile-menu button{
+  display:flex;align-items:center;gap:12px;
+  padding:1rem 1.2rem;border-radius:var(--radius);
+  font-size:16px;font-weight:500;color:var(--texte-doux);
+  border:none;background:none;font-family:'DM Sans',sans-serif;cursor:pointer;
+  width:100%;text-align:left;border-bottom:1px solid rgba(0,0,0,.05);
+}
+.mobile-menu a:hover,.mobile-menu button:hover{background:var(--vert-pale);color:var(--vert);}
+.mobile-section-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--texte-pale);padding:.8rem 1.2rem .3rem;text-transform:uppercase;}
+.mobile-don{background:var(--rouge)!important;color:white!important;border-radius:var(--radius)!important;justify-content:center;font-weight:700!important;margin-top:.5rem;}
+
+/* ============================================================
+   PAGES (SPA)
+============================================================ */
+.page{display:none;}
+.page.active{display:block;}
+
+/* ============================================================
+   HERO
+============================================================ */
+.hero{
+  min-height:100vh;padding:calc(var(--haut) + 80px) 8% 100px;
+  background:linear-gradient(155deg,rgba(26,92,58,.93) 0%,rgba(26,92,58,.72) 45%,rgba(200,134,10,.55) 100%),
+    url('https://images.unsplash.com/photo-1591178616060-8f03cf34ee3d?w=1600&q=80') center/cover no-repeat;
+  display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;
+}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,var(--blanc));}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(200,134,10,.2);border:1px solid rgba(200,134,10,.5);color:#f5d087;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.12em;padding:6px 14px;border-radius:20px;margin-bottom:1.5rem;animation:fadeDown .8s ease both;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.6rem,5.5vw,4.8rem);font-weight:900;color:white;line-height:1.08;max-width:780px;margin-bottom:1.4rem;animation:fadeDown .9s .1s ease both;}
+.hero h1 em{font-style:italic;color:#f5d087;}
+.hero-sub{font-size:clamp(.95rem,1.6vw,1.15rem);color:rgba(255,255,255,.85);max-width:560px;line-height:1.75;margin-bottom:2.5rem;font-weight:300;animation:fadeDown 1s .2s ease both;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;animation:fadeDown 1s .3s ease both;}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--or);color:white;font-weight:600;padding:14px 28px;border-radius:8px;font-size:15px;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s;font-family:'DM Sans',sans-serif;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,134,10,.4);}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;border:1.5px solid rgba(255,255,255,.6);color:white;font-weight:500;padding:14px 28px;border-radius:8px;font-size:15px;background:rgba(255,255,255,.08);cursor:pointer;transition:background .2s,border-color .2s;font-family:'DM Sans',sans-serif;}
+.btn-ghost:hover{background:rgba(255,255,255,.15);border-color:white;}
+.hero-stats{display:flex;gap:2px;margin-top:3rem;animation:fadeDown 1s .45s ease both;flex-wrap:wrap;}
+.hstat{background:rgba(253,252,248,.12);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);padding:14px 20px;text-align:center;border-radius:4px;}
+.hstat:first-child{border-radius:8px 4px 4px 8px;}
+.hstat:last-child{border-radius:4px 8px 8px 4px;}
+.hstat-num{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900;color:#f5d087;display:block;line-height:1;}
+.hstat-lbl{font-size:10px;color:rgba(255,255,255,.7);margin-top:3px;letter-spacing:.03em;}
+
+/* ============================================================
+   URGENCE BAND
+============================================================ */
+.urgence{background:var(--brun);color:white;padding:13px 8%;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;font-size:13.5px;}
+.pulse{width:9px;height:9px;background:var(--or-clair);border-radius:50%;animation:pulse 2s infinite;flex-shrink:0;}
+.urgence strong{color:var(--or-clair);}
+.urgence a{color:var(--or-clair);font-weight:600;font-size:12px;white-space:nowrap;}
+
+/* ============================================================
+   SECTIONS COMMUNES
+============================================================ */
+.sec{padding:90px 8%;}
+.sec-inner{max-width:1300px;margin:0 auto;}
+.sec-bg{background:var(--gris);}
+.sec-vert{background:var(--vert);color:white;}
+.sec-or{background:var(--or-pale);}
+.lbl{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;color:var(--or);text-transform:uppercase;margin-bottom:.8rem;}
+.sec-vert .lbl{color:var(--or-clair);}
+h2.titre{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;line-height:1.2;margin-bottom:1.2rem;}
+.sec-vert h2.titre{color:white;}
+
+/* ============================================================
+   SECTION IDENTIFICATION (CIBLES)
+============================================================ */
+.cibles-intro{text-align:center;max-width:640px;margin:0 auto 3rem;}
+.cibles-intro p{color:var(--texte-doux);line-height:1.7;font-size:15px;margin-top:.8rem;}
+.cibles-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;}
+.cible-card{
+  background:white;border-radius:var(--radius);overflow:hidden;
+  border:1.5px solid rgba(26,92,58,.08);
+  transition:transform .25s,box-shadow .25s,border-color .2s;
+  display:flex;flex-direction:column;
+}
+.cible-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(26,92,58,.1);border-color:rgba(26,92,58,.2);}
+.cible-img{width:100%;height:160px;object-fit:cover;background:var(--vert-pale);}
+.cible-img-placeholder{width:100%;height:160px;display:flex;align-items:center;justify-content:center;font-size:3rem;}
+.cible-body{padding-top:66px;padding:1.2rem;flex:1;display:flex;flex-direction:column;}
+.cible-card h4{font-weight:600;font-size:14px;line-height:1.4;margin-bottom:.6rem;color:var(--texte);}
+.cible-card p{font-size:12.5px;color:var(--texte-doux);line-height:1.55;flex:1;}
+.cible-pills{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.8rem;}
+.pill{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;font-family:'Space Mono',monospace;letter-spacing:.05em;}
+.pill-vert{background:var(--vert-pale);color:var(--vert);}
+.pill-or{background:var(--or-pale);color:var(--or);border:1px solid rgba(200,134,10,.2);}
+.cibles-cta{text-align:center;margin-top:2.5rem;}
+.cibles-cta p{font-size:15px;color:var(--texte-doux);margin-bottom:1rem;}
+
+/* ============================================================
+   TECHNO CARDS
+============================================================ */
+.techno-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:2.5rem;}
+.tc{background:white;border-radius:14px;overflow:hidden;border:1px solid rgba(26,92,58,.08);transition:transform .3s,box-shadow .3s;text-decoration:none;color:inherit;display:flex;flex-direction:column;}
+.tc:hover{transform:translateY(-5px);box-shadow:0 18px 50px rgba(26,92,58,.11);}
+.tc-img{width:100%;height:180px;object-fit:cover;}
+.tc-img-placeholder{width:100%;height:180px;display:flex;align-items:center;justify-content:center;font-size:3rem;background:var(--vert-pale);}
+.tc-body{padding-top:66px;padding:1.4rem;flex:1;display:flex;flex-direction:column;}
+.tc-tag{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--or);text-transform:uppercase;margin-bottom:6px;}
+.tc h3{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--vert);margin-bottom:.6rem;}
+.tc p{font-size:13px;color:var(--texte-doux);line-height:1.6;flex:1;margin-bottom:1rem;}
+.tc-stat{background:var(--vert-pale);border-radius:7px;padding:8px 12px;font-size:12px;color:var(--vert);font-weight:600;display:flex;align-items:center;gap:7px;margin-top:auto;}
+.tc-stat::before{content:'';width:5px;height:5px;background:var(--vert-clair);border-radius:50%;flex-shrink:0;}
+.tc-dark{background:var(--vert);}
+.tc-dark .tc-body{padding-top:66px;background:var(--vert);}
+.tc-dark h3{color:white;}
+.tc-dark p{color:rgba(255,255,255,.75);}
+.tc-dark .tc-tag{color:var(--or-clair);}
+.tc-dark .tc-stat{background:rgba(255,255,255,.1);color:var(--or-clair);}
+
+/* ============================================================
+   PILIERS
+============================================================ */
+.piliers-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.5rem;}
+.pilier{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:var(--radius);padding:1.4rem;cursor:pointer;transition:background .2s,transform .2s;}
+.pilier:hover{background:rgba(255,255,255,.16);transform:translateY(-3px);}
+.pilier-n{font-family:'Space Mono',monospace;font-size:9px;color:var(--or-clair);letter-spacing:.1em;margin-bottom:6px;}
+.pilier h4{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:white;margin-bottom:6px;}
+.pilier p{font-size:12px;color:rgba(255,255,255,.6);line-height:1.5;}
+.pilier-arrow{display:inline-flex;align-items:center;gap:4px;margin-top:.8rem;font-size:10px;color:var(--or-clair);font-weight:700;font-family:'Space Mono',monospace;letter-spacing:.07em;}
+.pilier-arrow::after{content:'→';transition:transform .2s;}
+.pilier:hover .pilier-arrow::after{transform:translateX(4px);}
+.pilier-or{background:rgba(200,134,10,.15);border-color:rgba(200,134,10,.3);}
+
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1100;align-items:center;justify-content:center;padding:1rem;}
+.modal-bg.open{display:flex;}
+.modal-box{background:white;border-radius:18px;max-width:580px;width:100%;padding:2.2rem;position:relative;max-height:90vh;overflow-y:auto;animation:fadeDown .25s ease;}
+.modal-close{position:absolute;top:1rem;right:1rem;width:32px;height:32px;background:var(--gris);border:none;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--texte-doux);}
+.modal-tag{font-family:'Space Mono',monospace;font-size:9px;color:var(--or);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;}
+.modal-box h3{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--vert);margin-bottom:.8rem;}
+.modal-box p{font-size:14px;color:var(--texte-doux);line-height:1.75;margin-bottom:.8rem;}
+.modal-stats{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:1rem 0;}
+.mstat{background:var(--vert-pale);border-radius:9px;padding:.9rem;text-align:center;}
+.mstat-num{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:900;color:var(--vert);}
+.mstat-lbl{font-size:11px;color:var(--texte-doux);margin-top:2px;}
+.modal-lien{display:inline-flex;align-items:center;gap:7px;margin-top:.8rem;background:var(--vert);color:white;padding:11px 22px;border-radius:8px;font-size:14px;font-weight:600;}
+
+/* ============================================================
+   IMPACT
+============================================================ */
+.impact-nums{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(26,92,58,.1);border-radius:14px;overflow:hidden;margin:2.5rem 0;}
+.inum{padding:2rem 1.5rem;text-align:center;background:white;border-right:1px solid rgba(26,92,58,.1);}
+.inum:last-child{border-right:none;}
+.inum-n{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:900;color:var(--vert);line-height:1;}
+.inum-u{font-size:1.4rem;color:var(--or);}
+.inum-d{font-size:12px;color:var(--texte-doux);margin-top:6px;line-height:1.45;}
+.zones{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2rem;}
+.zone{border-radius:var(--radius);padding:1.4rem;border-left:4px solid var(--vert);background:var(--vert-pale);}
+.zone h4{font-weight:600;font-size:14px;color:var(--vert);margin-bottom:5px;}
+.zone p{font-size:12.5px;color:var(--texte-doux);line-height:1.55;}
+
+/* ============================================================
+   PROBLÈME (diagnostic)
+============================================================ */
+.diag-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-top:2.5rem;}
+.diag-img-wrap{border-radius:16px;overflow:hidden;position:relative;}
+.diag-img-wrap img{width:100%;height:420px;object-fit:cover;}
+.diag-badge{position:absolute;bottom:1.2rem;left:1.2rem;background:rgba(26,92,58,.92);backdrop-filter:blur(6px);color:white;padding:.8rem 1.2rem;border-radius:10px;font-size:13px;max-width:280px;}
+.diag-badge strong{color:#f5d087;display:block;font-size:1rem;margin-bottom:3px;}
+.diag-list{list-style:none;}
+.diag-item{display:flex;gap:1rem;padding:1.2rem 0;border-bottom:1px solid rgba(26,92,58,.1);align-items:flex-start;}
+.diag-item:last-child{border-bottom:none;}
+.diag-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.diag-item h3{font-size:14.5px;font-weight:600;margin-bottom:4px;}
+.diag-item p{font-size:13px;color:var(--texte-doux);line-height:1.6;}
+
+/* ============================================================
+   À-PROPOS / PITCH PRÉSIDENTE
+============================================================ */
+.about-hero{
+  min-height:60vh;padding:calc(var(--haut) + 60px) 8% 80px;
+  background:linear-gradient(140deg,rgba(26,92,58,.9) 0%,rgba(61,43,31,.85) 100%),
+    url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&q=80') center/cover no-repeat;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.about-hero .lbl{color:var(--or-clair);}
+.about-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.5rem);font-weight:900;color:white;line-height:1.15;max-width:700px;margin-bottom:1.2rem;}
+.about-hero p{font-size:1.05rem;color:rgba(255,255,255,.8);max-width:560px;line-height:1.75;}
+
+.pitch-split{display:grid;grid-template-columns:1fr 1.5fr;gap:4rem;align-items:start;margin-top:3rem;}
+.pitch-photo{border-radius:16px;overflow:hidden;position:relative;}
+.pitch-photo img{width:100%;height:480px;object-fit:cover;}
+.pitch-photo-overlay{position:absolute;bottom:0;left:0;right:0;padding:1.5rem;background:linear-gradient(transparent,rgba(26,92,58,.9));}
+.pitch-photo-overlay strong{font-family:'Playfair Display',serif;font-size:1.1rem;color:white;display:block;}
+.pitch-photo-overlay span{font-size:12px;color:rgba(255,255,255,.7);}
+.pitch-badge{position:absolute;top:1.2rem;right:1.2rem;background:var(--or);border-radius:10px;padding:.8rem 1.2rem;color:white;text-align:center;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.07em;}
+.pitch-badge strong{display:block;font-family:'Playfair Display',serif;font-size:1.8rem;letter-spacing:0;}
+.timeline{border-left:2px solid var(--vert);padding-left:1.5rem;margin:1.5rem 0;}
+.tl-item{margin-bottom:1.1rem;position:relative;}
+.tl-item::before{content:'';position:absolute;left:-1.9rem;top:5px;width:10px;height:10px;background:var(--or);border-radius:50%;border:2px solid var(--blanc);}
+.tl-yr{font-family:'Space Mono',monospace;font-size:10px;color:var(--or);letter-spacing:.1em;}
+.tl-txt{font-size:13.5px;color:var(--texte-doux);margin-top:2px;line-height:1.5;}
+.values-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem;}
+.val-card{background:var(--vert-pale);border-radius:10px;padding:1rem;}
+.val-card h5{font-weight:600;font-size:14px;color:var(--vert);margin-bottom:4px;}
+.val-card p{font-size:12.5px;color:var(--texte-doux);line-height:1.5;}
+
+/* ============================================================
+   PROJETS
+============================================================ */
+.projets-hero{
+  padding:calc(var(--haut) + 60px) 8% 60px;
+  background:linear-gradient(135deg,var(--vert-pale) 0%,white 60%);
+  border-bottom:1px solid rgba(26,92,58,.1);
+}
+.projets-hero .lbl{color:var(--or);}
+.projets-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--vert);margin-bottom:.8rem;}
+.projets-hero p{font-size:15px;color:var(--texte-doux);max-width:560px;line-height:1.7;}
+.projets-filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.5rem;}
+.filter-btn{padding:7px 16px;border-radius:20px;border:1.5px solid rgba(26,92,58,.2);background:white;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;color:var(--texte-doux);font-family:'DM Sans',sans-serif;}
+.filter-btn:hover,.filter-btn.active{background:var(--vert);color:white;border-color:var(--vert);}
+.projets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:2.5rem;}
+.projet-card{background:white;border-radius:14px;overflow:hidden;border:1px solid rgba(26,92,58,.08);transition:transform .25s,box-shadow .25s;display:flex;flex-direction:column;}
+.projet-card:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(26,92,58,.1);}
+.projet-img{width:100%;height:200px;object-fit:cover;}
+.projet-body{padding-top:66px;padding:1.4rem;flex:1;display:flex;flex-direction:column;}
+.projet-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem;}
+.projet-tag{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;font-family:'Space Mono',monospace;}
+.pt-vert{background:var(--vert-pale);color:var(--vert);}
+.pt-or{background:var(--or-pale);color:var(--or);}
+.pt-bleu{background:#e8f0ff;color:#1a4a7a;}
+.projet-body h3{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--texte);margin-bottom:.5rem;}
+.projet-body p{font-size:13px;color:var(--texte-doux);line-height:1.6;flex:1;}
+.projet-meta{display:flex;align-items:center;justify-content:space-between;margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,.05);}
+.projet-zone{font-size:11px;color:var(--texte-pale);display:flex;align-items:center;gap:4px;}
+.projet-link{font-size:12.5px;font-weight:600;color:var(--vert);display:flex;align-items:center;gap:4px;}
+.projet-link:hover{text-decoration:underline;}
+.statut-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;font-family:'Space Mono',monospace;}
+.statut-actif{background:#e8f5ee;color:var(--vert);}
+.statut-termine{background:var(--gris);color:var(--texte-pale);}
+.statut-lancement{background:var(--or-pale);color:var(--or);}
+
+/* ============================================================
+   ACTUALITÉS & ÉVÉNEMENTS
+============================================================ */
+.actu-hero{
+  padding:calc(var(--haut) + 60px) 8% 60px;
+  background:linear-gradient(135deg,#fdf3e3 0%,white 60%);
+  border-bottom:1px solid rgba(200,134,10,.1);
+}
+.actu-hero .lbl{color:var(--or);}
+.actu-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--brun);margin-bottom:.8rem;}
+.actu-hero p{font-size:15px;color:var(--texte-doux);max-width:560px;line-height:1.7;}
+.actu-split{display:grid;grid-template-columns:2fr 1fr;gap:2rem;max-width:1300px;margin:3rem auto 0;padding:0 8%;}
+.actu-main{}
+.actu-aside{}
+.actu-section-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--texte);margin-bottom:1.2rem;padding-bottom:.5rem;border-bottom:2px solid var(--vert);}
+.actu-cards{display:flex;flex-direction:column;gap:1.2rem;}
+.actu-card{background:white;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(0,0,0,.07);display:flex;gap:0;transition:box-shadow .25s;}
+.actu-card:hover{box-shadow:var(--shadow);}
+.actu-img{width:220px;flex-shrink:0;object-fit:cover;}
+.actu-body{padding-top:66px;padding:1.2rem;flex:1;display:flex;flex-direction:column;}
+.actu-meta{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;flex-wrap:wrap;}
+.actu-date{font-size:11px;color:var(--texte-pale);font-family:'Space Mono',monospace;}
+.actu-cat{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;font-family:'Space Mono',monospace;}
+.cat-actu{background:var(--vert-pale);color:var(--vert);}
+.cat-terrain{background:#e8f0ff;color:#1a4a7a;}
+.cat-tech{background:var(--or-pale);color:var(--or);}
+.actu-body h3{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:.4rem;line-height:1.35;}
+.actu-body p{font-size:12.5px;color:var(--texte-doux);line-height:1.6;flex:1;}
+.actu-lire{display:inline-flex;align-items:center;gap:5px;margin-top:.7rem;font-size:12.5px;font-weight:600;color:var(--vert);}
+.actu-lire:hover{text-decoration:underline;}
+/* Événements sidebar */
+.evt-list{display:flex;flex-direction:column;gap:.8rem;}
+.evt-item{background:white;border-radius:var(--radius);padding:1rem;border:1px solid rgba(0,0,0,.07);display:flex;gap:.8rem;align-items:flex-start;transition:box-shadow .2s;}
+.evt-item:hover{box-shadow:var(--shadow);}
+.evt-date-box{background:var(--vert);color:white;border-radius:8px;padding:.4rem .6rem;text-align:center;flex-shrink:0;min-width:42px;}
+.evt-day{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;line-height:1;display:block;}
+.evt-mon{font-size:9px;font-family:'Space Mono',monospace;letter-spacing:.07em;display:block;margin-top:1px;}
+.evt-info h4{font-size:13px;font-weight:600;margin-bottom:2px;line-height:1.35;}
+.evt-info p{font-size:11.5px;color:var(--texte-pale);}
+.evt-or .evt-date-box{background:var(--or);}
+/* Newsletter mini */
+.newsletter-box{background:var(--vert);border-radius:var(--radius);padding:1.4rem;margin-top:1.5rem;color:white;}
+.newsletter-box h4{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:.4rem;}
+.newsletter-box p{font-size:12px;opacity:.75;line-height:1.5;margin-bottom:.8rem;}
+.nl-form{display:flex;flex-direction:column;gap:.5rem;}
+.nl-form input{padding:9px 12px;border-radius:7px;border:none;font-size:13px;font-family:'DM Sans',sans-serif;width:100%;}
+.nl-form button{padding:10px;background:var(--or);color:white;border:none;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;}
+.nl-form button:hover{background:var(--or-clair);}
+
+/* ============================================================
+   FAQ
+============================================================ */
+.faq-wrap{max-width:820px;margin:2.5rem auto 0;}
+.faq-item{border-bottom:1px solid rgba(26,92,58,.1);}
+.faq-q{width:100%;background:none;border:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:1.3rem 0;text-align:left;font-family:'DM Sans',sans-serif;}
+.faq-q-txt{font-size:15.5px;font-weight:600;color:var(--texte);padding-right:1rem;line-height:1.4;}
+.faq-ico{width:26px;height:26px;border-radius:50%;background:var(--vert-pale);display:flex;align-items:center;justify-content:center;color:var(--vert);font-size:17px;flex-shrink:0;transition:transform .3s;}
+.faq-item.open .faq-ico{transform:rotate(45deg);background:var(--vert);color:white;}
+.faq-ans{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;font-size:14px;color:var(--texte-doux);line-height:1.8;}
+.faq-item.open .faq-ans{max-height:400px;padding-bottom:1.3rem;}
+
+/* ============================================================
+   FORMATIONS
+============================================================ */
+.formations-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:2.5rem;}
+.form-card{background:white;border-radius:14px;border:1px solid rgba(200,134,10,.12);overflow:hidden;transition:transform .25s,box-shadow .25s;display:flex;flex-direction:column;}
+.form-card:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(200,134,10,.1);}
+.form-img{width:100%;height:160px;object-fit:cover;}
+.form-body{padding-top:66px;padding:1.3rem;flex:1;display:flex;flex-direction:column;}
+.form-badge{display:inline-flex;align-items:center;gap:6px;background:var(--or-pale);color:var(--or);font-size:10px;font-weight:700;padding:3px 11px;border-radius:20px;margin-bottom:.8rem;font-family:'Space Mono',monospace;letter-spacing:.06em;border:1px solid rgba(200,134,10,.2);}
+.form-card h3{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--brun);margin-bottom:.5rem;}
+.form-card p{font-size:13px;color:var(--texte-doux);line-height:1.6;flex:1;margin-bottom:1rem;}
+.form-meta{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1rem;}
+.form-meta span{font-size:11.5px;color:var(--texte-pale);display:flex;align-items:center;gap:3px;}
+.form-cta{display:block;text-align:center;background:var(--vert);color:white;padding:9px;border-radius:8px;font-size:13px;font-weight:600;margin-top:auto;transition:background .2s;}
+.form-cta:hover{background:var(--vert-clair);}
+
+/* ============================================================
+   PARTENAIRES
+============================================================ */
+.part-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:2.5rem;}
+.part-card{background:white;border-radius:var(--radius);padding:1.8rem;border:1px solid rgba(26,92,58,.08);transition:border-color .2s;}
+.part-card:hover{border-color:var(--vert-clair);}
+.part-type{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.12em;color:var(--or);text-transform:uppercase;margin-bottom:.8rem;}
+.part-card h4{font-weight:600;font-size:15px;margin-bottom:.6rem;}
+.part-card p{font-size:13px;color:var(--texte-doux);line-height:1.6;margin-bottom:.8rem;}
+.part-lien{color:var(--vert);font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:5px;}
+.part-lien::after{content:'→';}
+
+/* ============================================================
+   PITCH (ABOUT)
+============================================================ */
+.pitch-content h2{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;line-height:1.2;margin-bottom:1.2rem;color:var(--vert);}
+.pitch-content p{font-size:14.5px;color:var(--texte-doux);line-height:1.8;margin-bottom:1rem;}
+
+/* ============================================================
+   CTA FINALE
+============================================================ */
+.cta-sec{background:var(--brun);color:white;padding:90px 8%;text-align:center;position:relative;overflow:hidden;}
+.cta-sec::before{content:'';position:absolute;top:-80px;right:-80px;width:360px;height:360px;background:radial-gradient(circle,rgba(200,134,10,.15) 0%,transparent 70%);}
+.cta-sec h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,3rem);font-weight:700;line-height:1.2;margin-bottom:1.2rem;}
+.cta-sec h2 em{color:var(--or-clair);font-style:italic;}
+.cta-sec>p{font-size:1rem;color:rgba(255,255,255,.75);max-width:520px;margin:0 auto 2rem;line-height:1.8;}
+.cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.ps-box{background:rgba(200,134,10,.15);border:1px solid rgba(200,134,10,.3);border-radius:8px;padding:14px 22px;max-width:580px;margin:1.8rem auto 0;font-size:13.5px;color:rgba(255,255,255,.8);line-height:1.65;}
+.ps-box strong{color:var(--or-clair);}
+
+/* ============================================================
+   FOOTER
+============================================================ */
+footer{background:#0f1a12;color:rgba(255,255,255,.55);padding:56px 8% 28px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2.5rem;margin-bottom:2.5rem;}
+.footer-brand p{font-size:12.5px;line-height:1.7;max-width:280px;margin:.8rem 0;}
+.footer-contact-item{display:flex;align-items:flex-start;gap:6px;font-size:12px;margin-bottom:5px;}
+.footer-col h5{font-family:'Playfair Display',serif;font-size:14px;color:white;margin-bottom:.8rem;font-weight:700;}
+.footer-col ul{list-style:none;}
+.footer-col ul li{margin-bottom:6px;}
+.footer-col ul li a{font-size:12.5px;color:rgba(255,255,255,.5);transition:color .2s;}
+.footer-col ul li a:hover{color:var(--or-clair);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;font-size:11.5px;}
+.footer-legal{display:flex;gap:1.2rem;}
+.footer-legal a{color:rgba(255,255,255,.35);font-size:11.5px;}
+
+/* ============================================================
+   ANIMATIONS
+============================================================ */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.6}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .55s ease,transform .55s ease;}
+.reveal.visible{opacity:1;transform:none;}
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media(max-width:1100px){
+  .piliers-grid{grid-template-columns:repeat(2,1fr);}
+  .cibles-grid{grid-template-columns:repeat(2,1fr);}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .actu-split{grid-template-columns:1fr;}
+  .actu-aside{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+}
+@media(max-width:860px){
+  .nav-menu{display:none;}
+  .hamburger{display:flex;}
+  .techno-grid{grid-template-columns:1fr 1fr;}
+  .projets-grid{grid-template-columns:1fr 1fr;}
+  .formations-grid{grid-template-columns:1fr 1fr;}
+  .part-grid{grid-template-columns:1fr;}
+  .diag-grid,.pitch-split{grid-template-columns:1fr;}
+  .pitch-photo img{height:300px;}
+  .impact-nums{grid-template-columns:1fr 1fr;}
+  .zones{grid-template-columns:1fr;}
+  .actu-card{flex-direction:column;}
+  .actu-img{width:100%;height:180px;}
+  .values-grid{grid-template-columns:1fr;}
+  :root{--haut:58px;}
+  .sec{padding:64px 6%;}
+}
+@media(max-width:600px){
+  .techno-grid,.projets-grid,.formations-grid,.cibles-grid,.piliers-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;}
+  .hero-stats{flex-wrap:wrap;}
+  .hstat{flex:1;min-width:calc(50% - 1px);}
+  .hstat:first-child,.hstat:last-child{border-radius:4px;}
+  .impact-nums{grid-template-columns:1fr 1fr;}
+  .modal-stats{grid-template-columns:1fr;}
+  .actu-split{padding:0 6%;}
+  .actu-aside{display:flex;flex-direction:column;}
+}
+
+/* ─── CSS complémentaire v2 ─── */
+/* Supprimer conflit mb-nav */
+#site-header { display:none !important; } /* cache ancien header si mb-nav présent */
+
+/* Nav SPA interne - masquée quand mb-nav actif */
+.spa-nav-hidden { display:none; }
+
+/* Onglet équipe dans nav SPA */
+.nav-menu li a[onclick*="equipe"] { color: var(--or, #c8860a); }
+</style>
+</head>
+<body>
+
+
+
+<!-- PAGES SPA -->
+<div class="page active" id="page-home">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">🌿 <span class="fr">20 ANS D'IMPACT · CAMEROUN → AFRIQUE</span><span class="en">20 YEARS OF IMPACT · CAMEROON → AFRICA</span></div>
+  <h1>
+    <span class="fr">De la <em>fumée</em> à la lumière.<br>De la <em>boue</em> à l'énergie.</span>
+    <span class="en">From <em>smoke</em> to light.<br>From <em>mud</em> to energy.</span>
+  </h1>
+  <p class="hero-sub">
+    <span class="fr">Monde et Bonheur transforme les déchets, la forêt et l'intelligence de l'Afrique en solutions industrielles contre la pauvreté et le dérèglement climatique.</span>
+    <span class="en">Monde et Bonheur turns waste, forests, and African ingenuity into industrial solutions against poverty and climate disruption.</span>
+  </p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="showPage('home');setTimeout(()=>scrollTo('technologies'),100)">🔥 <span class="fr">Découvrir nos technologies</span><span class="en">Discover our technologies</span></button>
+    <button class="btn-ghost" onclick="showPage('home');setTimeout(()=>scrollTo('partenaires'),100)">🤝 <span class="fr">Devenir partenaire</span><span class="en">Become a partner</span></button>
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><span class="hstat-num">10<span style="font-size:1.1rem;color:#f5d087">K+</span></span><div class="hstat-lbl fr">Vies impactées</div><div class="hstat-lbl en">Lives impacted</div></div>
+    <div class="hstat"><span class="hstat-num">20</span><div class="hstat-lbl fr">Ans d'expérience</div><div class="hstat-lbl en">Years of experience</div></div>
+    <div class="hstat"><span class="hstat-num">7</span><div class="hstat-lbl fr">Pays cibles 2030</div><div class="hstat-lbl en">Target countries 2030</div></div>
+    <div class="hstat"><span class="hstat-num">90<span style="font-size:1.1rem;color:#f5d087">%</span></span><div class="hstat-lbl fr">Réduction biomasse</div><div class="hstat-lbl en">Biomass reduction</div></div>
+  </div>
+</section>
+
+<!-- URGENCE -->
+<div class="urgence">
+  <div class="pulse"></div>
+  <span class="fr"><strong>Le chiffre qui brûle :</strong> 600 000 Africains meurent chaque année de la fumée de cuisine. Nous avons la solution : <strong>"1 Bois / 3 Foyers"</strong>.</span>
+  <span class="en"><strong>The burning fact:</strong> 600,000 Africans die each year from cooking smoke. Our solution: <strong>"1 Log / 3 Stoves"</strong>.</span>
+  <a href="#" onclick="scrollTo('technologies');return false"><span class="fr">Voir comment →</span><span class="en">See how →</span></a>
+</div>
+
+<!-- IDENTIFICATION / CIBLES -->
+<div class="sec sec-bg" id="rejoindre">
+  <div class="sec-inner">
+    <div class="cibles-intro">
+      <div class="lbl" style="text-align:center"><span class="fr">Ces innovations sont pour vous</span><span class="en">These innovations are for you</span></div>
+      <h2 class="titre" style="text-align:center"><span class="fr">Vous reconnaissez-vous dans l'une de ces situations ?</span><span class="en">Do you see yourself in one of these situations?</span></h2>
+      <p class="fr">Chaque personne ici est concernée — comme bénéficiaire, comme alliée, ou les deux. Ce que nous construisons change votre quotidien directement.</p>
+      <p class="en">Every person here is concerned — as a beneficiary, an ally, or both. What we build directly changes your daily life.</p>
+    </div>
+    <div class="cibles-grid">
+
+      <div class="cible-card reveal" style="border-top:3px solid var(--vert)">
+        <img class="cible-img" src="https://images.unsplash.com/photo-1609220136736-443140cffec6?w=400&q=70" alt="Femme rurale Afrique" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cible-img-placeholder" style="display:none">👩‍🌾</div>
+        <div class="cible-body">
+          <h4 class="fr">Vous passez 3h par jour à chercher du bois</h4>
+          <h4 class="en">You spend 3 hours a day collecting firewood</h4>
+          <p class="fr">La cuisinière "1 Bois / 3 Foyers" divise votre consommation par 10. Ces 3 heures retrouvées, c'est votre petite activité. Votre revenu. Votre liberté.</p>
+          <p class="en">The "1 Log / 3 Stoves" cooker cuts your wood use by 10. Those 3 hours back are your small business. Your income. Your freedom.</p>
+          <div class="cible-pills"><span class="pill pill-vert fr">Femme rurale</span><span class="pill pill-vert en">Rural woman</span><span class="pill pill-or fr">Bénéficiaire directe</span><span class="pill pill-or en">Direct beneficiary</span></div>
+        </div>
+      </div>
+
+      <div class="cible-card reveal" style="border-top:3px solid var(--vert)">
+        <img class="cible-img" src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&q=70" alt="Coopérative agricole Afrique" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cible-img-placeholder" style="display:none">🌾</div>
+        <div class="cible-body">
+          <h4 class="fr">La pluie a détruit votre dernière récolte de cacao</h4>
+          <h4 class="en">Rain just destroyed your last cocoa harvest</h4>
+          <p class="fr">Le séchoir Flash traite votre récolte en 5 minutes, quelle que soit la météo. Votre produit séché se vend 40% plus cher. L'équipement s'amortit en 6 mois.</p>
+          <p class="en">The Flash Dryer processes your harvest in 5 minutes, rain or shine. Your dried product sells 40% higher. Equipment ROI in 6 months.</p>
+          <div class="cible-pills"><span class="pill pill-vert fr">Coopérative</span><span class="pill pill-vert en">Cooperative</span><span class="pill pill-or fr">Bénéficiaire + Partenaire</span><span class="pill pill-or en">Beneficiary + Partner</span></div>
+        </div>
+      </div>
+
+      <div class="cible-card reveal" style="border-top:3px solid var(--or)">
+        <img class="cible-img" src="https://images.unsplash.com/photo-1531545514256-b1400bc00f31?w=400&q=70" alt="Diaspora africaine" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cible-img-placeholder" style="display:none">✈️</div>
+        <div class="cible-body">
+          <h4 class="fr">Vous envoyez de l'argent au pays, mais vous ne savez pas où il va vraiment</h4>
+          <h4 class="en">You send money home, but aren't sure where it really goes</h4>
+          <p class="fr">Chaque euro dirigé vers MB finance une cuisinière, une école ou une formation. Vous recevez un rapport d'impact nominatif. Vous voyez exactement ce que votre argent a construit.</p>
+          <p class="en">Every euro directed to MB funds a cooker, school or training. You receive a named impact report showing exactly what your money built.</p>
+          <div class="cible-pills"><span class="pill pill-vert fr">Diaspora</span><span class="pill pill-vert en">Diaspora</span><span class="pill pill-or fr">Allié stratégique</span><span class="pill pill-or en">Strategic ally</span></div>
+        </div>
+      </div>
+
+      <div class="cible-card reveal" style="border-top:3px solid var(--vert)">
+        <img class="cible-img" src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&q=70" alt="Enfants école Afrique" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cible-img-placeholder" style="display:none">📚</div>
+        <div class="cible-body">
+          <h4 class="fr">Votre enfant apprend la chimie sans jamais voir une éprouvette</h4>
+          <h4 class="en">Your child learns chemistry without ever seeing a test tube</h4>
+          <p class="fr">MetaScript transforme n'importe quelle tablette en laboratoire virtuel complet — sans internet. Votre enfant simule, expérimente et code. Il devient ingénieur avant de finir l'école.</p>
+          <p class="en">MetaScript turns any tablet into a full virtual lab — no internet needed. Your child simulates, experiments and codes, becoming an engineer before school ends.</p>
+          <div class="cible-pills"><span class="pill pill-vert fr">Parents &amp; Enseignants</span><span class="pill pill-vert en">Parents &amp; Teachers</span><span class="pill pill-or fr">Bénéficiaire directe</span><span class="pill pill-or en">Direct beneficiary</span></div>
+        </div>
+      </div>
+
+      <div class="cible-card reveal" style="border-top:3px solid var(--vert-clair)">
+        <img class="cible-img" src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&q=70" alt="Association communautaire Afrique" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cible-img-placeholder" style="display:none">🤝</div>
+        <div class="cible-body">
+          <h4 class="fr">Votre association aide des femmes, mais manque de solutions concrètes</h4>
+          <h4 class="en">Your association supports women but lacks concrete solutions</h4>
+          <p class="fr">Nos formations certifiantes (cuisinière, biogaz, séchoir) sont clé en main. Vous les animez avec notre appui technique. Vos bénéficiaires repartent avec un métier et un équipement productif.</p>
+          <p class="en">Our certified training programmes are turnkey. Deliver them with our technical support. Beneficiaries leave with a trade and productive equipment.</p>
+          <div class="cible-pills"><span class="pill pill-vert fr">Associations &amp; Réseaux</span><span class="pill pill-vert en">Associations &amp; Networks</span><span class="pill pill-or fr">Partenaire opérationnel</span><span class="pill pill-or en">Operational partner</span></div>
+        </div>
+      </div>
+
+      <div class="cible-card reveal" style="border-top:3px solid var(--vert-clair)">
+        <img class="cible-img" src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&q=70" alt="Collectivité locale Afrique" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cible-img-placeholder" style="display:none">🏛️</div>
+        <div class="cible-body">
+          <h4 class="fr">Votre commune croule sous les déchets et manque d'électricité fiable</h4>
+          <h4 class="en">Your municipality is overwhelmed by waste and lacks reliable electricity</h4>
+          <p class="fr">Notre modèle "Mini-Ville Autonome" transforme les déchets de votre commune en énergie, eau potable et engrais. Un seul projet résout trois problèmes simultanément.</p>
+          <p class="en">Our "Autonomous Mini-City" turns your municipality's waste into energy, clean water and fertiliser. One project solves three problems at once.</p>
+          <div class="cible-pills"><span class="pill pill-vert fr">Collectivités &amp; Mairies</span><span class="pill pill-vert en">Local authorities</span><span class="pill pill-or fr">Bénéficiaire + Partenaire</span><span class="pill pill-or en">Beneficiary + Partner</span></div>
+        </div>
+      </div>
+
+      <div class="cible-card reveal" style="border-top:3px solid var(--or)">
+        <img class="cible-img" src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&q=70" alt="Particulier engagé solidarité" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cible-img-placeholder" style="display:none">💚</div>
+        <div class="cible-body">
+          <h4 class="fr">Vous voulez agir pour l'Afrique, mais vous ne savez pas par où commencer</h4>
+          <h4 class="en">You want to act for Africa, but don't know where to start</h4>
+          <p class="fr">30€ = une cuisinière. 100€ = MetaScript pour 20 enfants. 500€ = une unité biogaz domestique. Chaque montant a un impact précis, traçable, photographié.</p>
+          <p class="en">€30 = a cooker. €100 = MetaScript for 20 kids. €500 = a domestic biogas unit. Every amount has a precise, traceable, photographed impact.</p>
+          <div class="cible-pills"><span class="pill pill-vert fr">Particuliers engagés</span><span class="pill pill-vert en">Committed individuals</span><span class="pill pill-or fr">Donateur impactant</span><span class="pill pill-or en">Impact donor</span></div>
+        </div>
+      </div>
+
+      <div class="cible-card reveal" style="border-top:3px solid var(--or);background:linear-gradient(135deg,var(--or-pale) 0%,white 100%)">
+        <img class="cible-img" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=70" alt="Entreprise RSE impact" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cible-img-placeholder" style="display:none">🏢</div>
+        <div class="cible-body">
+          <h4 class="fr">Votre entreprise doit compenser ses émissions carbone — sans greenwashing</h4>
+          <h4 class="en">Your company must offset carbon emissions — without greenwashing</h4>
+          <p class="fr">1 000 cuisinières financées = tonnage CO₂ certifié + rapport d'impact audité + visibilité RSE internationale. Une contrainte légale devient un différenciateur de marque.</p>
+          <p class="en">1,000 funded cookers = certified CO₂ + audited impact report + international CSR visibility. A legal constraint becomes a brand differentiator.</p>
+          <div class="cible-pills"><span class="pill pill-vert fr">Entreprises &amp; Investisseurs</span><span class="pill pill-vert en">Companies &amp; Investors</span><span class="pill pill-or fr">Partenaire RSE / Impact</span><span class="pill pill-or en">CSR / Impact partner</span></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="cibles-cta">
+      <p class="fr">Vous vous reconnaissez ? La prochaine étape prend 30 secondes.</p>
+      <p class="en">You see yourself here? The next step takes 30 seconds.</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+        <button class="btn-primary" onclick="showPage('home');scrollTo('don')">❤️ <span class="fr">Faire un don maintenant</span><span class="en">Donate now</span></button>
+        <a href="mailto:courrielmondeetbonheur@gmail.com" style="display:inline-flex;align-items:center;gap:8px;background:white;color:var(--vert);border:1.5px solid var(--vert);font-weight:600;padding:13px 26px;border-radius:8px;font-size:15px;">💬 <span class="fr">Discutons de votre situation</span><span class="en">Let's talk</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DIAGNOSTIC -->
+<div class="sec" id="diagnostic">
+  <div class="sec-inner">
+    <div class="lbl"><span class="fr">Le diagnostic</span><span class="en">The diagnosis</span></div>
+    <h2 class="titre"><span class="fr">Ce que nous voyons chaque matin en Afrique rurale</span><span class="en">What we see every morning in rural Africa</span></h2>
+    <div class="diag-grid">
+      <div class="diag-img-wrap">
+        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=700&q=75" alt="Forêt Congo déforestation" style="width:100%;height:420px;object-fit:cover" loading="lazy">
+        <div class="diag-badge">
+          <strong class="fr">Bassin du Congo menacé</strong><strong class="en">Congo Basin under threat</strong>
+          <span class="fr">2e poumon vert de la planète. Des milliers d'ha brûlés chaque année pour cuire un repas.</span>
+          <span class="en">The planet's 2nd green lung. Thousands of hectares burned each year just to cook a meal.</span>
+        </div>
+      </div>
+      <ul class="diag-list">
+        <li class="diag-item reveal"><div class="diag-icon" style="background:#fef3f2">🌳</div><div><h3 class="fr">La forêt brûle pour cuire le repas</h3><h3 class="en">Forests burn just to cook</h3><p class="fr">Le feu de trois pierres gaspille 90% de l'énergie du bois, accélérant la déforestation du Bassin du Congo.</p><p class="en">The three-stone fire wastes 90% of wood energy, accelerating deforestation across the Congo Basin.</p></div></li>
+        <li class="diag-item reveal"><div class="diag-icon" style="background:#fffbf0">🌧️</div><div><h3 class="fr">La pluie détruit les récoltes en une nuit</h3><h3 class="en">Rain destroys harvests overnight</h3><p class="fr">40% des récoltes séchées au soleil sont perdues à cause des pluies soudaines. Des mois de travail volatilisés.</p><p class="en">40% of sun-dried crops are lost to sudden rains. Months of work gone overnight.</p></div></li>
+        <li class="diag-item reveal"><div class="diag-icon" style="background:#f0f9f4">📚</div><div><h3 class="fr">Les enfants apprennent la chimie sans laboratoire</h3><h3 class="en">Children learn science with no lab</h3><p class="fr">Des formules par cœur, sans jamais toucher une éprouvette. L'Afrique perd une génération d'ingénieurs.</p><p class="en">Formulas memorised, test tubes never touched. Africa loses a generation of engineers.</p></div></li>
+        <li class="diag-item reveal"><div class="diag-icon" style="background:#f5f0ff">🗑️</div><div><h3 class="fr">Les déchets s'accumulent et polluent</h3><h3 class="en">Waste piles up and pollutes</h3><p class="fr">Les villages croulent sous les déchets organiques libérant du méthane — 25× plus puissant que le CO₂.</p><p class="en">Villages overwhelmed by organic waste releasing methane — 25× more potent than CO₂.</p></div></li>
+      </ul>
+    </div>
+    <div style="background:var(--vert);border-radius:14px;padding:2rem 2.5rem;margin-top:2.5rem;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-20px;left:20px;font-family:'Playfair Display',serif;font-size:100px;color:rgba(255,255,255,.06);line-height:1">"</div>
+      <blockquote style="font-family:'Playfair Display',serif;font-size:1.15rem;font-style:italic;color:white;line-height:1.65;margin-bottom:1.2rem;position:relative">
+        <span class="fr">"Pendant dix ans, nous avons fait de l'humanitaire classique. J'ai vite compris qu'on ne développe pas un continent avec de la charité. On le développe avec de la dignité et de la technologie."</span>
+        <span class="en">"For ten years, we did classic humanitarian work. I quickly realised you don't develop a continent with charity. You develop it with dignity and technology."</span>
+      </blockquote>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:white">H</div>
+        <div><div style="font-weight:600;font-size:14px;color:white">Hermine Ngo Batjom Lapeyronnie</div><div style="font-size:12px;opacity:.65;color:white" class="fr">Présidente Fondatrice, ONG Monde et Bonheur</div><div style="font-size:12px;opacity:.65;color:white" class="en">Founding President, ONG Monde et Bonheur</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TECHNOLOGIES -->
+<div class="sec sec-bg" id="technologies">
+  <div class="sec-inner">
+    <div class="lbl"><span class="fr">Le Pôle Green-Tech</span><span class="en">The Green-Tech Hub</span></div>
+    <h2 class="titre"><span class="fr">Nos technologies de rupture pour l'Afrique</span><span class="en">Our breakthrough technologies for Africa</span></h2>
+    <p style="color:var(--texte-doux);max-width:560px;line-height:1.7;font-size:15px"><span class="fr">Robustes, abordables, déployables immédiatement. Conçues pour les réalités du terrain africain.</span><span class="en">Robust, affordable, deployable now. Designed for African field realities.</span></p>
+    <div class="techno-grid">
+      <a href="#" class="tc reveal" onclick="showPage('home');return false">
+        <img class="tc-img" src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=500&q=70" alt="Cuisinière écologique Afrique" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="tc-img-placeholder" style="display:none">🔥</div>
+        <div class="tc-body"><div class="tc-tag fr">Atténuation climatique</div><div class="tc-tag en">Climate mitigation</div><h3 class="fr">Cuisinière "1 Bois / 3 Foyers"</h3><h3 class="en">"1 Log / 3 Stoves" Cooker</h3><p class="fr">Une seule bûche de 1 kg alimente trois marmites simultanément. Chambre de combustion en céramique réfractaire. Zéro fumée visible.</p><p class="en">One 1 kg log feeds three pots simultaneously. Refractory ceramic chamber. Zero visible smoke.</p><div class="tc-stat fr">Réduction de 90% de la consommation de bois</div><div class="tc-stat en">90% reduction in wood consumption</div></div>
+      </a>
+      <a href="#" class="tc reveal" onclick="showPage('home');return false">
+        <img class="tc-img" src="https://images.unsplash.com/photo-1470115636492-6d2b56f9146d?w=500&q=70" alt="Séchoir solaire Afrique récolte" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="tc-img-placeholder" style="display:none">⚡</div>
+        <div class="tc-body"><div class="tc-tag fr">Adaptation climatique</div><div class="tc-tag en">Climate adaptation</div><h3 class="fr">Séchoir Flash "5 Minutes"</h3><h3 class="en">"5-Minute" Flash Dryer</h3><p class="fr">Ventilation cyclonique haute température. 3 à 5 jours de séchage solaire → 5 minutes chrono. Produit stérilisé, emballable immédiatement.</p><p class="en">High-temperature cyclonic ventilation. 3-5 days of sun-drying → 5 minutes flat. Product sterilised, immediately packable.</p><div class="tc-stat fr">Zéro perte post-récolte · +30-50% valeur marchande</div><div class="tc-stat en">Zero post-harvest loss · +30-50% market value</div></div>
+      </a>
+      <a href="#" class="tc reveal" onclick="showPage('home');return false">
+        <img class="tc-img" src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=500&q=70" alt="Biogaz énergie verte Afrique" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="tc-img-placeholder" style="display:none">♻️</div>
+        <div class="tc-body"><div class="tc-tag fr">Économie circulaire</div><div class="tc-tag en">Circular economy</div><h3 class="fr">Biométhanisation "Tout-en-Un"</h3><h3 class="en">"All-in-One" Biogas System</h3><p class="fr">Les déchets deviennent du biogaz (énergie propre) et du digestat (engrais organique). Deux produits de valeur à partir de rien.</p><p class="en">Waste becomes biogas (clean energy) and digestate (organic fertiliser). Two valuable products from nothing.</p><div class="tc-stat fr">Méthane capturé = 25× plus puissant que CO₂ évité</div><div class="tc-stat en">Captured methane = 25× more potent than CO₂ avoided</div></div>
+      </a>
+      <a href="#" class="tc reveal" onclick="showPage('home');return false">
+        <img class="tc-img" src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&q=70" alt="Tablette éducation numérique" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="tc-img-placeholder" style="display:none">💻</div>
+        <div class="tc-body"><div class="tc-tag fr">Innovation éducative</div><div class="tc-tag en">Educational innovation</div><h3>MetaScript</h3><p class="fr">Logiciel de simulation scientifique pour tablettes low-cost. L'enfant simule la méthanisation, apprend la chimie et le code — hors-ligne.</p><p class="en">Scientific simulation software for low-cost tablets. Children simulate biogas, learn chemistry and code — offline.</p><div class="tc-stat fr">Fonctionne hors-ligne · Tablette à 50 000 FCFA</div><div class="tc-stat en">Works offline · Tablet under €75</div></div>
+      </a>
+      <a href="#" class="tc tc-dark reveal" onclick="showPage('home');return false">
+        <img class="tc-img" src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500&q=70" alt="Village Afrique agriculture durable" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="tc-img-placeholder" style="display:none;background:rgba(0,0,0,.3)">🏘️</div>
+        <div class="tc-body"><div class="tc-tag">Vision 2026</div><h3 class="fr">La Mini-Ville Autonome</h3><h3 class="en">The Autonomous Mini-City</h3><p class="fr">Le modèle 7 ESAR : 7 piliers interdépendants. Les déchets deviennent énergie, l'énergie purifie l'eau, l'eau nourrit l'agriculture...</p><p class="en">The 7 ESAR model: 7 interdependent pillars. Waste → energy → water → agriculture → revenue...</p><div class="tc-stat fr">Déploiement panafricain : 7 pays cibles 2030</div><div class="tc-stat en">Pan-African roll-out: 7 target countries by 2030</div></div>
+      </a>
+      <div class="tc reveal" style="border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem">
+        <span style="font-size:2.5rem;margin-bottom:1rem">🧊</span>
+        <div class="tc-tag fr">En développement</div><div class="tc-tag en">In development</div>
+        <h3 style="color:var(--texte-pale)" class="fr">Chaîne du Froid Solaire</h3><h3 style="color:var(--texte-pale)" class="en">Solar Cold Chain</h3>
+        <p style="color:var(--texte-pale)" class="fr">Prochaine innovation du pôle Green-Tech. Rejoignez nos partenaires R&amp;D.</p>
+        <p style="color:var(--texte-pale)" class="en">Next Green-Tech innovation. Join our R&amp;D partners.</p>
+        <button class="btn-primary" style="margin-top:1rem;font-size:13px;padding:10px 20px" onclick="showPage('home');scrollTo('partenaires')"><span class="fr">S'impliquer</span><span class="en">Get involved</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7 PILIERS -->
+<div class="sec sec-vert" id="piliers">
+  <div class="sec-inner">
+    <div class="lbl"><span class="fr">Le modèle systémique</span><span class="en">The systemic model</span></div>
+    <h2 class="titre"><span class="fr">Les 8 Piliers <em style="font-style:italic;color:var(--or-clair)">E.S.A.R</em> — Cliquez pour explorer</span><span class="en">The 8 <em style="font-style:italic;color:var(--or-clair)">E.S.A.R</em> Pillars — Click to explore</span></h2>
+    <p style="color:rgba(255,255,255,.72);max-width:640px;font-size:15px;line-height:1.7;margin-bottom:2rem">
+      <span class="fr">Énergie · Santé · Agriculture · Revalorisation — 7 piliers interdépendants + 1 pilier transversal. Chaque problème devient la solution d'un autre.</span>
+      <span class="en">Energy · Health · Agriculture · Revalorisation — 7 interdependent pillars + 1 transversal. Every problem becomes another's solution.</span>
+    </p>
+    <div class="piliers-grid">
+      <div class="pilier reveal" onclick="openModal(0)"><div class="pilier-n">PILIER 01 · E</div><h4>⚡ <span class="fr">Énergie &amp; Climat</span><span class="en">Energy &amp; Climate</span></h4><p class="fr">Biométhanisation + cuisinière : 90% de biomasse économisée.</p><p class="en">Biogas + cooker: 90% biomass saved.</p><div class="pilier-arrow fr">Découvrir</div><div class="pilier-arrow en">Discover</div></div>
+      <div class="pilier reveal" onclick="openModal(1)"><div class="pilier-n">PILIER 02 · S</div><h4>💧 <span class="fr">Eau &amp; Assainissement</span><span class="en">Water &amp; Sanitation</span></h4><p class="fr">L'énergie biogaz pompe l'eau et alimente les stations de potabilisation.</p><p class="en">Biogas energy pumps water and feeds purification stations.</p><div class="pilier-arrow fr">Découvrir</div><div class="pilier-arrow en">Discover</div></div>
+      <div class="pilier reveal" onclick="openModal(2)"><div class="pilier-n">PILIER 03 · A</div><h4>🌳 <span class="fr">Environnement</span><span class="en">Environment</span></h4><p class="fr">Digestat = engrais naturel. Moins de bois brûlé = forêt régénérée.</p><p class="en">Digestate = natural fertiliser. Less burning = regenerated forest.</p><div class="pilier-arrow fr">Découvrir</div><div class="pilier-arrow en">Discover</div></div>
+      <div class="pilier reveal" onclick="openModal(3)"><div class="pilier-n">PILIER 04 · S</div><h4>📚 <span class="fr">Éducation</span><span class="en">Education</span></h4><p class="fr">Électricité pour les classes + MetaScript dans chaque poche d'enfant.</p><p class="en">Electricity for classrooms + MetaScript in every child's pocket.</p><div class="pilier-arrow fr">Découvrir</div><div class="pilier-arrow en">Discover</div></div>
+      <div class="pilier reveal" onclick="openModal(4)"><div class="pilier-n">PILIER 05 · E</div><h4>💰 <span class="fr">Économie</span><span class="en">Economy</span></h4><p class="fr">3h/jour gagnées. Les femmes lancent leurs activités génératrices.</p><p class="en">3 hours saved daily. Women launch income-generating activities.</p><div class="pilier-arrow fr">Découvrir</div><div class="pilier-arrow en">Discover</div></div>
+      <div class="pilier reveal" onclick="openModal(5)"><div class="pilier-n">PILIER 06 · S</div><h4>🏥 <span class="fr">Santé</span><span class="en">Health</span></h4><p class="fr">Zéro fumée = fin du tueur silencieux. Brigades médicales mobiles.</p><p class="en">Zero smoke = end of the silent killer. Mobile medical brigades.</p><div class="pilier-arrow fr">Découvrir</div><div class="pilier-arrow en">Discover</div></div>
+      <div class="pilier reveal" onclick="openModal(6)"><div class="pilier-n">PILIER 07 · A</div><h4>🌾 <span class="fr">Agriculture</span><span class="en">Agriculture</span></h4><p class="fr">Séchoir Flash = zéro perte post-récolte. Digestat = +50% rendement.</p><p class="en">Flash Dryer = zero post-harvest loss. Digestate = +50% yield.</p><div class="pilier-arrow fr">Découvrir</div><div class="pilier-arrow en">Discover</div></div>
+      <div class="pilier pilier-or reveal" onclick="openModal(7)"><div class="pilier-n" style="color:white">PILIER 08 · R</div><h4>♻️ <span class="fr">Revalorisation</span><span class="en">Revalorisation</span></h4><p style="color:rgba(255,255,255,.75)" class="fr">Les déchets de chaque pilier alimentent le suivant. Zéro gaspillage.</p><p style="color:rgba(255,255,255,.75)" class="en">Each pillar's waste feeds the next. Zero waste.</p><div class="pilier-arrow" style="color:var(--or-clair)!important"><span class="fr">Le Cercle Vertueux</span><span class="en">Virtuous Circle</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- IMPACT -->
+<div class="sec" id="impact">
+  <div class="sec-inner">
+    <div class="lbl"><span class="fr">20 ans de terrain</span><span class="en">20 years in the field</span></div>
+    <h2 class="titre"><span class="fr">L'impact en chiffres</span><span class="en">Impact by the numbers</span></h2>
+    <div class="impact-nums reveal">
+      <div class="inum"><span class="inum-n">10<span class="inum-u">K</span></span><div class="inum-d fr">Vies directement impactées depuis 2006</div><div class="inum-d en">Lives directly impacted since 2006</div></div>
+      <div class="inum"><span class="inum-n">100<span class="inum-u">+</span></span><div class="inum-d fr">Élèves Baka (vs 40 avant MB)</div><div class="inum-d en">Baka pupils (vs 40 before MB)</div></div>
+      <div class="inum"><span class="inum-n">40<span class="inum-u">%</span></span><div class="inum-d fr">Augmentation surfaces cultivées (Batchenga)</div><div class="inum-d en">Increase in cultivated land (Batchenga)</div></div>
+      <div class="inum"><span class="inum-n">1</span><div class="inum-d fr">Ambulance médicalisée offerte aux Sapeurs-Pompiers</div><div class="inum-d en">Medicalised ambulance donated to fire brigade</div></div>
+    </div>
+    <div class="lbl" style="margin-top:2.5rem"><span class="fr">Zones d'intervention</span><span class="en">Areas of action</span></div>
+    <div class="zones">
+      <div class="zone reveal"><h4>🌾 Batchenga — <span class="fr">Région Centre</span><span class="en">Centre Region</span></h4><p class="fr">Coopérative agricole féminine (CUMA), reboisement en Teck, mécanisation partagée.</p><p class="en">Women's agricultural cooperative (CUMA), teak reforestation, shared mechanisation.</p></div>
+      <div class="zone reveal"><h4>🏫 Bondjock — Nyong-et-Kéllé</h4><p class="fr">Construction du bloc administratif du Lycée, lancement du Projet Méthaniseur Pilote.</p><p class="en">Construction of high school admin block, launch of Pilot Biogas Project.</p></div>
+      <div class="zone reveal"><h4>🌿 Lomié/Abakoum — <span class="fr">Région Est</span><span class="en">East Region</span></h4><p class="fr">École primaire pour les Pygmées Baka : de 40 à 100+ élèves. Agriculture communautaire.</p><p class="en">Primary school for Baka Pygmies: 40 to 100+ pupils. Community farming.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- FORMATIONS -->
+<div class="sec sec-or" id="formations">
+  <div class="sec-inner">
+    <div class="lbl"><span class="fr">Transfert de compétences</span><span class="en">Skills transfer</span></div>
+    <h2 class="titre"><span class="fr">Nos Formations Certifiantes</span><span class="en">Our Certified Training Programmes</span></h2>
+    <p style="color:var(--texte-doux);max-width:580px;line-height:1.7;font-size:15px"><span class="fr">Nous ne donnons pas du poisson — nous apprenons à pêcher et à construire l'usine. Nos formations transforment des bénéficiaires en entrepreneurs.</span><span class="en">We don't hand out fish — we teach fishing and how to build the factory. Our training turns beneficiaries into entrepreneurs.</span></p>
+    <div class="formations-grid">
+      <div class="form-card reveal">
+        <img class="form-img" src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400&q=70" alt="Formation cuisinière écologique" loading="lazy" onerror="this.style.display='none'">
+        <div class="form-body"><div class="form-badge">🔥 <span class="fr">Green-Tech · Niveau 1</span><span class="en">Green-Tech · Level 1</span></div><h3 class="fr">Technicien Cuisinière Écologique</h3><h3 class="en">Eco-Cooker Technician</h3><p class="fr">Fabrication, installation et maintenance des cuisinières "1 Bois / 3 Foyers". Formation pratique sur site avec certification MB.</p><p class="en">Manufacturing, installation and maintenance of "1 Log / 3 Stoves" cookers. Hands-on field training with MB certification.</p><div class="form-meta"><span>📅 <span class="fr">5 jours</span><span class="en">5 days</span></span><span>👥 <span class="fr">Max 12</span><span class="en">Max 12</span></span><span>📍 Yaoundé</span></div><a href="mailto:courrielmondeetbonheur@gmail.com" class="form-cta fr">S'inscrire</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="form-cta en">Register</a></div>
+      </div>
+      <div class="form-card reveal">
+        <img class="form-img" src="https://images.unsplash.com/photo-1560493676-04071c5f467b?w=400&q=70" alt="Formation biogaz agricole" loading="lazy" onerror="this.style.display='none'">
+        <div class="form-body"><div class="form-badge">♻️ <span class="fr">Biogaz · Niveau 2</span><span class="en">Biogas · Level 2</span></div><h3 class="fr">Opérateur Biométhanisation</h3><h3 class="en">Biogas Plant Operator</h3><p class="fr">Construction, exploitation et entretien des unités de méthanisation. Inclut la gestion du digestat.</p><p class="en">Construction, operation and maintenance of biogas units. Includes digestate management.</p><div class="form-meta"><span>📅 <span class="fr">10 jours</span><span class="en">10 days</span></span><span>👥 <span class="fr">Max 8</span><span class="en">Max 8</span></span><span>📍 Batchenga</span></div><a href="mailto:courrielmondeetbonheur@gmail.com" class="form-cta fr">S'inscrire</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="form-cta en">Register</a></div>
+      </div>
+      <div class="form-card reveal">
+        <img class="form-img" src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&q=70" alt="Agriculture régénérative Afrique" loading="lazy" onerror="this.style.display='none'">
+        <div class="form-body"><div class="form-badge">🌾 <span class="fr">Agriculture · Niveau 1</span><span class="en">Agriculture · Level 1</span></div><h3 class="fr">Agriculture Régénérative &amp; Séchoir</h3><h3 class="en">Regenerative Farming &amp; Dryer</h3><p class="fr">Utilisation du digestat, opération du séchoir Flash et gestion post-récolte pour commercialiser les excédents.</p><p class="en">Using digestate, Flash dryer operation, and post-harvest management to commercialise surplus.</p><div class="form-meta"><span>📅 <span class="fr">7 jours</span><span class="en">7 days</span></span><span>👥 <span class="fr">Max 15</span><span class="en">Max 15</span></span><span>📍 Bondjock</span></div><a href="mailto:courrielmondeetbonheur@gmail.com" class="form-cta fr">S'inscrire</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="form-cta en">Register</a></div>
+      </div>
+      <div class="form-card reveal">
+        <img class="form-img" src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=70" alt="Formation numérique MetaScript" loading="lazy" onerror="this.style.display='none'">
+        <div class="form-body"><div class="form-badge">💻 MetaScript</div><h3 class="fr">Formateur Numérique MetaScript</h3><h3 class="en">MetaScript Digital Trainer</h3><p class="fr">Déploiement et animation du logiciel MetaScript en classe. Formation des enseignants pour les modules STEM et biogaz.</p><p class="en">Deploying and facilitating MetaScript in class. Teacher training for STEM and biogas modules.</p><div class="form-meta"><span>📅 <span class="fr">3 jours</span><span class="en">3 days</span></span><span>👥 <span class="fr">Max 20</span><span class="en">Max 20</span></span><span>📍 <span class="fr">En ligne / terrain</span><span class="en">Online / field</span></span></div><a href="mailto:courrielmondeetbonheur@gmail.com" class="form-cta fr">S'inscrire</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="form-cta en">Register</a></div>
+      </div>
+      <div class="form-card reveal">
+        <img class="form-img" src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&q=70" alt="Leadership féminin entrepreneuriat Afrique" loading="lazy" onerror="this.style.display='none'">
+        <div class="form-body"><div class="form-badge">💼 <span class="fr">Leadership · Femmes</span><span class="en">Leadership · Women</span></div><h3 class="fr">Femmes Entrepreneures Vertes</h3><h3 class="en">Green Women Entrepreneurs</h3><p class="fr">Gestion de coopérative, microcrédit, comptabilité de base et stratégies de vente pour femmes rurales.</p><p class="en">Cooperative management, microcredit, basic accounting and sales strategies for rural women.</p><div class="form-meta"><span>📅 <span class="fr">14 jours</span><span class="en">14 days</span></span><span>👥 <span class="fr">Femmes uniquement</span><span class="en">Women only</span></span></div><a href="mailto:courrielmondeetbonheur@gmail.com" class="form-cta fr">S'inscrire</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="form-cta en">Register</a></div>
+      </div>
+      <div class="form-card reveal" style="border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+        <div class="form-body" style="align-items:center">
+          <div style="font-size:2.5rem;margin-bottom:1rem">🎓</div>
+          <h3 style="color:var(--or)" class="fr">Formation sur mesure</h3><h3 style="color:var(--or)" class="en">Bespoke Training</h3>
+          <p class="fr">Institution, ONG ou entreprise ? Nous concevons un programme adapté à vos besoins spécifiques.</p><p class="en">Institution, NGO or company? We design a programme tailored to your specific needs.</p>
+          <a href="mailto:courrielmondeetbonheur@gmail.com" class="form-cta" style="background:var(--or);margin-top:1rem" class="fr">Nous contacter</a>
+          <a href="mailto:courrielmondeetbonheur@gmail.com" class="form-cta" style="background:var(--or);margin-top:1rem" class="en">Contact us</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bouton Aller plus loin -->
+    <div style="text-align:center;margin-top:2.5rem;display:flex;justify-content:center;gap:1rem;flex-wrap:wrap">
+      <a href="actualites.html" style="display:inline-flex;align-items:center;gap:.6rem;background:var(--vert);color:white;padding:14px 28px;border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;font-family:'DM Sans',sans-serif;transition:all .2s" onmouseover="this.style.background='var(--vert-clair)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--vert)';this.style.transform=''">
+        🎓 <span class="fr">Voir toutes nos formations →</span><span class="en">See all our training →</span>
+      </a>
+      <a href="mailto:courrielmondeetbonheur@gmail.com" style="display:inline-flex;align-items:center;gap:.6rem;background:white;color:var(--vert);padding:14px 28px;border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;font-family:'DM Sans',sans-serif;border:1.5px solid rgba(26,92,58,.2);transition:all .2s" onmouseover="this.style.background='var(--vert-pale)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='white';this.style.transform=''">
+        📋 <span class="fr">Demander une formation sur mesure</span><span class="en">Request a bespoke training</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="sec" id="faq">
+  <div class="sec-inner">
+    <div class="lbl" style="text-align:center">FAQ</div>
+    <h2 class="titre" style="text-align:center"><span class="fr">Vos questions, nos réponses</span><span class="en">Your questions, our answers</span></h2>
+    <div class="faq-wrap">
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt fr">Comment mon don est-il utilisé ?</span><span class="faq-q-txt en">How is my donation used?</span><span class="faq-ico">+</span></button><div class="faq-ans fr">100% des dons affectés au pôle social financent directement les projets terrain : éducation, santé d'urgence et aide aux indigents. Les bénéfices du pôle social business (vente de technologies vertes, formations) sont intégralement réinvestis dans la mission. Rapport d'activité annuel audité disponible sur demande.</div><div class="faq-ans en">100% of social-fund donations go directly to field projects: education, emergency health and vulnerable support. Social business profits (green tech sales, training) are fully reinvested. Audited annual report available on request.</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt fr">Êtes-vous une ONG officiellement reconnue ?</span><span class="faq-q-txt en">Are you an officially recognised NGO?</span><span class="faq-ico">+</span></button><div class="faq-ans fr">Oui. Reconnue au Cameroun par le MINATD (N°00000404/A) depuis 2006, inscrite au répertoire du MINREX et labellisée FORIM en France, garantissant notre expertise et notre transparence de gestion.</div><div class="faq-ans en">Yes. Recognised in Cameroon by MINATD (N°00000404/A) since 2006, registered with MINREX, and FORIM-labelled in France — guaranteeing our expertise and management transparency.</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt fr">Je suis membre de la diaspora. Comment m'impliquer concrètement ?</span><span class="faq-q-txt en">I'm in the diaspora. How can I get concretely involved?</span><span class="faq-ico">+</span></button><div class="faq-ans fr">Plusieurs voies : (1) Parrainage d'un enfant ou d'une femme entrepreneur (30€/mois). (2) Don ponctuel pour un projet spécifique. (3) Partage de compétences : comptabilité, marketing, IT, traduction. (4) Mobilisation de votre réseau pour le Gala de l'Impact (Novembre 2026). Écrivez-nous !</div><div class="faq-ans en">Several paths: (1) Sponsor a child or woman entrepreneur (€30/month). (2) One-off donation for a specific project. (3) Share skills: accounting, marketing, IT, translation. (4) Mobilise your network for the Impact Gala (November 2026). Write to us!</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt fr">Est-ce qu'une coopérative peut acquérir vos équipements ?</span><span class="faq-q-txt en">Can a cooperative acquire your equipment?</span><span class="faq-ico">+</span></button><div class="faq-ans fr">Absolument. Nous proposons un système "Pay-as-you-save" : la coopérative acquiert l'équipement et rembourse progressivement grâce aux économies réalisées. Amortissement en moins de 6 mois. Formation technique garantie.</div><div class="faq-ans en">Absolutely. We offer a "Pay-as-you-save" system: the cooperative acquires equipment and repays progressively from savings generated. ROI in under 6 months. Technical training guaranteed.</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt fr">Comment fonctionne MetaScript pour les écoles ?</span><span class="faq-q-txt en">How does MetaScript work for schools?</span><span class="faq-ico">+</span></button><div class="faq-ans fr">MetaScript tourne sur tablette Android à moins de 50 000 FCFA, sans internet permanent. Nous proposons : licence annuelle par école + formation 3 jours pour enseignants + modules alignés sur les programmes camerounais (Physique, Chimie, SVT). L'enfant simule des expériences, mélange des produits virtuels, code ses propres scripts.</div><div class="faq-ans en">MetaScript runs on Android tablets under 50,000 FCFA, no permanent internet needed. We offer: annual per-school licence + 3-day teacher training + modules aligned to Cameroonian curricula. Children simulate experiments, mix virtual substances, code their own scripts.</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-txt fr">Intervenez-vous hors du Cameroun ?</span><span class="faq-q-txt en">Do you operate outside Cameroon?</span><span class="faq-ico">+</span></button><div class="faq-ans fr">Le Cameroun est notre laboratoire pilote depuis 20 ans. Pour 2026-2030, nous visons une expansion panafricaine dans 7 pays : Rwanda, Gabon, RDC, Tchad, RCA, Nigéria, Congo. Nous procédons par "tache d'huile" avec des partenaires locaux solides — pas de parachutage.</div><div class="faq-ans en">Cameroon has been our pilot lab for 20 years. For 2026–2030, we target pan-African expansion into 7 countries: Rwanda, Gabon, DRC, Chad, CAR, Nigeria, Congo. We grow organically with solid local partners — no parachuting.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PARTENAIRES -->
+<div class="sec sec-bg" id="partenaires">
+  <div class="sec-inner" style="text-align:center">
+    <div class="lbl"><span class="fr">Alliances stratégiques</span><span class="en">Strategic alliances</span></div>
+    <h2 class="titre"><span class="fr">Nous cherchons des alliés, pas des donateurs</span><span class="en">We're looking for allies, not donors</span></h2>
+    <p style="color:var(--texte-doux);max-width:540px;margin:0 auto 2.5rem;font-size:15px;line-height:1.7"><span class="fr">La charité a ses limites. L'investissement d'impact n'en a pas.</span><span class="en">Charity has limits. Impact investment doesn't.</span></p>
+    <div class="part-grid" style="text-align:left">
+      <div class="part-card reveal"><div class="part-type">🏭 <span class="fr">Entreprises · RSE</span><span class="en">Companies · CSR</span></div><h4 class="fr">Compensez votre empreinte carbone avec impact réel</h4><h4 class="en">Offset carbon with real impact</h4><p class="fr">Financez 1 000 cuisinières → Certificat d'Impact Climatique audité + visibilité RSE internationale.</p><p class="en">Fund 1,000 cookers → Audited Climate Impact Certificate + international CSR visibility.</p><a href="mailto:courrielmondeetbonheur@gmail.com" class="part-lien fr">Construire notre alliance</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="part-lien en">Build our alliance</a></div>
+      <div class="part-card reveal"><div class="part-type">🏦 <span class="fr">Banques &amp; Microfinances</span><span class="en">Banks &amp; Microfinance</span></div><h4 class="fr">Des actifs productifs qui sécurisent vos crédits</h4><h4 class="en">Productive assets that secure your loans</h4><p class="fr">Modèle "Pay-as-you-save". Nos équipements génèrent du cash-flow immédiat. Formation technique garantie.</p><p class="en">"Pay-as-you-save" model. Our equipment generates immediate cash flow. Technical training guaranteed.</p><a href="mailto:courrielmondeetbonheur@gmail.com" class="part-lien fr">Voir le modèle</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="part-lien en">See the model</a></div>
+      <div class="part-card reveal"><div class="part-type">🏛️ <span class="fr">Institutions &amp; Diplomaties</span><span class="en">Institutions &amp; Diplomacy</span></div><h4 class="fr">Des résultats ODD mesurables sur le terrain</h4><h4 class="en">Measurable SDG results in the field</h4><p class="fr">Opérateur terrain fiable avec 20 ans de preuves. Transformez vos fonds en indicateurs de réussite mesurables.</p><p class="en">Reliable field operator with 20 years of evidence. Transform funds into measurable success indicators.</p><a href="mailto:courrielmondeetbonheur@gmail.com" class="part-lien fr">Déployer ce bouclier</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="part-lien en">Deploy this shield</a></div>
+    </div>
+    <div style="background:var(--vert-pale);border-radius:var(--radius);padding:2rem;max-width:660px;margin:2.5rem auto 0;text-align:left;border:1px solid rgba(26,92,58,.12)">
+      <div class="lbl" style="margin-bottom:.5rem"><span class="fr">OBJECTIF NOVEMBRE 2026</span><span class="en">NOVEMBER 2026 TARGET</span></div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--vert);margin-bottom:.5rem"><span class="fr">Gala de l'Impact — 500 Millions FCFA</span><span class="en">Impact Gala — 500 Million FCFA</span></div>
+      <p style="font-size:13.5px;color:var(--texte-doux);line-height:1.6"><span class="fr">Fonds de Roulement Rotatif · Modèle Pay-as-you-save · Certification carbone internationale</span><span class="en">Rotating Working Capital Fund · Pay-as-you-save model · International carbon certification</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- CTA FINALE / DON -->
+<div class="cta-sec" id="don">
+  <h2 class="fr">L'Afrique n'a plus besoin de tuteurs.<br>Elle a besoin d'<em>alliés</em>.</h2>
+  <h2 class="en">Africa doesn't need guardians.<br>It needs <em>allies</em>.</h2>
+  <p class="fr">Vous avez les ressources. Nous avons les solutions éprouvées, 20 ans d'expérience terrain et la technologie prête. Il ne manque que vous.</p>
+  <p class="en">You have the resources. We have proven solutions, 20 years on the ground, and technology ready to deploy. All we need is you.</p>
+  <div class="cta-btns">
+    <a href="mailto:courrielmondeetbonheur@gmail.com" class="btn-primary">🚀 <span class="fr">Rejoindre Monde et Bonheur</span><span class="en">Join Monde et Bonheur</span></a>
+    <a href="mailto:courrielmondeetbonheur@gmail.com" class="btn-ghost">📩 <span class="fr">Écrire à la présidente</span><span class="en">Write to the president</span></a>
+  </div>
+  <div class="ps-box"><strong>P.S. —</strong> <span class="fr">Si vous lisez encore ces lignes, quelque chose résonne en vous. Chaque jour qui passe, ce sont des hectares de forêt brûlés et des récoltes perdues. Nos technologies sont <strong>prêtes aujourd'hui</strong>. Le premier partenaire qui agit cette semaine sera cité dans notre rapport annuel 2026 et nos communications internationales.</span><span class="en">If you're still reading, something is resonating. Every day that passes means more forest burned and crops lost. Our technologies are <strong>ready today</strong>. The first partner to act this week will be featured in our 2026 annual report and international communications.</span></div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:white">Monde et Bonheur</div>
+      <p class="fr">De la Résilience Humaine à l'Innovation Climatique. Des solutions technologiques pour l'Afrique de demain.</p>
+      <p class="en">From Human Resilience to Climate Innovation. Technological solutions for tomorrow's Africa.</p>
+      <div class="footer-contact-item">📍 <span class="fr">Yaoundé, Cameroun · BP 17663</span><span class="en">Yaoundé, Cameroon · BP 17663</span></div>
+      <div class="footer-contact-item">📍 Chancelade, France · 24650</div>
+      <div class="footer-contact-item">📞 +237 682 18 03 63</div>
+      <div class="footer-contact-item">📞 +33 6 23 92 21 71</div>
+      <div class="footer-contact-item">✉️ <a href="mailto:courrielmondeetbonheur@gmail.com">courrielmondeetbonheur@gmail.com</a></div>
+    </div>
+    <div class="footer-col">
+      <h5><span class="fr">Technologies</span><span class="en">Technologies</span></h5>
+      <ul>
+        <li><a href="#" onclick="showPage('home');scrollTo('technologies');return false"><span class="fr">Cuisinière 1 Bois / 3 Foyers</span><span class="en">1 Log / 3 Stoves Cooker</span></a></li>
+        <li><a href="#" onclick="showPage('home');scrollTo('technologies');return false"><span class="fr">Séchoir Flash 5 Minutes</span><span class="en">5-Min Flash Dryer</span></a></li>
+        <li><a href="#" onclick="showPage('home');scrollTo('technologies');return false"><span class="fr">Biométhanisation</span><span class="en">Biogas System</span></a></li>
+        <li><a href="#" onclick="showPage('home');scrollTo('technologies');return false">MetaScript</a></li>
+        <li><a href="#" onclick="showPage('home');scrollTo('technologies');return false"><span class="fr">Mini-Ville Autonome</span><span class="en">Autonomous Mini-City</span></a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5><span class="fr">Organisation</span><span class="en">Organisation</span></h5>
+      <ul>
+        <li><a href="#" onclick="showPage('about');return false"><span class="fr">La Présidente</span><span class="en">The President</span></a></li>
+        <li><a href="#" onclick="showPage('home');scrollTo('impact');return false"><span class="fr">Notre Impact</span><span class="en">Our Impact</span></a></li>
+        <li><a href="#" onclick="showPage('home');scrollTo('formations');return false"><span class="fr">Nos Formations</span><span class="en">Training</span></a></li>
+        <li><a href="#" onclick="showPage('actu');return false"><span class="fr">Actualités</span><span class="en">News</span></a></li>
+        <li><a href="#" onclick="showPage('projets');return false"><span class="fr">Projets</span><span class="en">Projects</span></a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5><span class="fr">Rejoindre</span><span class="en">Join us</span></h5>
+      <ul>
+        <li><a href="#" onclick="showPage('home');scrollTo('partenaires');return false"><span class="fr">Entreprises &amp; RSE</span><span class="en">Companies &amp; CSR</span></a></li>
+        <li><a href="#" onclick="showPage('home');scrollTo('rejoindre');return false"><span class="fr">Diaspora</span><span class="en">Diaspora</span></a></li>
+        <li><a href="#" onclick="showPage('home');scrollTo('rejoindre');return false"><span class="fr">Coopératives</span><span class="en">Cooperatives</span></a></li>
+        <li><a href="#" onclick="showPage('home');scrollTo('don');return false"><span class="fr">Faire un don</span><span class="en">Donate</span></a></li>
+        <li><a href="mailto:courrielmondeetbonheur@gmail.com"><span class="fr">Contact</span><span class="en">Contact</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 ONG Monde et Bonheur</span>
+    <div class="footer-legal">
+      <a href="#"><span class="fr">Mentions légales</span><span class="en">Legal</span></a>
+      <a href="#"><span class="fr">Confidentialité</span><span class="en">Privacy</span></a>
+      <a href="#"><span class="fr">Accréditations</span><span class="en">Accreditations</span></a>
+    </div>
+  </div>
+</footer>
+</div><!-- end page-home -->
+
+<!-- ======================================================
+  PAGE : À PROPOS / PITCH PRÉSIDENTE
+====================================================== -->
+<div class="page" 
+</div>
+
+<div class="page" id="page-about">
+  <div class="about-hero">
+    <div class="lbl"><span class="fr">À propos de Monde et Bonheur</span><span class="en">About Monde et Bonheur</span></div>
+    <h1><span class="fr">Une femme. Une mission. Un continent.</span><span class="en">One woman. One mission. One continent.</span></h1>
+    <p class="fr">L'histoire de Monde et Bonheur ne commence pas dans un bureau, mais dans le creuset de l'épreuve. Elle est née de la résilience d'une femme, d'une mère, face aux défis de la vie.</p>
+    <p class="en">Monde et Bonheur's story didn't start in an office — it was forged in the crucible of hardship. Born from the resilience of a woman, a mother, facing life's greatest challenges.</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-inner">
+      <div class="pitch-split">
+        <div class="pitch-photo">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=75" alt="Présidente ONG" style="width:100%;height:480px;object-fit:cover" loading="lazy">
+          <div class="pitch-photo-overlay">
+            <strong>Hermine Ngo Batjom Lapeyronnie</strong>
+            <span class="fr">Présidente Fondatrice, ONG Monde et Bonheur</span>
+            <span class="en">Founding President, ONG Monde et Bonheur</span>
+          </div>
+          <div class="pitch-badge"><strong>20</strong><span class="fr">ANS DE MISSION</span><span class="en">YEARS OF MISSION</span></div>
+        </div>
+
+        <div class="pitch-content">
+          <div class="lbl"><span class="fr">Le pitch de la présidente</span><span class="en">The president's pitch</span></div>
+          <h2><span class="fr">"Transformer la boue en or,<br>et la fumée en lumière"</span><span class="en">"Turning mud into gold,<br>and smoke into light"</span></h2>
+          <p class="fr">Hermine Ngo Batjom n'a pas appris le développement dans les livres. Elle l'a vécu. Mère à 17 ans, technicienne en froid et climatisation, commerçante — chaque épreuve a forgé la logique industrielle qui anime aujourd'hui les innovations de Monde et Bonheur.</p>
+          <p class="en">Hermine Ngo Batjom didn't learn development from books. She lived it. A mother at 17, a refrigeration technician, a trader — every trial forged the industrial logic driving Monde et Bonheur's innovations today.</p>
+          <p class="fr">Pendant dix ans, nous avons fait de l'humanitaire classique. Nous avons soigné, nourri, éduqué. Mais j'ai vite compris qu'on ne développe pas un continent uniquement avec de la charité. On le développe avec de la dignité et de la technologie.</p>
+          <p class="en">For ten years, we did classic humanitarian work — healing, feeding, educating. But I quickly understood you don't develop a continent with charity alone. You develop it with dignity and technology.</p>
+
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-yr">1983–2004</div><div class="tl-txt fr">Mère à 17 ans, coiffeuse, commerçante, technicienne en froid et climatisation — l'Université de la Vie.</div><div class="tl-txt en">Mother at 17, hairdresser, trader, refrigeration technician — the University of Life.</div></div>
+            <div class="tl-item"><div class="tl-yr">2005</div><div class="tl-txt fr">Création de l'association EFEACAM (Espoir aux Femmes, Enfants et Artisans du Cameroun). La mission commence.</div><div class="tl-txt en">Founded EFEACAM association. The mission begins.</div></div>
+            <div class="tl-item"><div class="tl-yr">2008</div><div class="tl-txt fr">Le sacrifice fondateur : enceinte, trahie par son équipe, elle porte seule le "Premier Marché Africain" et perd son enfant, Catherine La Grâce. Monde et Bonheur devient une Mission Sacrée.</div><div class="tl-txt en">The founding sacrifice: pregnant, betrayed by her team, she single-handedly carries the "First African Market" and loses her child, Catherine La Grâce. Monde et Bonheur becomes a Sacred Mission.</div></div>
+            <div class="tl-item"><div class="tl-yr">2010</div><div class="tl-txt fr">Virage technologique : découverte de la biométhanisation. Passage de la charité à l'ingénierie sociale durable.</div><div class="tl-txt en">Technology pivot: discovery of biogas digestion. Transition from charity to sustainable social engineering.</div></div>
+            <div class="tl-item"><div class="tl-yr">2016–2024</div><div class="tl-txt fr">Ferme avicole de Nkoltima, projets hospitaliers, gestion de déchets, centres médicaux au Cameroun.</div><div class="tl-txt en">Nkoltima poultry farm, hospital projects, waste management, medical centres in Cameroon.</div></div>
+            <div class="tl-item"><div class="tl-yr">2026</div><div class="tl-txt fr">20 ans : déploiement industriel du Pôle Green-Tech. Expansion panafricaine. Le temps de l'audace.</div><div class="tl-txt en">20 years: industrial Green-Tech roll-out. Pan-African expansion. The age of boldness.</div></div>
+          </div>
+
+          <div class="values-grid">
+            <div class="val-card"><h5 class="fr">🏆 Intégrité absolue</h5><h5 class="en">🏆 Absolute integrity</h5><p class="fr">Le respect de la parole donnée est notre ADN. Chaque promesse faite est une promesse tenue.</p><p class="en">Keeping our word is our DNA. Every promise made is a promise kept.</p></div>
+            <div class="val-card"><h5 class="fr">⚙️ Innovation frugale</h5><h5 class="en">⚙️ Frugal innovation</h5><p class="fr">Des solutions technologiques simples, robustes et abordables pour les réalités africaines.</p><p class="en">Simple, robust, affordable tech solutions for African realities.</p></div>
+            <div class="val-card"><h5 class="fr">👩 Leadership féminin</h5><h5 class="en">👩 Women's leadership</h5><p class="fr">Les femmes sont au cœur de chaque solution. Elles sont les premières actrices du changement.</p><p class="en">Women are at the heart of every solution — the first agents of change.</p></div>
+            <div class="val-card"><h5 class="fr">🌱 Impact durable</h5><h5 class="en">🌱 Lasting impact</h5><p class="fr">Nous construisons des systèmes autonomes, pas des dépendances. L'autonomie est notre indicateur de succès.</p><p class="en">We build autonomous systems, not dependencies. Autonomy is our success indicator.</p></div>
+          </div>
+
+          <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap">
+            <a href="mailto:courrielmondeetbonheur@gmail.com" class="btn-primary">📩 <span class="fr">Contacter la présidente</span><span class="en">Contact the president</span></a>
+            <button class="btn-primary" style="background:var(--vert)" onclick="showPage('home');scrollTo('don')">❤️ <span class="fr">Soutenir la mission</span><span class="en">Support the mission</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer identique -->
+  <footer>
+    <div style="max-width:1300px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <span style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:white">Monde et Bonheur</span>
+      <span>✉️ <a href="mailto:courrielmondeetbonheur@gmail.com">courrielmondeetbonheur@gmail.com</a> · 📞 +237 682 18 03 63</span>
+    </div>
+    <div class="footer-bottom" style="max-width:1300px;margin:1.5rem auto 0">
+      <span>© 2026 ONG Monde et Bonheur</span>
+      <button style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:12px" onclick="showPage('home')"><span class="fr">← Retour à l'accueil</span><span class="en">← Back to home</span></button>
+    </div>
+  </footer>
+</div>
+
+<!-- ======================================================
+  PAGE : PROJETS
+====================================================== -->
+<div class="page" 
+</div>
+
+<div class="page" id="page-projets">
+  <div class="projets-hero">
+    <div class="lbl"><span class="fr">Nos projets sur le terrain</span><span class="en">Our field projects</span></div>
+    <h1 class="fr">Projets &amp; Réalisations</h1><h1 class="en">Projects &amp; Achievements</h1>
+    <p class="fr">Depuis 2006, des projets concrets, mesurables, photographiés. Chaque réalisation est une preuve que l'innovation peut changer des vies en Afrique rurale.</p>
+    <p class="en">Since 2006, concrete, measurable, photographed projects. Every achievement proves that innovation can change lives in rural Africa.</p>
+    <div class="projets-filters">
+      <button class="filter-btn active" onclick="filterProjects('all',this)"><span class="fr">Tous</span><span class="en">All</span></button>
+      <button class="filter-btn" onclick="filterProjects('energie',this)"><span class="fr">Énergie</span><span class="en">Energy</span></button>
+      <button class="filter-btn" onclick="filterProjects('education',this)"><span class="fr">Éducation</span><span class="en">Education</span></button>
+      <button class="filter-btn" onclick="filterProjects('agriculture',this)"><span class="fr">Agriculture</span><span class="en">Agriculture</span></button>
+      <button class="filter-btn" onclick="filterProjects('sante',this)"><span class="fr">Santé</span><span class="en">Health</span></button>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-inner">
+      <div class="projets-grid" id="projetsGrid">
+
+        <div class="projet-card" data-cat="education">
+          <img class="projet-img" src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=500&q=70" alt="École Baka Lomié" loading="lazy">
+          <div class="projet-body">
+            <div class="projet-tags"><span class="projet-tag pt-vert fr">Éducation</span><span class="projet-tag pt-vert en">Education</span><span class="statut-badge statut-actif fr">En cours</span><span class="statut-badge statut-actif en">Active</span></div>
+            <h3 class="fr">École Primaire des Pygmées Baka</h3><h3 class="en">Baka Pygmy Primary School</h3>
+            <p class="fr">Construction d'une école primaire en dur pour les enfants Baka marginalisés de Lomié/Abakoum. De 40 à 100+ élèves réguliers scolarisés.</p><p class="en">Construction of a solid primary school for marginalised Baka children in Lomié/Abakoum. From 40 to 100+ pupils regularly enrolled.</p>
+            <div class="projet-meta"><span class="projet-zone">📍 Lomié, Région Est</span><a href="mailto:courrielmondeetbonheur@gmail.com" class="projet-link fr">En savoir plus →</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="projet-link en">Learn more →</a></div>
+          </div>
+        </div>
+
+        <div class="projet-card" data-cat="agriculture">
+          <img class="projet-img" src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=500&q=70" alt="CUMA coopérative Batchenga" loading="lazy">
+          <div class="projet-body">
+            <div class="projet-tags"><span class="projet-tag pt-vert fr">Agriculture</span><span class="projet-tag pt-vert en">Agriculture</span><span class="statut-badge statut-actif fr">En cours</span><span class="statut-badge statut-actif en">Active</span></div>
+            <h3 class="fr">CUMA — Coopérative Agricole Féminine</h3><h3 class="en">CUMA — Women's Agricultural Cooperative</h3>
+            <p class="fr">Structuration des productrices isolées en coopérative mécanisée. +40% de surfaces cultivées, reboisement en Teck, leadership féminin.</p><p class="en">Organising isolated producers into a mechanised cooperative. +40% cultivated land, teak reforestation, women's leadership.</p>
+            <div class="projet-meta"><span class="projet-zone">📍 Batchenga, Centre</span><a href="mailto:courrielmondeetbonheur@gmail.com" class="projet-link fr">En savoir plus →</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="projet-link en">Learn more →</a></div>
+          </div>
+        </div>
+
+        <div class="projet-card" data-cat="energie">
+          <img class="projet-img" src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=500&q=70" alt="Méthaniseur pilote Bondjock" loading="lazy">
+          <div class="projet-body">
+            <div class="projet-tags"><span class="projet-tag pt-or fr">Énergie</span><span class="projet-tag pt-or en">Energy</span><span class="statut-badge statut-lancement fr">Lancement 2026</span><span class="statut-badge statut-lancement en">Launch 2026</span></div>
+            <h3 class="fr">Méthaniseur Pilote — Lycée de Bondjock</h3><h3 class="en">Pilot Biogas Unit — Bondjock High School</h3>
+            <p class="fr">Premier lycée rural autonome en énergie au Cameroun. Production de biogaz et électricité à partir des déchets organiques du lycée et des ménages environnants.</p><p class="en">First energy-autonomous rural high school in Cameroon. Biogas and electricity from school and household organic waste.</p>
+            <div class="projet-meta"><span class="projet-zone">📍 Bondjock, Nyong-et-Kéllé</span><a href="mailto:courrielmondeetbonheur@gmail.com" class="projet-link fr">Rejoindre →</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="projet-link en">Join →</a></div>
+          </div>
+        </div>
+
+        <div class="projet-card" data-cat="sante">
+          <img class="projet-img" src="https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=500&q=70" alt="Ambulance médicalisée Sapeurs-Pompiers" loading="lazy">
+          <div class="projet-body">
+            <div class="projet-tags"><span class="projet-tag pt-bleu fr">Santé</span><span class="projet-tag pt-bleu en">Health</span><span class="statut-badge statut-termine fr">Réalisé</span><span class="statut-badge statut-termine en">Completed</span></div>
+            <h3 class="fr">Ambulance Médicalisée — Sapeurs-Pompiers</h3><h3 class="en">Medicalised Ambulance — Fire Brigade</h3>
+            <p class="fr">Don stratégique d'une ambulance médicalisée au Corps National des Sapeurs-Pompiers. Réduction du temps d'intervention et des décès sur accidents.</p><p class="en">Strategic donation of a medicalised ambulance to the National Fire Brigade. Reduced response times and accident fatalities.</p>
+            <div class="projet-meta"><span class="projet-zone">📍 Yaoundé, Cameroun</span><a href="mailto:courrielmondeetbonheur@gmail.com" class="projet-link fr">Voir le rapport →</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="projet-link en">View report →</a></div>
+          </div>
+        </div>
+
+        <div class="projet-card" data-cat="sante">
+          <img class="projet-img" src="https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=500&q=70" alt="Centre médical ONG MB Cameroun" loading="lazy">
+          <div class="projet-body">
+            <div class="projet-tags"><span class="projet-tag pt-bleu fr">Santé</span><span class="projet-tag pt-bleu en">Health</span><span class="statut-badge statut-actif fr">En cours</span><span class="statut-badge statut-actif en">Active</span></div>
+            <h3 class="fr">Centres Médicaux — Maladies Chroniques</h3><h3 class="en">Medical Centres — Chronic Diseases</h3>
+            <p class="fr">Création de centres médicaux de proximité pour la prise en charge des maladies chroniques dans les zones rurales enclavées du Cameroun.</p><p class="en">Creating community medical centres for chronic disease management in remote rural areas of Cameroon.</p>
+            <div class="projet-meta"><span class="projet-zone">📍 Cameroun</span><a href="mailto:courrielmondeetbonheur@gmail.com" class="projet-link fr">En savoir plus →</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="projet-link en">Learn more →</a></div>
+          </div>
+        </div>
+
+        <div class="projet-card" data-cat="energie">
+          <img class="projet-img" src="https://images.unsplash.com/photo-1533062618053-d51e617307ec?w=500&q=70" alt="Cuisinière écologique production Cameroun" loading="lazy">
+          <div class="projet-body">
+            <div class="projet-tags"><span class="projet-tag pt-or fr">Énergie</span><span class="projet-tag pt-or en">Energy</span><span class="statut-badge statut-lancement fr">Industrialisation 2026</span><span class="statut-badge statut-lancement en">2026 Scale-up</span></div>
+            <h3 class="fr">Usine Verte — Cuisinières Écologiques en Série</h3><h3 class="en">Green Factory — Eco-Cooker Mass Production</h3>
+            <p class="fr">Création d'une unité de production semi-industrielle au Cameroun. Objectif : 50 emplois directs, -30% de coût unitaire, accessibilité maximale.</p><p class="en">Creating a semi-industrial production unit in Cameroon. Target: 50 direct jobs, -30% unit cost, maximum accessibility.</p>
+            <div class="projet-meta"><span class="projet-zone">📍 Cameroun</span><a href="mailto:courrielmondeetbonheur@gmail.com" class="projet-link fr">Investir →</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="projet-link en">Invest →</a></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div style="max-width:1300px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <span style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:white">Monde et Bonheur</span>
+      <span>✉️ <a href="mailto:courrielmondeetbonheur@gmail.com">courrielmondeetbonheur@gmail.com</a></span>
+    </div>
+    <div class="footer-bottom" style="max-width:1300px;margin:1.5rem auto 0">
+      <span>© 2026 ONG Monde et Bonheur</span>
+      <button style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:12px" onclick="showPage('home')"><span class="fr">← Retour à l'accueil</span><span class="en">← Back to home</span></button>
+    </div>
+  </footer>
+</div>
+
+<!-- ======================================================
+  PAGE : ACTUALITÉS & ÉVÉNEMENTS
+====================================================== -->
+<div class="page" 
+</div>
+
+<div class="page" id="page-actu">
+  <div class="actu-hero">
+    <div class="lbl"><span class="fr">Restez informé·e</span><span class="en">Stay informed</span></div>
+    <h1 class="fr">Actualités &amp; Événements</h1><h1 class="en">News &amp; Events</h1>
+    <p class="fr">Les dernières nouvelles du terrain, nos innovations technologiques et les événements à ne pas manquer en 2026.</p>
+    <p class="en">The latest field news, our technological innovations and the events not to miss in 2026.</p>
+  </div>
+
+  <div class="actu-split">
+    <div class="actu-main">
+      <div class="actu-section-title fr">📰 Dernières actualités</div>
+      <div class="actu-section-title en">📰 Latest news</div>
+      <div class="actu-cards">
+
+        <div class="actu-card">
+          <img class="actu-img" src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=300&q=70" alt="Cuisinière écologique" loading="lazy" onerror="this.style.display='none'">
+          <div class="actu-body">
+            <div class="actu-meta"><span class="actu-date">Mars 2026</span><span class="actu-cat cat-tech fr">Technologie</span><span class="actu-cat cat-tech en">Technology</span></div>
+            <h3 class="fr">La cuisinière "1 Bois / 3 Foyers" certifiée par le MINEE</h3><h3 class="en">"1 Log / 3 Stoves" cooker certified by MINEE</h3>
+            <p class="fr">Le Ministère de l'Énergie et de l'Eau du Cameroun a officiellement certifié notre cuisinière thermodynamique comme solution d'efficacité énergétique nationale. Un pas décisif vers l'industrialisation.</p><p class="en">Cameroon's Ministry of Energy and Water officially certified our thermodynamic cooker as a national energy efficiency solution. A decisive step towards industrialisation.</p>
+            <a href="mailto:courrielmondeetbonheur@gmail.com" class="actu-lire fr">Lire la suite →</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="actu-lire en">Read more →</a>
+          </div>
+        </div>
+
+        <div class="actu-card">
+          <img class="actu-img" src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=300&q=70" alt="École Baka" loading="lazy" onerror="this.style.display='none'">
+          <div class="actu-body">
+            <div class="actu-meta"><span class="actu-date">Fév. 2026</span><span class="actu-cat cat-terrain fr">Terrain</span><span class="actu-cat cat-terrain en">Field</span></div>
+            <h3 class="fr">100+ élèves Baka : une année scolaire record à Lomié</h3><h3 class="en">100+ Baka pupils: a record school year in Lomié</h3>
+            <p class="fr">Pour la première fois depuis la construction de l'école, les effectifs ont dépassé 100 élèves réguliers. Une victoire humaine immense pour un peuple longtemps marginalisé.</p><p class="en">For the first time since the school was built, enrolment exceeded 100 regular pupils. A huge human victory for a people long marginalised.</p>
+            <a href="mailto:courrielmondeetbonheur@gmail.com" class="actu-lire fr">Lire la suite →</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="actu-lire en">Read more →</a>
+          </div>
+        </div>
+
+        <div class="actu-card">
+          <img class="actu-img" src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=300&q=70" alt="Biogaz Cameroun" loading="lazy" onerror="this.style.display='none'">
+          <div class="actu-body">
+            <div class="actu-meta"><span class="actu-date">Jan. 2026</span><span class="actu-cat cat-actu fr">Partenariat</span><span class="actu-cat cat-actu en">Partnership</span></div>
+            <h3 class="fr">Monde et Bonheur signe un accord de R&amp;D avec l'Université de Yaoundé I</h3><h3 class="en">Monde et Bonheur signs R&amp;D agreement with University of Yaoundé I</h3>
+            <p class="fr">Un partenariat historique pour co-développer les prochaines générations de digesteurs adaptés aux réalités camerounaises et former les ingénieurs verts de demain.</p><p class="en">A historic partnership to co-develop next-generation digesters adapted to Cameroonian realities and train tomorrow's green engineers.</p>
+            <a href="mailto:courrielmondeetbonheur@gmail.com" class="actu-lire fr">Lire la suite →</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="actu-lire en">Read more →</a>
+          </div>
+        </div>
+
+        <div class="actu-card">
+          <img class="actu-img" src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=300&q=70" alt="MetaScript formation" loading="lazy" onerror="this.style.display='none'">
+          <div class="actu-body">
+            <div class="actu-meta"><span class="actu-date">Déc. 2025</span><span class="actu-cat cat-tech fr">Technologie</span><span class="actu-cat cat-tech en">Technology</span></div>
+            <h3 class="fr">MetaScript déployé dans 5 lycées pilotes : les premiers résultats sont bluffants</h3><h3 class="en">MetaScript deployed in 5 pilot schools: first results are stunning</h3>
+            <p class="fr">Après un semestre d'utilisation dans 5 lycées du Centre et du Sud, les notes en Physique-Chimie ont progressé en moyenne de 28%. Les élèves qualifient le logiciel de "jeu qui apprend vraiment".</p><p class="en">After one semester in 5 Centre and South region schools, Physics-Chemistry grades improved by an average of 28%. Students call the software "a game that actually teaches".</p>
+            <a href="mailto:courrielmondeetbonheur@gmail.com" class="actu-lire fr">Lire la suite →</a><a href="mailto:courrielmondeetbonheur@gmail.com" class="actu-lire en">Read more →</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="actu-aside">
+      <div>
+        <div class="actu-section-title fr">📅 Événements à venir</div>
+        <div class="actu-section-title en">📅 Upcoming events</div>
+        <div class="evt-list">
+          <div class="evt-item">
+            <div class="evt-date-box"><span class="evt-day">15</span><span class="evt-mon fr">NOV</span><span class="evt-mon en">NOV</span></div>
+            <div class="evt-info">
+              <h4 class="fr">Gala de l'Impact 2026</h4><h4 class="en">Impact Gala 2026</h4>
+              <p class="fr">Yaoundé · Levée de fonds · 500 MFCFA</p><p class="en">Yaoundé · Fundraising · 500 MFCFA</p>
+            </div>
+          </div>
+          <div class="evt-item evt-or">
+            <div class="evt-date-box"><span class="evt-day">22</span><span class="evt-mon fr">JUN</span><span class="evt-mon en">JUN</span></div>
+            <div class="evt-info">
+              <h4 class="fr">Forum Diaspora &amp; Développement</h4><h4 class="en">Diaspora &amp; Development Forum</h4>
+              <p class="fr">Paris · FORIM · Présentation MB</p><p class="en">Paris · FORIM · MB Presentation</p>
+            </div>
+          </div>
+          <div class="evt-item">
+            <div class="evt-date-box"><span class="evt-day">08</span><span class="evt-mon fr">MAI</span><span class="evt-mon en">MAY</span></div>
+            <div class="evt-info">
+              <h4 class="fr">Formation Biogaz — Session 3</h4><h4 class="en">Biogas Training — Session 3</h4>
+              <p class="fr">Batchenga · 10 jours · 8 participants max</p><p class="en">Batchenga · 10 days · 8 participants max</p>
+            </div>
+          </div>
+          <div class="evt-item evt-or">
+            <div class="evt-date-box"><span class="evt-day">12</span><span class="evt-mon fr">AVR</span><span class="evt-mon en">APR</span></div>
+            <div class="evt-info">
+              <h4 class="fr">Journée Mondiale de la Terre — Action MB</h4><h4 class="en">Earth Day — MB Action</h4>
+              <p class="fr">Cameroun · Plantation d'arbres · Portes ouvertes</p><p class="en">Cameroon · Tree planting · Open day</p>
+            </div>
+          </div>
+          <div class="evt-item">
+            <div class="evt-date-box"><span class="evt-day">28</span><span class="evt-mon fr">MAR</span><span class="evt-mon en">MAR</span></div>
+            <div class="evt-info">
+              <h4 class="fr">20 ans de Monde et Bonheur — Cérémonie</h4><h4 class="en">20 Years of Monde et Bonheur — Ceremony</h4>
+              <p class="fr">Yaoundé · Siège MB · Sur invitation</p><p class="en">Yaoundé · MB HQ · By invitation</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="newsletter-box">
+        <h4 class="fr">📬 Restez informé·e</h4><h4 class="en">📬 Stay informed</h4>
+        <p class="fr">Recevez nos actualités, rapports d'impact et invitations aux événements directement dans votre boîte mail.</p>
+        <p class="en">Receive our news, impact reports and event invitations directly in your inbox.</p>
+        <div class="nl-form">
+          <input type="email" placeholder="votre@email.com" aria-label="Email">
+          <button type="button" onclick="alert('Merci ! Vous recevrez bientôt nos actualités.')"><span class="fr">S'inscrire à la newsletter</span><span class="en">Subscribe to newsletter</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:60px"></div>
+
+  <footer>
+    <div style="max-width:1300px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <span style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:white">Monde et Bonheur</span>
+      <span>✉️ <a href="mailto:courrielmondeetbonheur@gmail.com">courrielmondeetbonheur@gmail.com</a></span>
+    </div>
+    <div class="footer-bottom" style="max-width:1300px;margin:1.5rem auto 0">
+      <span>© 2026 ONG Monde et Bonheur</span>
+      <button style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:12px" onclick="showPage('home')"><span class="fr">← Retour à l'accueil</span><span class="en">← Back to home</span></button>
+    </div>
+  </footer>
+</div>
+
+<!-- ======================================================
+  SCRIPTS
+====================================================== -->
+
+</div>
+
+<div class="page" id="page-equipe">
+<section class="equipe-hero" style="padding:60px 8% 50px;background:linear-gradient(160deg,#0d3320,#1a5c3a);text-align:center">
+  <div class="lbl" style="color:#f5d087"><span class="fr">NOTRE ÉQUIPE · LES HUMAINS DERRIÈRE L'IMPACT</span><span class="en">OUR TEAM · THE HUMANS BEHIND THE IMPACT</span></div>
+  <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);color:white;margin-bottom:1rem">
+    <span class="fr">Des femmes et des hommes<br>portés par une <em style="color:#f5d087">mission sacrée</em></span>
+    <span class="en">Women and men driven<br>by a <em style="color:#f5d087">sacred mission</em></span>
+  </h1>
+  <p class="fr" style="color:rgba(255,255,255,.75);max-width:600px;margin:0 auto;line-height:1.8;font-size:15px">Passez votre curseur sur chaque portrait pour découvrir leur histoire. Chaque membre porte la mission de l'ONG comme un serment personnel.</p>
+  <p class="en" style="color:rgba(255,255,255,.75);max-width:600px;margin:0 auto;line-height:1.8;font-size:15px">Hover over each portrait to discover their story. Every member carries the NGO's mission as a personal pledge.</p>
+</section>
+
+<div class="sec" style="background:white">
+<div class="sec-inner">
+  <div style="text-align:center;margin-bottom:2.5rem">
+    <div class="lbl"><span class="fr">PRÉSIDENTE FONDATRICE</span><span class="en">FOUNDING PRESIDENT</span></div>
+    <h2 class="titre"><span class="fr">Hermine Ngo Batjom Lapeyronnie</span><span class="en">Hermine Ngo Batjom Lapeyronnie</span></h2>
+  </div>
+  <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:280px 1fr;gap:3rem;align-items:center">
+    <div style="background:linear-gradient(160deg,#0d3320,#1a5c3a);border-radius:16px;overflow:hidden;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center">
+      <div style="text-align:center;color:white;padding:2rem">
+        <div style="width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;margin:0 auto 1rem">H</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:.3rem">Hermine Ngo Batjom<br>Lapeyronnie</div>
+        <div style="font-size:11px;color:#f5d087;font-family:'Space Mono',monospace;letter-spacing:.05em">PRÉSIDENTE FONDATRICE</div>
+      </div>
+    </div>
+    <div>
+      <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-style:italic;color:#1a5c3a;line-height:1.7;margin-bottom:1.2rem">"Transformer la boue en or, et la fumée en lumière. On ne développe pas un continent avec de la charité — on le développe avec de la dignité et de la technologie."</div>
+      <p class="fr" style="font-size:14px;color:#4a4a44;line-height:1.8;margin-bottom:1rem">Mère à 17 ans, technicienne en froid et climatisation, fondatrice de MB en 2005, Hermine Ngo Batjom a forgé l'ONG dans l'épreuve. Son sacrifice de 2008 — perdre son enfant Catherine La Grâce pour honorer un engagement — a fait de Monde et Bonheur une Mission Sacrée, pas une simple association.</p>
+      <p class="en" style="font-size:14px;color:#4a4a44;line-height:1.8;margin-bottom:1rem">A mother at 17, refrigeration technician, founder of MB in 2005, Hermine Ngo Batjom forged the NGO through hardship. Her 2008 sacrifice — losing her child Catherine La Grâce to honour a commitment — turned Monde et Bonheur from an association into a Sacred Mission.</p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <span style="background:#e8f5ee;color:#1a5c3a;padding:4px 12px;border-radius:10px;font-size:12px;font-weight:600">🔧 Thermodynamique</span>
+        <span style="background:#e8f5ee;color:#1a5c3a;padding:4px 12px;border-radius:10px;font-size:12px;font-weight:600">🌿 Green-Tech</span>
+        <span style="background:#e8f5ee;color:#1a5c3a;padding:4px 12px;border-radius:10px;font-size:12px;font-weight:600">👩 Leadership féminin</span>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:2.5rem">
+    <a href="equipe.html" style="display:inline-flex;align-items:center;gap:.6rem;background:#1a5c3a;color:white;padding:13px 28px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;transition:all .2s" onmouseover="this.style.background='#2d8a58'" onmouseout="this.style.background='#1a5c3a'">
+      👥 <span class="fr">Voir toute l'équipe →</span><span class="en">Meet the full team →</span>
+    </a>
+  </div>
+</div>
+</div>
+
+</div>
+
+<script>
+/* ---- SPA Navigation ---- */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + id);
+  if (target) {
+    target.classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+  // Update active nav link
+  document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
+}
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+
+/* ---- Mobile Menu ---- */
+function toggleMobile() {
+  const m = document.getElementById('mobileMenu');
+  const h = document.getElementById('hamburger');
+  m.classList.toggle('open');
+  h.classList.toggle('open');
+  document.body.style.overflow = m.classList.contains('open') ? 'hidden' : '';
+}
+function closeMobile() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ---- Langue ---- */
+function setLang(l) {
+  document.documentElement.setAttribute('data-lang', l);
+  document.documentElement.setAttribute('lang', l);
+  document.getElementById('btnFR').classList.toggle('active', l === 'fr');
+  document.getElementById('btnEN').classList.toggle('active', l === 'en');
+  // update <title>
+  document.title = l === 'fr'
+    ? 'ONG Monde et Bonheur — De la Résilience à l\'Innovation Climatique'
+    : 'ONG Monde et Bonheur — From Resilience to Climate Innovation';
+}
+
+/* ---- FAQ ---- */
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const open = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!open) item.classList.add('open');
+}
+
+/* ---- Piliers Modal ---- */
+const PILIERS = [
+  {tag:"PILIER 01 · ÉNERGIE",title_fr:"Énergie & Climat — Le Moteur",title_en:"Energy & Climate — The Engine",
+   desc_fr:"L'absence d'énergie fiable paralyse le développement rural. La cuisson au bois tue silencieusement.",
+   desc_en:"Lack of reliable energy paralyses rural development. Wood-fire cooking kills silently.",
+   s1:"90%",l1_fr:"Réduction biomasse",l1_en:"Biomass reduction",
+   s2:"5T",l2_fr:"Bois sauvé/cuisinière/an",l2_en:"Wood saved/cooker/yr",
+   detail_fr:"Notre cuisinière céramique à tirage forcé maximise la pyrolyse. Le biogaz communautaire alimente éclairage et cuisson propre.",
+   detail_en:"Our forced-draught ceramic cooker maximises pyrolysis. Community biogas supplies clean lighting and cooking.",
+   lien:"#technologies"},
+  {tag:"PILIER 02 · EAU",title_fr:"Eau & Assainissement",title_en:"Water & Sanitation",
+   desc_fr:"L'eau contaminée cause choléra, typhoïde et diarrhées — première cause de mortalité infantile.",
+   desc_en:"Contaminated water causes cholera, typhoid and diarrhoea — the leading cause of infant mortality.",
+   s1:"0",l1_fr:"Pathogènes après digesteur",l1_en:"Pathogens post-digester",
+   s2:"30%",l2_fr:"Maladies hydriques évitées",l2_en:"Waterborne diseases prevented",
+   detail_fr:"L'énergie biogaz pompe l'eau des nappes phréatiques. Nos digesteurs éliminent les pathogènes avant contamination des sols.",
+   detail_en:"Biogas energy pumps groundwater. Our digesters eliminate pathogens before soil contamination.",
+   lien:"#technologies"},
+  {tag:"PILIER 03 · ENVIRONNEMENT",title_fr:"Environnement",title_en:"Environment",
+   desc_fr:"Le Bassin du Congo perd des milliers d'hectares chaque année à cause du bois de chauffe.",
+   desc_en:"The Congo Basin loses thousands of hectares each year to firewood cutting.",
+   s1:"0,5ha",l1_fr:"Forêt préservée/cuisinière/10ans",l1_en:"Forest saved/cooker/10yrs",
+   s2:"50%",l2_fr:"Engrais chimiques remplacés",l2_en:"Chemical fertilisers replaced",
+   detail_fr:"Le digestat est un fertilisant liquide riche en azote et phosphore. Moins de bois brûlé = régénération naturelle du couvert forestier.",
+   detail_en:"Digestate is a nitrogen- and phosphorus-rich liquid fertiliser. Less burning = natural forest cover regeneration.",
+   lien:"#technologies"},
+  {tag:"PILIER 04 · ÉDUCATION",title_fr:"Éducation",title_en:"Education",
+   desc_fr:"Les enfants apprennent la chimie par cœur, sans jamais toucher une éprouvette. L'Afrique perd une génération d'ingénieurs.",
+   desc_en:"Children memorise chemistry without ever touching a test tube. Africa loses a generation of engineers.",
+   s1:"40→100+",l1_fr:"Élèves Baka scolarisés",l1_en:"Baka pupils enrolled",
+   s2:"28%",l2_fr:"Progression notes Physique-Chimie",l2_en:"Physics-Chemistry grade improvement",
+   detail_fr:"Électricité pour les classes le soir. MetaScript : lab virtuel sur tablette à 50 000 FCFA, sans internet. +28% en notes après un semestre.",
+   detail_en:"Electricity for evening classes. MetaScript: virtual lab on 50,000 FCFA tablet, no internet. +28% grades after one semester.",
+   lien:"#technologies"},
+  {tag:"PILIER 05 · ÉCONOMIE",title_fr:"Économie",title_en:"Economy",
+   desc_fr:"La corvée de bois absorbe 3h/jour pour des millions de femmes africaines — du temps volé à toute activité économique.",
+   desc_en:"Firewood collection consumes 3 hours daily for millions of African women — time stolen from any economic activity.",
+   s1:"3h",l1_fr:"Gagnées/jour/femme",l1_en:"Gained/day/woman",
+   s2:"50",l2_fr:"Emplois directs créés (2026)",l2_en:"Direct jobs created (2026)",
+   detail_fr:"Libérées de la corvée, les femmes créent des activités. Notre usine verte créera 50 emplois directs et 200 indirects dès 2026.",
+   detail_en:"Freed from collection, women create businesses. Our green factory will create 50 direct and 200 indirect jobs from 2026.",
+   lien:"#formations"},
+  {tag:"PILIER 06 · SANTÉ",title_fr:"Santé",title_en:"Health",
+   desc_fr:"La fumée des cuisines est équivalente à fumer 2 paquets/jour. Première cause de maladies respiratoires chroniques rurales.",
+   desc_en:"Cooking smoke is equivalent to smoking 2 packs a day. Leading cause of chronic respiratory illness in rural areas.",
+   s1:"600K",l1_fr:"Morts/an (fumée Afrique)",l1_en:"Deaths/yr (smoke Africa)",
+   s2:"0",l2_fr:"Fumée visible (cuisinière MB)",l2_en:"Visible smoke (MB cooker)",
+   detail_fr:"Combustion quasi-complète = zéro fumée. Ambulance offerte aux Sapeurs-Pompiers. Brigades médicales mobiles dans les zones enclavées.",
+   detail_en:"Near-complete combustion = zero smoke. Ambulance donated to Fire Brigade. Mobile medical brigades in remote areas.",
+   lien:"#impact"},
+  {tag:"PILIER 07 · AGRICULTURE",title_fr:"Agriculture",title_en:"Agriculture",
+   desc_fr:"Le dérèglement climatique rend les saisons imprévisibles. 40% des récoltes séchées au soleil sont perdues.",
+   desc_en:"Climate disruption makes seasons unpredictable. 40% of sun-dried harvests are lost.",
+   s1:"40%",l1_fr:"Pertes post-récolte éliminées",l1_en:"Post-harvest losses eliminated",
+   s2:"+50%",l2_fr:"Rendement (digestat)",l2_en:"Yield (digestate)",
+   detail_fr:"Séchoir Flash 5 min : indépendance totale de la météo. Produit vendu 30-50% plus cher. Digestat → +30 à 50% de rendement agricole.",
+   detail_en:"5-min Flash Dryer: total weather independence. Product sells 30-50% higher. Digestate → +30 to 50% crop yield.",
+   lien:"#technologies"},
+  {tag:"PILIER 08 · REVALORISATION",title_fr:"Revalorisation — Le Cercle Vertueux",title_en:"Revalorisation — The Virtuous Circle",
+   desc_fr:"La Revalorisation est le lien invisible qui transforme 7 activités séparées en un organisme vivant et auto-entretenu.",
+   desc_en:"Revalorisation is the invisible link that transforms 7 separate activities into one living, self-sustaining organism.",
+   s1:"0%",l1_fr:"Déchet non valorisé",l1_en:"Waste not reused",
+   s2:"∞",l2_fr:"Valeur du cercle",l2_en:"Circle value",
+   detail_fr:"Déchets → Biogaz (énergie) → Eau (pompage) → Agriculture (digestat + séchoir) → Revenus → Santé & Éducation → Compétences → Déchets valorisés. Rien ne se perd.",
+   detail_en:"Waste → Biogas (energy) → W
+]; // fin PILIERS
+
+/* ── Render piliers ── */
+function renderPiliers(){
+  const grid = document.getElementById('piliers-grid');
+  if(!grid) return;
+  const l = document.documentElement.getAttribute('data-lang') || 'fr';
+  grid.innerHTML = PILIERS.map((p,i) => `
+    <div class="pilier-card" onclick="openPilier(${i})">
+      <div class="pilier-tag">${p.tag}</div>
+      <h3>${l==='fr'?p.title_fr:p.title_en}</h3>
+      <p>${l==='fr'?p.desc_fr:p.desc_en}</p>
+      <div class="pilier-stats">
+        <div class="pilier-stat"><span class="stat-num">${p.s1}</span><span class="stat-lbl">${l==='fr'?p.l1_fr:p.l1_en}</span></div>
+        <div class="pilier-stat"><span class="stat-num">${p.s2}</span><span class="stat-lbl">${l==='fr'?p.l2_fr:p.l2_en}</span></div>
+      </div>
+    </div>`).join('');
+}
+
+function openPilier(i){
+  const p = PILIERS[i];
+  const l = document.documentElement.getAttribute('data-lang') || 'fr';
+  const modal = document.getElementById('pilier-modal');
+  if(modal){
+    document.getElementById('pm-tag').textContent = p.tag;
+    document.getElementById('pm-title').textContent = l==='fr'?p.title_fr:p.title_en;
+    document.getElementById('pm-desc').textContent = l==='fr'?p.desc_fr:p.desc_en;
+    document.getElementById('pm-detail').textContent = l==='fr'?p.detail_fr:p.detail_en;
+    document.getElementById('pm-s1').textContent = p.s1;
+    document.getElementById('pm-l1').textContent = l==='fr'?p.l1_fr:p.l1_en;
+    document.getElementById('pm-s2').textContent = p.s2;
+    document.getElementById('pm-l2').textContent = l==='fr'?p.l2_fr:p.l2_en;
+    modal.classList.add('open');
+  }
+}
+
+/* ── FAQ ── */
+function toggleFaq(btn){
+  const item=btn.closest('.faq-item');
+  const open=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+  if(!open)item.classList.add('open');
+}
+
+/* ── Mobile ── */
+function toggleMobile(){
+  const m=document.getElementById('mobile-menu');
+  const h=document.getElementById('hamburger');
+  if(m){m.classList.toggle('open');h&&h.classList.toggle('open');}
+}
+function closeMobile(){
+  const m=document.getElementById('mobile-menu');
+  const h=document.getElementById('hamburger');
+  if(m){m.classList.remove('open');h&&h.classList.remove('open');}
+}
+
+/* ── Scroll utility ── */
+function scrollTo(id){
+  const el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ── Lang ── */
+function setLang(l){
+  document.documentElement.setAttribute('data-lang',l);
+  document.documentElement.setAttribute('lang',l);
+  document.getElementById('btnFR')?.classList.toggle('active',l==='fr');
+  document.getElementById('btnEN')?.classList.toggle('active',l==='en');
+  if(window.MBNav) MBNav.setLang(l);
+  renderPiliers();
+}
+
+/* ── Counters ── */
+function animateCounters(){
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    const target=+el.getAttribute('data-count');
+    const suffix=el.getAttribute('data-suffix')||'';
+    let start=0;
+    const step=target/60;
+    const timer=setInterval(()=>{
+      start=Math.min(start+step,target);
+      el.textContent=Math.round(start).toLocaleString('fr')+suffix;
+      if(start>=target)clearInterval(timer);
+    },25);
+  });
+}
+
+/* ── Reveal on scroll ── */
+const revObs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('visible'),i*80);
+      revObs.unobserve(e.target);
+    }
+  });
+},{threshold:.07});
+document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
+
+/* ── Init ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  renderPiliers();
+  animateCounters();
+  showPage('home');
+});
+
+</script>
+
+<script src="mb-nav.js"></script>
+<script src="mb-faq.js"></script>
+<script src="mb-carrousel.js"></script>
+</body>
+</html>

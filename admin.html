@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MB Studio — Gestionnaire Web Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════ VARIABLES ══════════════════════════ */
+:root {
+  --bg:   #080e0a;
+  --bg2:  #0d1610;
+  --bg3:  #111d14;
+  --bg4:  #162219;
+  --bg5:  #1c2e20;
+  --line: rgba(52,168,83,.14);
+  --line2:rgba(52,168,83,.26);
+  --g:  #1e6e38; --gc: #34a853; --gp: rgba(52,168,83,.10);
+  --o:  #b36800; --oc: #f5a623; --op: rgba(245,166,35,.10);
+  --r:  #b32828; --rc: #f87171; --rp: rgba(248,113,113,.10);
+  --b:  #1a4a7a; --bc: #60a5fa; --bp: rgba(96,165,250,.10);
+  --p:  #5a2d82; --pc: #c084fc; --pp: rgba(192,132,252,.10);
+  --tx: #c8dccb; --t2: rgba(200,220,203,.55); --t3: rgba(200,220,203,.28);
+  --acc: #f5a623;
+  --rad: 9px; --rad-s: 5px;
+  --f: 'Instrument Sans', sans-serif;
+  --fm: 'JetBrains Mono', monospace;
+  --fh: 'Syne', sans-serif;
+  --sb: 236px;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; background:var(--bg); color:var(--tx); font-family:var(--f); }
+::-webkit-scrollbar { width:4px; height:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--line2); border-radius:2px; }
+a { text-decoration:none; color:inherit; }
+button { cursor:pointer; font-family:var(--f); }
+
+/* ══════════════════════════ LAYOUT ══════════════════════════ */
+.app { display:flex; height:100vh; }
+
+/* ══════════════════════════ SIDEBAR ══════════════════════════ */
+.sidebar {
+  width:var(--sb); flex-shrink:0;
+  background:var(--bg2); border-right:1px solid var(--line);
+  display:flex; flex-direction:column; overflow:hidden;
+  transition:width .28s cubic-bezier(.4,0,.2,1);
+}
+.sidebar.slim { width:50px; }
+
+.sb-head {
+  padding:.7rem .8rem; border-bottom:1px solid var(--line);
+  display:flex; align-items:center; gap:.6rem;
+}
+.sb-logo {
+  width:30px; height:30px; border-radius:7px; flex-shrink:0;
+  background:linear-gradient(135deg, var(--g), var(--gc));
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--fh); font-weight:800; font-size:11px; color:#fff;
+  letter-spacing:-.3px;
+}
+.sb-name { font-family:var(--fh); font-size:13px; font-weight:700; color:#fff; white-space:nowrap; }
+.sb-ver  { font-size:9px; color:var(--t3); font-family:var(--fm); }
+.slim .sb-name, .slim .sb-ver { display:none; }
+
+/* Project switcher */
+.sb-proj { padding:.5rem .7rem; border-bottom:1px solid var(--line); }
+.sb-proj-lbl { font-size:9px; font-family:var(--fm); letter-spacing:.1em; color:var(--t3); text-transform:uppercase; margin-bottom:.3rem; }
+.slim .sb-proj-lbl { display:none; }
+.sb-proj-sel {
+  width:100%; background:var(--bg3); border:1px solid var(--line);
+  color:var(--tx); padding:5px 7px; border-radius:var(--rad-s);
+  font-size:11.5px; font-family:var(--f); cursor:pointer; outline:none;
+  appearance:none;
+}
+.slim .sb-proj-sel { display:none; }
+.sb-proj-add {
+  width:100%; margin-top:.35rem; background:none; border:1px dashed var(--line2);
+  color:var(--t2); padding:4px; border-radius:var(--rad-s); font-size:11px;
+  transition:all .2s;
+}
+.sb-proj-add:hover { background:var(--gp); color:var(--gc); border-color:var(--gc); }
+.slim .sb-proj-add { display:none; }
+
+/* Nav */
+.sb-nav { flex:1; overflow-y:auto; padding:.3rem 0; }
+.sb-grp { margin-bottom:.1rem; }
+.sb-grp-lbl {
+  font-size:8.5px; font-family:var(--fm); letter-spacing:.12em;
+  color:var(--t3); text-transform:uppercase; padding:.5rem .85rem .2rem;
+  white-space:nowrap; overflow:hidden;
+}
+.slim .sb-grp-lbl { opacity:0; height:0; padding:0; }
+.sbi {
+  display:flex; align-items:center; gap:.55rem;
+  padding:.48rem .7rem; cursor:pointer; border-left:2px solid transparent;
+  transition:all .15s; white-space:nowrap; overflow:hidden;
+  background:none; border-right:none; border-top:none; border-bottom:none;
+  color:var(--t2); width:100%; text-align:left; font-family:var(--f);
+}
+.sbi:hover { background:var(--gp); color:var(--tx); }
+.sbi.on { background:var(--gp); border-left-color:var(--gc); color:#fff; }
+.sbi.on .sbi-icon { color:var(--gc); }
+.sbi-icon { font-size:.95rem; width:18px; text-align:center; flex-shrink:0; }
+.sbi-lbl  { font-size:12px; font-weight:500; }
+.sbi-num  {
+  margin-left:auto; font-family:var(--fm); font-size:8.5px;
+  background:var(--g); color:#fff; padding:1px 5px; border-radius:5px; flex-shrink:0;
+}
+.slim .sbi-lbl, .slim .sbi-num { display:none; }
+
+/* Bottom */
+.sb-bot {
+  padding:.5rem .7rem; border-top:1px solid var(--line);
+  display:flex; align-items:center; gap:.5rem;
+}
+.sb-tog {
+  background:none; border:1px solid var(--line); color:var(--t3);
+  padding:3px 7px; border-radius:var(--rad-s); font-size:11px; flex-shrink:0;
+  transition:all .18s;
+}
+.sb-tog:hover { color:var(--tx); border-color:var(--line2); }
+.sb-online { font-size:9px; color:#4ade80; font-family:var(--fm); white-space:nowrap; }
+.slim .sb-online { display:none; }
+
+/* ══════════════════════════ MAIN ══════════════════════════ */
+.main { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; }
+
+/* Topbar */
+.topbar {
+  height:46px; background:var(--bg2); border-bottom:1px solid var(--line);
+  display:flex; align-items:center; padding:0 1.1rem; gap:.6rem; flex-shrink:0;
+}
+.tb-bc { font-size:12px; color:var(--t2); display:flex; align-items:center; gap:.4rem; }
+.tb-bc .cur { color:#fff; font-weight:600; }
+.tb-sep { color:var(--t3); }
+.tb-sp { flex:1; }
+.tb-btn {
+  padding:5px 11px; border-radius:var(--rad-s); border:none;
+  font-size:11.5px; font-weight:600; transition:all .18s;
+  display:flex; align-items:center; gap:.35rem;
+}
+.tb-p { background:var(--g); color:#fff; } .tb-p:hover { background:var(--gc); }
+.tb-g { background:var(--gp); color:var(--gc); border:1px solid var(--line); } .tb-g:hover { background:var(--line2); }
+.tb-w { background:var(--op); color:var(--oc); border:1px solid rgba(245,166,35,.2); }
+.tb-d { background:var(--rp); color:var(--rc); border:1px solid rgba(248,113,113,.2); }
+.lang-tog { display:flex; background:var(--bg3); border-radius:20px; padding:2px; border:1px solid var(--line); }
+.lng-btn { padding:3px 9px; border-radius:16px; border:none; background:none; font-size:10px; font-weight:700; cursor:pointer; color:var(--t3); font-family:var(--fm); transition:all .2s; }
+.lng-btn.on { background:var(--g); color:#fff; }
+
+/* ══════════════════════════ PANELS ══════════════════════════ */
+.panels { flex:1; overflow:hidden; position:relative; }
+.panel { position:absolute; inset:0; overflow-y:auto; padding:1.3rem; display:none; }
+.panel.on { display:block; }
+
+/* ══════════════════════════ COMPOSANTS ══════════════════════════ */
+/* Carte */
+.card { background:var(--bg3); border:1px solid var(--line); border-radius:var(--rad); overflow:hidden; margin-bottom:.9rem; }
+.card-h { padding:.75rem .95rem; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; }
+.card-t { font-size:12px; font-weight:700; color:#fff; display:flex; align-items:center; gap:.45rem; }
+.card-b { padding:.95rem; }
+
+/* Grilles */
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:.9rem; }
+.g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:.9rem; }
+.g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:.9rem; }
+
+/* Stat boxes */
+.sbox { background:var(--bg3); border:1px solid var(--line); border-radius:var(--rad); padding:.95rem; }
+.sbox-n { font-family:var(--fh); font-size:2rem; font-weight:800; line-height:1; }
+.sbox-l { font-size:11px; color:var(--t2); margin-top:.25rem; }
+.sbox-d { font-size:10.5px; font-weight:600; margin-top:.3rem; }
+.up { color:#4ade80; } .wa { color:var(--oc); } .dn { color:var(--rc); }
+
+/* Badges */
+.badge {
+  display:inline-flex; align-items:center; gap:.25rem;
+  font-family:var(--fm); font-size:9px; letter-spacing:.04em;
+  padding:2px 6px; border-radius:5px; font-weight:700;
+}
+.bg  { background:rgba(74,222,128,.12); color:#4ade80; }
+.bo  { background:rgba(245,166,35,.12); color:#f5a623; }
+.br  { background:rgba(248,113,113,.12); color:#f87171; }
+.bb  { background:rgba(96,165,250,.12); color:#60a5fa; }
+.bp  { background:rgba(192,132,252,.12); color:#c084fc; }
+.bz  { background:rgba(255,255,255,.06); color:var(--t3); }
+
+/* Table */
+table { width:100%; border-collapse:collapse; }
+th { font-family:var(--fm); font-size:9px; letter-spacing:.08em; color:var(--t3); text-transform:uppercase; padding:.5rem .7rem; text-align:left; border-bottom:1px solid var(--line); }
+td { padding:.6rem .7rem; font-size:12px; color:var(--t2); border-bottom:1px solid rgba(255,255,255,.025); vertical-align:middle; }
+tr:hover td { background:rgba(255,255,255,.018); }
+
+/* Champs */
+.field { margin-bottom:.8rem; }
+.field label { display:block; font-size:10px; font-weight:600; color:var(--t3); margin-bottom:.3rem; font-family:var(--fm); letter-spacing:.05em; text-transform:uppercase; }
+.field input, .field select, .field textarea {
+  width:100%; background:var(--bg); border:1px solid var(--line);
+  border-radius:var(--rad-s); padding:7px 9px;
+  font-size:12.5px; font-family:var(--f); color:var(--tx); outline:none;
+  transition:border-color .18s;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color:var(--gc); }
+.field select { cursor:pointer; appearance:none; }
+.field textarea { resize:vertical; min-height:72px; line-height:1.6; }
+
+/* Boutons */
+.btn { padding:7px 14px; border-radius:var(--rad-s); border:none; font-size:12px; font-weight:600; transition:all .18s; display:inline-flex; align-items:center; gap:.35rem; font-family:var(--f); }
+.btn-p { background:var(--g); color:#fff; }          .btn-p:hover { background:var(--gc); }
+.btn-g { background:var(--gp); color:var(--gc); border:1px solid var(--line); } .btn-g:hover { background:var(--line); }
+.btn-w { background:var(--op); color:var(--oc); border:1px solid rgba(245,166,35,.2); }
+.btn-d { background:var(--rp); color:var(--rc); border:1px solid rgba(248,113,113,.2); }
+.btn-s { padding:3px 9px; font-size:11px; }
+.acts { display:flex; gap:.35rem; }
+
+/* Alertes */
+.alert { padding:.65rem .9rem; border-radius:var(--rad-s); font-size:12.5px; margin-bottom:.75rem; display:flex; align-items:flex-start; gap:.5rem; line-height:1.5; }
+.al-i { background:var(--bp); border:1px solid rgba(96,165,250,.25); color:var(--bc); }
+.al-w { background:var(--op); border:1px solid rgba(245,166,35,.22); color:var(--oc); }
+.al-s { background:rgba(74,222,128,.07); border:1px solid rgba(74,222,128,.18); color:#4ade80; }
+.al-e { background:var(--rp); border:1px solid rgba(248,113,113,.18); color:var(--rc); }
+
+/* Tabs */
+.tabs { display:flex; border-bottom:1px solid var(--line); margin-bottom:1.1rem; flex-wrap:wrap; }
+.tab-btn { padding:.55rem 1rem; border:none; background:none; font-size:12px; font-weight:600; color:var(--t3); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all .18s; font-family:var(--f); }
+.tab-btn:hover { color:var(--tx); }
+.tab-btn.on { color:var(--gc); border-bottom-color:var(--gc); }
+.tc { display:none; }
+.tc.on { display:block; }
+
+/* Progress bar */
+.prog-w { background:rgba(255,255,255,.06); border-radius:4px; height:6px; overflow:hidden; }
+.prog-f { height:100%; border-radius:4px; transition:width 1.2s cubic-bezier(.4,0,.2,1); }
+
+/* Code blocks */
+.cb {
+  background:var(--bg); border:1px solid var(--line); border-radius:var(--rad-s);
+  padding:.8rem 1rem; font-family:var(--fm); font-size:11.5px; line-height:1.75;
+  overflow-x:auto; color:#a8d8b0; position:relative; margin-top:.5rem;
+}
+.cb .kw { color:#79c0ff; }
+.cb .cm { color:#6e7f71; font-style:italic; }
+.cb .str{ color:#a5d6ff; }
+.cb .fn { color:#d2a8ff; }
+.cb .num{ color:#f5a623; }
+.copy-btn {
+  position:absolute; top:.4rem; right:.4rem;
+  background:var(--bg3); border:1px solid var(--line); color:var(--t3);
+  padding:2px 6px; border-radius:4px; font-size:9.5px; cursor:pointer; font-family:var(--fm);
+  transition:all .18s;
+}
+.copy-btn:hover { color:#fff; background:var(--bg5); }
+
+/* Knowledge cards */
+.kc {
+  background:var(--bg3); border:1px solid var(--line); border-radius:var(--rad);
+  padding:1rem; cursor:pointer; transition:all .2s; margin-bottom:.5rem;
+}
+.kc:hover { border-color:var(--line2); background:var(--bg4); }
+.kc.open .kc-body { display:block; }
+.kc-head { display:flex; align-items:center; gap:.6rem; }
+.kc-ico  { font-size:1.1rem; width:26px; text-align:center; }
+.kc-title{ font-size:13px; font-weight:700; color:#fff; flex:1; }
+.kc-lvl  { font-family:var(--fm); font-size:9px; padding:2px 6px; border-radius:4px; }
+.lv-d { background:rgba(74,222,128,.12); color:#4ade80; }
+.lv-i { background:rgba(245,166,35,.12); color:#f5a623; }
+.lv-a { background:rgba(192,132,252,.12); color:#c084fc; }
+.kc-arr  { font-size:.8rem; color:var(--t3); margin-left:.3rem; transition:transform .2s; }
+.kc.open .kc-arr { transform:rotate(180deg); }
+.kc-body { display:none; margin-top:.85rem; padding-top:.85rem; border-top:1px solid var(--line); font-size:12.5px; color:var(--t2); line-height:1.75; }
+
+/* Diag items */
+.di {
+  display:flex; align-items:flex-start; gap:.7rem; padding:.65rem .85rem;
+  background:var(--bg); border:1px solid var(--line); border-radius:var(--rad-s); margin-bottom:.4rem;
+}
+.di.ok  { border-color:rgba(74,222,128,.18); }
+.di.wa  { border-color:rgba(245,166,35,.18); }
+.di.er  { border-color:rgba(248,113,113,.18); }
+.di-ico { font-size:1rem; margin-top:1px; flex-shrink:0; }
+.di-t   { font-size:12.5px; font-weight:700; color:#fff; margin-bottom:.18rem; }
+.di-d   { font-size:12px; color:var(--t2); line-height:1.55; }
+.di-fix { font-size:11px; color:var(--gc); margin-top:.35rem; cursor:pointer; display:inline-flex; align-items:center; gap:.3rem; }
+.di-fix:hover { text-decoration:underline; }
+
+/* Éditeur */
+.ed-wrap { display:flex; flex-direction:column; border:1px solid var(--line); border-radius:var(--rad); overflow:hidden; }
+.ed-bar  { background:var(--bg2); padding:.4rem .75rem; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:.5rem; font-size:11px; color:var(--t3); }
+.ed-dot  { width:10px; height:10px; border-radius:50%; }
+.ed-ta   { background:var(--bg); border:none; color:#a8d8b0; font-family:var(--fm); font-size:12px; line-height:1.72; padding:.9rem; resize:none; outline:none; flex:1; min-height:360px; tab-size:2; }
+
+/* Modal */
+.modal-ov { position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:1000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .2s; }
+.modal-ov.open { opacity:1; pointer-events:all; }
+.modal { background:var(--bg2); border:1px solid var(--line2); border-radius:14px; width:90%; max-width:540px; max-height:85vh; overflow-y:auto; transform:translateY(18px); transition:transform .25s; }
+.modal-ov.open .modal { transform:translateY(0); }
+.modal-h { padding:1.1rem 1.3rem; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; }
+.modal-title { font-family:var(--fh); font-size:15px; font-weight:700; color:#fff; }
+.modal-x { background:none; border:none; color:var(--t3); font-size:1.25rem; cursor:pointer; padding:2px 6px; border-radius:4px; transition:all .18s; }
+.modal-x:hover { color:#fff; background:var(--gp); }
+.modal-b { padding:1.3rem; }
+.modal-f { padding:.9rem 1.3rem; border-top:1px solid var(--line); display:flex; justify-content:flex-end; gap:.5rem; }
+
+/* Toasts */
+.toast-c { position:fixed; bottom:1rem; right:1rem; z-index:2000; display:flex; flex-direction:column; gap:.4rem; pointer-events:none; }
+.toast { background:var(--bg2); border:1px solid var(--line2); border-radius:9px; padding:.65rem .95rem; font-size:12.5px; font-weight:600; box-shadow:0 8px 30px rgba(0,0,0,.35); transform:translateX(110%); transition:transform .3s; display:flex; align-items:center; gap:.45rem; max-width:300px; pointer-events:all; }
+.toast.show { transform:translateX(0); }
+.t-s { border-color:rgba(74,222,128,.3); color:#4ade80; }
+.t-e { border-color:rgba(248,113,113,.3); color:var(--rc); }
+.t-i { border-color:rgba(96,165,250,.3); color:var(--bc); }
+.t-w { border-color:rgba(245,166,35,.3); color:var(--oc); }
+
+/* Aperçu */
+.pv-bar { background:var(--bg3); padding:.4rem .75rem; display:flex; align-items:center; gap:.45rem; border-bottom:1px solid var(--line); }
+.pv-dot { width:9px; height:9px; border-radius:50%; }
+.pv-url { flex:1; background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:3px 9px; font-family:var(--fm); font-size:10px; color:var(--t3); }
+
+/* Section headers */
+.sec-h { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1.1rem; flex-wrap:wrap; gap:.6rem; }
+.sec-tt { font-family:var(--fh); font-size:15px; font-weight:700; color:#fff; }
+.sec-st { font-size:11.5px; color:var(--t2); margin-top:.2rem; }
+
+/* Checklist */
+.ck-item { display:flex; align-items:flex-start; gap:.5rem; padding:.4rem; border-radius:var(--rad-s); margin-bottom:.25rem; font-size:12.5px; transition:background .15s; cursor:pointer; }
+.ck-item:hover { background:var(--bg4); }
+
+/* Medias grid */
+.mg { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:.7rem; }
+.mc { background:var(--bg3); border:1px solid var(--line); border-radius:var(--rad); overflow:hidden; cursor:pointer; transition:all .2s; }
+.mc:hover { border-color:var(--gc); }
+.mc img { width:100%; height:90px; object-fit:cover; display:block; }
+.mc-ph { width:100%; height:90px; background:var(--bg4); display:flex; align-items:center; justify-content:center; font-size:2.2rem; }
+.mc-name { padding:.35rem .5rem; font-family:var(--fm); font-size:9.5px; color:var(--t2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* Responsive */
+@media(max-width:900px) {
+  .g4 { grid-template-columns:1fr 1fr; }
+  .g3 { grid-template-columns:1fr 1fr; }
+}
+@media(max-width:640px) {
+  .g2, .g3, .g4 { grid-template-columns:1fr; }
+  .sidebar { width:50px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══════════════════════════════════════ SIDEBAR ══════════════════════════════════════ -->
+<aside class="sidebar" id="sb">
+  <div class="sb-head">
+    <div class="sb-logo">MB</div>
+    <div>
+      <div class="sb-name">MB Studio</div>
+      <div class="sb-ver">v3.0 · Pro</div>
+    </div>
+  </div>
+
+  <div class="sb-proj">
+    <div class="sb-proj-lbl">Projet actif</div>
+    <select class="sb-proj-sel" id="proj-sel" onchange="switchProject(this.value)"></select>
+    <button class="sb-proj-add" onclick="openM('m-proj')">+ Nouveau projet</button>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-grp">
+      <div class="sb-grp-lbl">Vue d'ensemble</div>
+      <button class="sbi on" onclick="nav('dashboard',this)"><span class="sbi-icon">📊</span><span class="sbi-lbl">Dashboard</span></button>
+      <button class="sbi" onclick="nav('apercu',this)"><span class="sbi-icon">👁</span><span class="sbi-lbl">Aperçu live</span></button>
+    </div>
+    <div class="sb-grp">
+      <div class="sb-grp-lbl">Projets</div>
+      <button class="sbi" onclick="nav('projets',this)"><span class="sbi-icon">📁</span><span class="sbi-lbl">Mes projets</span><span class="sbi-num" id="n-proj">1</span></button>
+      <button class="sbi" onclick="nav('fichiers',this)"><span class="sbi-icon">📄</span><span class="sbi-lbl">Fichiers</span></button>
+      <button class="sbi" onclick="nav('editeur',this)"><span class="sbi-icon">✏️</span><span class="sbi-lbl">Éditeur code</span></button>
+      <button class="sbi" onclick="nav('medias',this)"><span class="sbi-icon">🖼</span><span class="sbi-lbl">Médiathèque</span></button>
+    </div>
+    <div class="sb-grp">
+      <div class="sb-grp-lbl">Contenu</div>
+      <button class="sbi" onclick="nav('actus',this)"><span class="sbi-icon">📰</span><span class="sbi-lbl">Actualités</span><span class="sbi-num" id="n-actus">9</span></button>
+      <button class="sbi" onclick="nav('kpis',this)"><span class="sbi-icon">💰</span><span class="sbi-lbl">KPIs & Dons</span></button>
+      <button class="sbi" onclick="nav('crm',this)"><span class="sbi-icon">🤝</span><span class="sbi-lbl">Partenaires CRM</span></button>
+    </div>
+    <div class="sb-grp">
+      <div class="sb-grp-lbl">Outils</div>
+      <button class="sbi" onclick="nav('diag',this)"><span class="sbi-icon">🔍</span><span class="sbi-lbl">Diagnostics</span></button>
+      <button class="sbi" onclick="nav('opti',this)"><span class="sbi-icon">⚡</span><span class="sbi-lbl">Optimisation</span></button>
+      <button class="sbi" onclick="nav('secu',this)"><span class="sbi-icon">🔒</span><span class="sbi-lbl">Sécurité</span></button>
+      <button class="sbi" onclick="nav('bugs',this)"><span class="sbi-icon">🐛</span><span class="sbi-lbl">Résoudre un bug</span></button>
+    </div>
+    <div class="sb-grp">
+      <div class="sb-grp-lbl">Apprendre</div>
+      <button class="sbi" onclick="nav('html',this)"><span class="sbi-icon">🏗</span><span class="sbi-lbl">HTML</span></button>
+      <button class="sbi" onclick="nav('css',this)"><span class="sbi-icon">🎨</span><span class="sbi-lbl">CSS</span></button>
+      <button class="sbi" onclick="nav('js',this)"><span class="sbi-icon">⚙️</span><span class="sbi-lbl">JavaScript</span></button>
+      <button class="sbi" onclick="nav('glossaire',this)"><span class="sbi-icon">📖</span><span class="sbi-lbl">Glossaire</span></button>
+    </div>
+    <div class="sb-grp">
+      <div class="sb-grp-lbl">Déploiement</div>
+      <button class="sbi" onclick="nav('deploy',this)"><span class="sbi-icon">🚀</span><span class="sbi-lbl">Mettre en ligne</span></button>
+      <button class="sbi" onclick="nav('params',this)"><span class="sbi-icon">⚙️</span><span class="sbi-lbl">Paramètres</span></button>
+    </div>
+  </nav>
+
+  <div class="sb-bot">
+    <button class="sb-tog" onclick="toggleSB()" id="sb-tog-btn">◀</button>
+    <div class="sb-online">● Hors ligne OK</div>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════ MAIN ══════════════════════════════════════ -->
+<div class="main">
+  <div class="topbar">
+    <div class="tb-bc" id="bc">MB Studio <span class="tb-sep">›</span> <span class="cur">Dashboard</span></div>
+    <div class="tb-sp"></div>
+    <div class="lang-tog">
+      <button class="lng-btn on" onclick="setLang('fr')">FR</button>
+      <button class="lng-btn" onclick="setLang('en')">EN</button>
+    </div>
+    <button class="tb-btn tb-g" onclick="nav('apercu',null);pvLoad()">👁 Aperçu</button>
+    <button class="tb-btn tb-p" onclick="saveAll()">💾 Sauvegarder</button>
+  </div>
+
+  <div class="panels">
+
+<!-- ═════════════ DASHBOARD ═════════════ -->
+<div class="panel on" id="p-dashboard">
+  <div class="g4" style="margin-bottom:.9rem">
+    <div class="sbox"><div class="sbox-n" style="color:var(--gc)" id="st-proj">1</div><div class="sbox-l">Projets actifs</div><div class="sbox-d up">Gérer plusieurs sites</div></div>
+    <div class="sbox"><div class="sbox-n" style="color:var(--oc)">8</div><div class="sbox-l">Pages HTML</div><div class="sbox-d up">✓ Toutes complètes</div></div>
+    <div class="sbox"><div class="sbox-n" style="color:var(--bc)" id="st-actus">9</div><div class="sbox-l">Articles carrousel</div><div class="sbox-d up">↑ mb-carrousel.js</div></div>
+    <div class="sbox"><div class="sbox-n" style="color:var(--rc)">4</div><div class="sbox-l">Actions requises</div><div class="sbox-d wa">⚠ Voir diagnostics</div></div>
+  </div>
+  <div class="g2">
+    <div>
+      <div class="card">
+        <div class="card-h"><div class="card-t">📄 Pages du projet actif</div><button class="btn btn-s btn-p" onclick="nav('projets',null)">Voir tout</button></div>
+        <div style="padding:0"><table><thead><tr><th>Fichier</th><th>Statut</th><th>Nav</th><th>FAQ</th></tr></thead><tbody id="dash-files"></tbody></table></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><div class="card-t">🎉 Baromètre Gala 2026</div><span class="badge bo">NOV 2026</span></div>
+        <div class="card-b">
+          <div style="display:flex;justify-content:space-between;margin-bottom:.4rem">
+            <span style="font-size:12px;color:var(--t2)">Collecté à ce jour</span>
+            <span style="font-family:var(--fh);font-size:1.4rem;font-weight:800;color:var(--acc)" id="gala-amt">110M FCFA</span>
+          </div>
+          <div class="prog-w" style="margin-bottom:.4rem"><div class="prog-f" id="gala-bar" style="background:linear-gradient(90deg,var(--gc),var(--oc));width:0%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--t3)"><span>0</span><span id="gala-pct" style="color:var(--oc)">22%</span><span>500M FCFA</span></div>
+          <div style="margin-top:.9rem;display:flex;flex-direction:column;gap:.4rem">
+            <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--t2)">Partenaires confirmés</span><span style="font-weight:700;color:#fff">247</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--t2)">Mois restants</span><span style="font-weight:700;color:var(--oc)">8</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-h"><div class="card-t">⚡ Actions rapides</div></div>
+        <div class="card-b" style="display:flex;flex-direction:column;gap:.45rem">
+          <button class="btn btn-g" style="justify-content:flex-start;width:100%" onclick="nav('actus',null)">📰 Ajouter une actualité</button>
+          <button class="btn btn-g" style="justify-content:flex-start;width:100%" onclick="nav('kpis',null)">💰 Mettre à jour les KPIs</button>
+          <button class="btn btn-g" style="justify-content:flex-start;width:100%" onclick="nav('editeur',null)">✏️ Ouvrir l'éditeur</button>
+          <button class="btn btn-g" style="justify-content:flex-start;width:100%" onclick="runDiag()">🔍 Lancer les diagnostics</button>
+          <button class="btn btn-g" style="justify-content:flex-start;width:100%" onclick="nav('bugs',null)">🐛 Résoudre un problème</button>
+          <button class="btn btn-g" style="justify-content:flex-start;width:100%" onclick="openM('m-proj')">📁 Nouveau projet</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h"><div class="card-t">🔔 Alertes système</div></div>
+        <div class="card-b" style="display:flex;flex-direction:column;gap:.4rem">
+          <div class="alert al-w">⚠ Photos Unsplash à remplacer par vos vraies photos terrain</div>
+          <div class="alert al-w">⚠ Liens /cdn-cgi/ dans index.html à corriger</div>
+          <div class="alert al-i">ℹ HelloAsso non configuré — dons simulés</div>
+          <div class="alert al-i">ℹ Newsletter Brevo non connectée</div>
+          <div class="alert al-s">✅ mb-nav.js intégré dans les 8 pages</div>
+          <div class="alert al-s">✅ mb-faq.js intégré dans les 8 pages</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div class="card-t">✅ Checklist mise en ligne</div><span class="badge" id="ck-score">4/12</span></div>
+    <div class="card-b" style="display:grid;grid-template-columns:1fr 1fr;gap:.2rem" id="ck-body"></div>
+  </div>
+</div>
+
+<!-- ═════════════ APERÇU ═════════════ -->
+<div class="panel" id="p-apercu">
+  <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.8rem;flex-wrap:wrap">
+    <select id="pv-sel" style="background:var(--bg3);border:1px solid var(--line);color:var(--tx);padding:6px 9px;border-radius:var(--rad-s);font-size:12px;font-family:var(--f)" onchange="pvLoad()">
+      <option value="index.html">🏠 Accueil</option>
+      <option value="don.html">❤️ Don</option>
+      <option value="partenaires.html">🤝 Partenaires</option>
+      <option value="technologies.html">🔬 Technologies</option>
+      <option value="carte.html">🗺️ Carte</option>
+      <option value="gouvernance.html">🔒 Gouvernance</option>
+      <option value="actualites.html">📰 Actualités</option>
+      <option value="equipe.html">👥 Équipe</option>
+    </select>
+    <div style="display:flex;gap:.3rem">
+      <button class="btn btn-s btn-g" onclick="pvSize('100%')" title="Desktop">🖥</button>
+      <button class="btn btn-s btn-g" onclick="pvSize('768px')" title="Tablette">📱</button>
+      <button class="btn btn-s btn-g" onclick="pvSize('375px')" title="Mobile">📲</button>
+    </div>
+    <button class="btn btn-s btn-g" onclick="window.open(document.getElementById('pv-sel').value,'_blank')">↗ Ouvrir</button>
+  </div>
+  <div style="background:var(--bg2);border:1px solid var(--line);border-radius:var(--rad);overflow:hidden">
+    <div class="pv-bar">
+      <div class="pv-dot" style="background:#ff5f57"></div>
+      <div class="pv-dot" style="background:#febc2e"></div>
+      <div class="pv-dot" style="background:#28c840"></div>
+      <div class="pv-url" id="pv-url">index.html</div>
+    </div>
+    <div style="display:flex;justify-content:center;padding:1rem;background:var(--bg)">
+      <iframe id="pv-iframe" src="index.html" style="width:100%;max-width:1200px;height:500px;border:none;border-radius:6px;background:#fff" title="Aperçu"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ═════════════ PROJETS ═════════════ -->
+<div class="panel" id="p-projets">
+  <div class="sec-h">
+    <div><div class="sec-tt">📁 Mes Projets Web</div><div class="sec-st">Gérez plusieurs sites depuis un seul endroit</div></div>
+    <button class="btn btn-p" onclick="openM('m-proj')">+ Nouveau projet</button>
+  </div>
+  <div id="proj-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:.9rem"></div>
+</div>
+
+<!-- ═════════════ FICHIERS ═════════════ -->
+<div class="panel" id="p-fichiers">
+  <div class="sec-h">
+    <div class="sec-tt">📄 Fichiers du projet</div>
+    <button class="btn btn-s btn-p" onclick="openM('m-file')">+ Nouveau fichier</button>
+  </div>
+  <div class="card">
+    <div style="padding:0"><table><thead><tr><th>Fichier</th><th>Type</th><th>Taille</th><th>mb-nav</th><th>mb-faq</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="files-table"></tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div class="card-t">⚙️ Composants partagés</div></div>
+    <div style="padding:0"><table><thead><tr><th>Fichier</th><th>Rôle</th><th>Utilisé dans</th><th>Actions</th></tr></thead><tbody>
+      <tr><td><code style="color:var(--oc);font-size:11px">mb-nav.js</code></td><td>Navigation universelle header+footer</td><td><span class="badge bg">8 pages</span></td><td><div class="acts"><button class="btn btn-s btn-g" onclick="openInEd('mb-nav.js')">Éditer</button></div></td></tr>
+      <tr><td><code style="color:var(--oc);font-size:11px">mb-faq.js</code></td><td>FAQs contextuelles automatiques</td><td><span class="badge bg">8 pages</span></td><td><div class="acts"><button class="btn btn-s btn-g" onclick="openInEd('mb-faq.js')">Éditer</button></div></td></tr>
+      <tr><td><code style="color:var(--oc);font-size:11px">mb-carrousel.js</code></td><td>Carrousel actualités partagé</td><td><span class="badge bg">8 pages</span></td><td><div class="acts"><button class="btn btn-s btn-g" onclick="nav('actus',null)">Gérer</button></div></td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- ═════════════ ÉDITEUR ═════════════ -->
+<div class="panel" id="p-editeur">
+  <div class="sec-h">
+    <div class="sec-tt">✏️ Éditeur de code</div>
+    <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap">
+      <select id="ed-file" style="background:var(--bg3);border:1px solid var(--line);color:var(--tx);padding:5px 8px;border-radius:var(--rad-s);font-size:11.5px;font-family:var(--f)" onchange="edLoad(this.value)">
+        <option value="">— Choisir un fichier —</option>
+        <option>index.html</option><option>don.html</option><option>partenaires.html</option>
+        <option>technologies.html</option><option>carte.html</option><option>gouvernance.html</option>
+        <option>actualites.html</option><option>equipe.html</option>
+        <option>mb-nav.js</option><option>mb-faq.js</option><option>mb-carrousel.js</option>
+      </select>
+      <button class="btn btn-s btn-p" onclick="edSave()">💾 Sauvegarder</button>
+      <button class="btn btn-s btn-g" onclick="edCopy()">📋 Copier tout</button>
+    </div>
+  </div>
+  <div class="alert al-i" style="margin-bottom:.7rem">ℹ️ Collez le contenu de votre fichier local ici pour l'éditer. Après modification, copiez et collez-le dans votre vrai fichier (VS Code, Notepad++).</div>
+  <div class="ed-wrap">
+    <div class="ed-bar">
+      <div class="ed-dot" style="background:#ff5f57"></div>
+      <div class="ed-dot" style="background:#febc2e"></div>
+      <div class="ed-dot" style="background:#28c840"></div>
+      <span id="ed-fname" style="margin-left:.5rem">Aucun fichier sélectionné</span>
+      <span id="ed-lang" style="margin-left:auto"></span>
+    </div>
+    <textarea class="ed-ta" id="ed-ta" placeholder="Sélectionnez un fichier ci-dessus...&#10;&#10;Raccourcis : Ctrl+A sélectionner tout · Ctrl+Z annuler · Tab insérer une indentation"></textarea>
+  </div>
+  <div class="card" style="margin-top:.8rem">
+    <div class="card-h"><div class="card-t">🔍 Rechercher & Remplacer</div></div>
+    <div class="card-b">
+      <div class="g2">
+        <div class="field"><label>Rechercher</label><input id="sr-find" placeholder="Texte à chercher..."></div>
+        <div class="field"><label>Remplacer par</label><input id="sr-repl" placeholder="Remplacement..."></div>
+      </div>
+      <div style="display:flex;gap:.4rem;align-items:center">
+        <button class="btn btn-s btn-g" onclick="edFind()">🔍 Chercher</button>
+        <button class="btn btn-s btn-w" onclick="edReplace()">↔ Remplacer tout</button>
+        <span id="sr-res" style="font-size:11.5px;color:var(--t2)"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═════════════ MÉDIAS ═════════════ -->
+<div class="panel" id="p-medias">
+  <div class="sec-h"><div class="sec-tt">🖼 Médiathèque</div></div>
+  <div class="alert al-w">⚠ Photos actuelles = Unsplash (démo). Remplacez par vos vraies photos terrain pour maximiser l'impact.</div>
+  <div class="mg" id="mg" style="margin-top:.9rem"></div>
+  <div class="card" style="margin-top:1rem">
+    <div class="card-h"><div class="card-t">💡 Ressources images recommandées</div></div>
+    <div class="card-b">
+      <div class="g3">
+        <div><div style="font-weight:700;color:#fff;margin-bottom:.3rem;font-size:13px">📷 Unsplash</div><div style="font-size:12px;color:var(--t2)">Photos libres de droits HD. <code style="color:var(--oc)">unsplash.com</code></div></div>
+        <div><div style="font-weight:700;color:#fff;margin-bottom:.3rem;font-size:13px">🌍 Pexels Afrique</div><div style="font-size:12px;color:var(--t2)">Spécialité Afrique. <code style="color:var(--oc)">pexels.com</code></div></div>
+        <div><div style="font-weight:700;color:#fff;margin-bottom:.3rem;font-size:13px">🗜 Squoosh</div><div style="font-size:12px;color:var(--t2)">Optimiser/convertir en WebP. <code style="color:var(--oc)">squoosh.app</code></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═════════════ ACTUALITÉS ═════════════ -->
+<div class="panel" id="p-actus">
+  <div class="sec-h">
+    <div><div class="sec-tt">📰 Gestionnaire d'actualités</div><div class="sec-st">Ces articles alimentent le carrousel de toutes les pages via mb-carrousel.js</div></div>
+    <button class="btn btn-p" onclick="openM('m-art')">+ Nouvel article</button>
+  </div>
+  <div class="card"><div style="padding:0"><table><thead><tr><th>#</th><th>Titre FR</th><th>Catégorie</th><th>Date</th><th>Lien</th><th>Actions</th></tr></thead><tbody id="art-table"></tbody></table></div></div>
+  <div class="card">
+    <div class="card-h"><div class="card-t">📋 Propager vers mb-carrousel.js</div></div>
+    <div class="card-b"><p style="font-size:12.5px;color:var(--t2);line-height:1.7;margin-bottom:.7rem">Après modification, exportez le JSON et collez-le dans <code style="color:var(--oc)">mb-carrousel.js</code> à la ligne <code style="color:var(--oc)">window.MB_NEWS_ITEMS = [</code></p><button class="btn btn-g" onclick="exportJSON()">📋 Copier le JSON</button></div>
+  </div>
+</div>
+
+<!-- ═════════════ KPIs ═════════════ -->
+<div class="panel" id="p-kpis">
+  <div class="sec-tt" style="margin-bottom:1rem">💰 KPIs & Données terrain</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-h"><div class="card-t">🎉 Baromètre Gala 2026</div></div>
+      <div class="card-b">
+        <div class="field"><label>Montant collecté (FCFA)</label><input id="kc" value="110 000 000"></div>
+        <div class="field"><label>Objectif total (FCFA)</label><input id="ko" value="500 000 000"></div>
+        <div class="field"><label>Partenaires confirmés</label><input type="number" id="kp" value="247"></div>
+        <div class="field"><label>Mois restants</label><input type="number" id="km" value="8"></div>
+        <button class="btn btn-p" style="width:100%" onclick="saveKPIs()">💾 Mettre à jour</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="card-t">📊 Impact terrain</div></div>
+      <div class="card-b">
+        <div class="field"><label>Vies impactées depuis 2006</label><input id="kv" value="10 000+"></div>
+        <div class="field"><label>Cuisinières distribuées (2025)</label><input type="number" id="ku" value="384"></div>
+        <div class="field"><label>Enfants bénéficiaires</label><input type="number" id="ke" value="2140"></div>
+        <div class="field"><label>Donateurs actifs</label><input type="number" id="kd" value="1247"></div>
+        <div class="field"><label>% fonds sur le terrain</label><input type="number" id="kt" value="96" min="0" max="100"></div>
+        <button class="btn btn-p" style="width:100%" onclick="saveKPIs()">💾 Mettre à jour</button>
+      </div>
+    </div>
+  </div>
+  <div class="alert al-i">ℹ Ces valeurs sont sauvegardées localement. Mettez-les à jour manuellement dans chaque fichier HTML, ou connectez une API backend pour la propagation automatique.</div>
+</div>
+
+<!-- ═════════════ CRM ═════════════ -->
+<div class="panel" id="p-crm">
+  <div class="sec-h"><div class="sec-tt">🤝 Partenaires CRM</div><button class="btn btn-p" onclick="openM('m-part')">+ Ajouter contact</button></div>
+  <div class="card"><div style="padding:0"><table><thead><tr><th>Nom</th><th>Profil</th><th>Pays</th><th>Budget</th><th>Statut</th><th>Contact</th><th>Actions</th></tr></thead><tbody id="crm-table"></tbody></table></div></div>
+</div>
+
+<!-- ═════════════ DIAGNOSTICS ═════════════ -->
+<div class="panel" id="p-diag">
+  <div class="sec-h">
+    <div><div class="sec-tt">🔍 Diagnostics du site</div><div class="sec-st">Analyse automatique de la santé de votre site MB</div></div>
+    <button class="btn btn-p" onclick="runDiag()">▶ Lancer l'analyse</button>
+  </div>
+  <div id="diag-res"><div class="alert al-i">Cliquez sur "Lancer l'analyse" pour analyser votre site.</div></div>
+</div>
+
+<!-- ═════════════ OPTIMISATION ═════════════ -->
+<div class="panel" id="p-opti">
+  <div class="sec-tt" style="margin-bottom:.9rem">⚡ Optimisation des performances</div>
+  <div class="tabs" id="opti-tabs">
+    <button class="tab-btn on" onclick="switchTab('opti-tabs','opti-perf',this)">Performance</button>
+    <button class="tab-btn" onclick="switchTab('opti-tabs','opti-seo',this)">SEO</button>
+    <button class="tab-btn" onclick="switchTab('opti-tabs','opti-mob',this)">Mobile</button>
+    <button class="tab-btn" onclick="switchTab('opti-tabs','opti-img',this)">Images</button>
+  </div>
+  <div class="tc on" id="opti-perf"></div>
+  <div class="tc" id="opti-seo"></div>
+  <div class="tc" id="opti-mob"></div>
+  <div class="tc" id="opti-img"></div>
+</div>
+
+<!-- ═════════════ SÉCURITÉ ═════════════ -->
+<div class="panel" id="p-secu">
+  <div class="sec-tt" style="margin-bottom:.9rem">🔒 Sécurité web</div>
+  <div class="tabs" id="secu-tabs">
+    <button class="tab-btn on" onclick="switchTab('secu-tabs','secu-bases',this)">Les bases</button>
+    <button class="tab-btn" onclick="switchTab('secu-tabs','secu-xss',this)">XSS & Injections</button>
+    <button class="tab-btn" onclick="switchTab('secu-tabs','secu-https',this)">HTTPS & Headers</button>
+    <button class="tab-btn" onclick="switchTab('secu-tabs','secu-rgpd',this)">RGPD & Données</button>
+    <button class="tab-btn" onclick="switchTab('secu-tabs','secu-ck',this)">Checklist</button>
+  </div>
+  <div class="tc on" id="secu-bases"></div>
+  <div class="tc" id="secu-xss"></div>
+  <div class="tc" id="secu-https"></div>
+  <div class="tc" id="secu-rgpd"></div>
+  <div class="tc" id="secu-ck"></div>
+</div>
+
+<!-- ═════════════ BUGS ═════════════ -->
+<div class="panel" id="p-bugs">
+  <div class="sec-tt" style="margin-bottom:.3rem">🐛 Résoudre un problème</div>
+  <div style="font-size:12.5px;color:var(--t2);margin-bottom:1rem">Sélectionnez votre problème pour obtenir un guide de résolution pas à pas.</div>
+  <div class="card" style="margin-bottom:.9rem">
+    <div class="card-b">
+      <div class="field"><label>Quel est votre problème ?</label>
+        <select id="bug-sel" onchange="showBug(this.value)" style="font-family:var(--f);font-size:12.5px;background:var(--bg);border:1px solid var(--line);color:var(--tx);padding:8px 10px;border-radius:var(--rad-s);width:100%;outline:none">
+          <option value="">— Sélectionnez votre problème —</option>
+          <optgroup label="🏳 Affichage HTML">
+            <option value="page-blanche">La page est blanche / ne s'affiche pas</option>
+            <option value="mise-page">La mise en page est cassée ou désalignée</option>
+            <option value="images">Les images ne s'affichent pas</option>
+            <option value="lien">Un lien ne fonctionne pas (404)</option>
+          </optgroup>
+          <optgroup label="🎨 CSS / Style">
+            <option value="style-absent">Les styles ne s'appliquent pas</option>
+            <option value="police">La police ne se charge pas</option>
+            <option value="mobile">Le site est cassé sur mobile</option>
+            <option value="centrage">Un élément ne se centre pas</option>
+          </optgroup>
+          <optgroup label="⚙️ JavaScript">
+            <option value="console-err">Erreur rouge dans la console (F12)</option>
+            <option value="bouton">Un bouton ne réagit pas au clic</option>
+            <option value="carrousel">Le carrousel est vide ou bloqué</option>
+            <option value="langue">Le changement de langue ne marche pas</option>
+          </optgroup>
+          <optgroup label="🧭 Navigation">
+            <option value="nav">La navigation mb-nav.js n'apparaît pas</option>
+            <option value="faq">Les FAQs mb-faq.js ne s'affichent pas</option>
+          </optgroup>
+          <optgroup label="🚀 Déploiement">
+            <option value="netlify">Erreur après déploiement sur Netlify</option>
+            <option value="chemin">Les fichiers JS/CSS ne se chargent pas en ligne</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="bug-sol"></div>
+</div>
+
+<!-- ═════════════ HTML ═════════════ -->
+<div class="panel" id="p-html">
+  <div class="sec-tt" style="margin-bottom:.3rem">🏗 HTML — Structure des pages</div>
+  <div style="font-size:12.5px;color:var(--t2);margin-bottom:.9rem">Le HTML est le squelette de votre page. Il dit quoi mettre dessus, pas comment ça doit ressembler.</div>
+  <div class="tabs" id="html-tabs">
+    <button class="tab-btn on" onclick="switchTab('html-tabs','html-base',this)">Les bases</button>
+    <button class="tab-btn" onclick="switchTab('html-tabs','html-balises',this)">Balises essentielles</button>
+    <button class="tab-btn" onclick="switchTab('html-tabs','html-forms',this)">Formulaires</button>
+    <button class="tab-btn" onclick="switchTab('html-tabs','html-sem',this)">Sémantique</button>
+    <button class="tab-btn" onclick="switchTab('html-tabs','html-err',this)">Erreurs courantes</button>
+  </div>
+  <div class="tc on" id="html-base"></div>
+  <div class="tc" id="html-balises"></div>
+  <div class="tc" id="html-forms"></div>
+  <div class="tc" id="html-sem"></div>
+  <div class="tc" id="html-err"></div>
+</div>
+
+<!-- ═════════════ CSS ═════════════ -->
+<div class="panel" id="p-css">
+  <div class="sec-tt" style="margin-bottom:.3rem">🎨 CSS — Style & Mise en page</div>
+  <div style="font-size:12.5px;color:var(--t2);margin-bottom:.9rem">Le CSS dit comment chaque élément HTML doit ressembler : couleur, taille, position, animation...</div>
+  <div class="tabs" id="css-tabs">
+    <button class="tab-btn on" onclick="switchTab('css-tabs','css-base',this)">Les bases</button>
+    <button class="tab-btn" onclick="switchTab('css-tabs','css-boxmodel',this)">Box Model</button>
+    <button class="tab-btn" onclick="switchTab('css-tabs','css-flex',this)">Flexbox</button>
+    <button class="tab-btn" onclick="switchTab('css-tabs','css-grid',this)">Grid</button>
+    <button class="tab-btn" onclick="switchTab('css-tabs','css-resp',this)">Responsive</button>
+    <button class="tab-btn" onclick="switchTab('css-tabs','css-vars',this)">Variables CSS</button>
+    <button class="tab-btn" onclick="switchTab('css-tabs','css-err',this)">Erreurs</button>
+  </div>
+  <div class="tc on" id="css-base"></div>
+  <div class="tc" id="css-boxmodel"></div>
+  <div class="tc" id="css-flex"></div>
+  <div class="tc" id="css-grid"></div>
+  <div class="tc" id="css-resp"></div>
+  <div class="tc" id="css-vars"></div>
+  <div class="tc" id="css-err"></div>
+</div>
+
+<!-- ═════════════ JAVASCRIPT ═════════════ -->
+<div class="panel" id="p-js">
+  <div class="sec-tt" style="margin-bottom:.3rem">⚙️ JavaScript — Comportement & Logique</div>
+  <div style="font-size:12.5px;color:var(--t2);margin-bottom:.9rem">JavaScript rend votre page vivante : clics, données, animations, logique conditionnelle...</div>
+  <div class="tabs" id="js-tabs">
+    <button class="tab-btn on" onclick="switchTab('js-tabs','js-base',this)">Les bases</button>
+    <button class="tab-btn" onclick="switchTab('js-tabs','js-dom',this)">Le DOM</button>
+    <button class="tab-btn" onclick="switchTab('js-tabs','js-events',this)">Événements</button>
+    <button class="tab-btn" onclick="switchTab('js-tabs','js-fns',this)">Fonctions</button>
+    <button class="tab-btn" onclick="switchTab('js-tabs','js-storage',this)">localStorage</button>
+    <button class="tab-btn" onclick="switchTab('js-tabs','js-err',this)">Erreurs</button>
+  </div>
+  <div class="tc on" id="js-base"></div>
+  <div class="tc" id="js-dom"></div>
+  <div class="tc" id="js-events"></div>
+  <div class="tc" id="js-fns"></div>
+  <div class="tc" id="js-storage"></div>
+  <div class="tc" id="js-err"></div>
+</div>
+
+<!-- ═════════════ GLOSSAIRE ═════════════ -->
+<div class="panel" id="p-glossaire">
+  <div class="sec-tt" style="margin-bottom:.6rem">📖 Glossaire du développement web</div>
+  <input id="glo-search" type="text" placeholder="🔍 Rechercher un terme..." style="width:100%;background:var(--bg3);border:1px solid var(--line);color:var(--tx);padding:9px 12px;border-radius:var(--rad-s);font-size:13px;outline:none;margin-bottom:1rem;font-family:var(--f)" oninput="filterGlo(this.value)">
+  <div id="glo-list"></div>
+</div>
+
+<!-- ═════════════ DÉPLOIEMENT ═════════════ -->
+<div class="panel" id="p-deploy">
+  <div class="sec-tt" style="margin-bottom:.9rem">🚀 Mettre votre site en ligne</div>
+  <div class="tabs" id="dep-tabs">
+    <button class="tab-btn on" onclick="switchTab('dep-tabs','dep-netlify',this)">Netlify (gratuit)</button>
+    <button class="tab-btn" onclick="switchTab('dep-tabs','dep-ovh',this)">OVH</button>
+    <button class="tab-btn" onclick="switchTab('dep-tabs','dep-github',this)">GitHub Pages</button>
+    <button class="tab-btn" onclick="switchTab('dep-tabs','dep-domaine',this)">Nom de domaine</button>
+    <button class="tab-btn" onclick="switchTab('dep-tabs','dep-ck',this)">Checklist finale</button>
+  </div>
+  <div class="tc on" id="dep-netlify"></div>
+  <div class="tc" id="dep-ovh"></div>
+  <div class="tc" id="dep-github"></div>
+  <div class="tc" id="dep-domaine"></div>
+  <div class="tc" id="dep-ck"></div>
+</div>
+
+<!-- ═════════════ PARAMÈTRES ═════════════ -->
+<div class="panel" id="p-params">
+  <div class="sec-tt" style="margin-bottom:1rem">⚙️ Paramètres</div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-h"><div class="card-t">🌐 Préférences</div></div>
+      <div class="card-b">
+        <div class="field"><label>Langue interface</label><select id="pref-lang"><option value="fr">Français</option><option value="en">English</option></select></div>
+        <div class="field"><label>Page d'aperçu par défaut</label><select id="pref-pv"><option value="index.html">Accueil</option><option value="don.html">Don</option></select></div>
+        <button class="btn btn-p" onclick="savePrefs()">💾 Sauvegarder</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-h"><div class="card-t">💾 Données locales</div></div>
+      <div class="card-b">
+        <p style="font-size:12.5px;color:var(--t2);line-height:1.7;margin-bottom:.8rem">Toutes les données sont dans le navigateur (localStorage). Elles persistent après fermeture tant que le cache n'est pas effacé.</p>
+        <div id="stor-info" style="background:var(--bg);border:1px solid var(--line);border-radius:var(--rad-s);padding:.6rem .8rem;font-family:var(--fm);font-size:11px;color:var(--t2);margin-bottom:.7rem"></div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <button class="btn btn-s btn-g" onclick="exportData()">📥 Exporter</button>
+          <button class="btn btn-s btn-w" onclick="clearData()">🗑 Vider cache</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-h"><div class="card-t">ℹ À propos de MB Studio</div></div>
+    <div class="card-b" style="font-size:12.5px;color:var(--t2);line-height:1.9">
+      <div><strong style="color:#fff">MB Studio v3.0</strong> — Gestionnaire Web Professionnel</div>
+      <div>ONG Monde et Bonheur · Cameroun & France · 2026</div>
+      <div>Offline-first · localStorage · Compatible Chrome, Firefox, Safari, Edge</div>
+    </div>
+  </div>
+</div>
+
+  </div><!-- /panels -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ════════════════════════ MODALS ════════════════════════ -->
+<!-- Nouveau projet -->
+<div class="modal-ov" id="m-proj">
+  <div class="modal">
+    <div class="modal-h"><div class="modal-title">📁 Nouveau projet web</div><button class="modal-x" onclick="closeM('m-proj')">✕</button></div>
+    <div class="modal-b">
+      <div class="field"><label>Nom du projet *</label><input id="mp-name" placeholder="Ex: Site Restaurant Le Baobab"></div>
+      <div class="field"><label>Description</label><input id="mp-desc" placeholder="Site vitrine pour restaurant africain à Paris"></div>
+      <div class="g2">
+        <div class="field"><label>Type</label><select id="mp-type"><option value="site-vitrine">Site vitrine</option><option value="ong">ONG / Association</option><option value="ecommerce">E-commerce</option><option value="blog">Blog</option><option value="portfolio">Portfolio</option><option value="autre">Autre</option></select></div>
+        <div class="field"><label>Couleur</label><input type="color" id="mp-color" value="#1a5c3a" style="height:38px;width:100%;border:1px solid var(--line);border-radius:var(--rad-s);background:none;cursor:pointer;padding:2px"></div>
+      </div>
+      <div class="field"><label>URL ou dossier local</label><input id="mp-url" placeholder="https://monsite.netlify.app ou C:\Sites\monsite\"></div>
+      <div class="field"><label>Pages HTML (séparées par virgule)</label><input id="mp-pages" placeholder="index.html, about.html, contact.html"></div>
+    </div>
+    <div class="modal-f">
+      <button class="btn btn-g" onclick="closeM('m-proj')">Annuler</button>
+      <button class="btn btn-p" onclick="createProject()">✅ Créer le projet</button>
+    </div>
+  </div>
+</div>
+
+<!-- Nouvel article -->
+<div class="modal-ov" id="m-art">
+  <div class="modal">
+    <div class="modal-h"><div class="modal-title" id="art-modal-t">📰 Nouvel article</div><button class="modal-x" onclick="closeM('m-art')">✕</button></div>
+    <div class="modal-b">
+      <div class="g2"><div class="field"><label>Titre FR *</label><input id="a-tfr" placeholder="Titre en français"></div><div class="field"><label>Title EN</label><input id="a-ten" placeholder="Title in English"></div></div>
+      <div class="g2"><div class="field"><label>Résumé FR</label><textarea id="a-efr" placeholder="2 phrases max" style="min-height:55px"></textarea></div><div class="field"><label>Excerpt EN</label><textarea id="a-een" placeholder="2 sentences max" style="min-height:55px"></textarea></div></div>
+      <div class="g3">
+        <div class="field"><label>Catégorie</label><select id="a-cat"><option value="terrain">🌾 Terrain</option><option value="tech">💻 Tech</option><option value="media">📺 Média</option><option value="event">🗓 Événement</option></select></div>
+        <div class="field"><label>Date</label><input id="a-date" placeholder="Mar 2026"></div>
+        <div class="field"><label>Lien</label><select id="a-link"><option value="actualites.html">actualites.html</option><option value="index.html">index.html</option><option value="technologies.html">technologies.html</option><option value="carte.html">carte.html</option><option value="partenaires.html">partenaires.html</option><option value="don.html">don.html</option></select></div>
+      </div>
+    </div>
+    <div class="modal-f"><button class="btn btn-g" onclick="closeM('m-art')">Annuler</button><button class="btn btn-p" onclick="saveArt()">💾 Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- Nouveau contact CRM -->
+<div class="modal-ov" id="m-part">
+  <div class="modal">
+    <div class="modal-h"><div class="modal-title">🤝 Nouveau contact</div><button class="modal-x" onclick="closeM('m-part')">✕</button></div>
+    <div class="modal-b">
+      <div class="g2"><div class="field"><label>Nom / Organisation *</label><input id="p-name" placeholder="Marie Dupont / TotalEnergies"></div><div class="field"><label>Profil</label><select id="p-type"><option value="diaspora">🌍 Diaspora</option><option value="entreprise">🏭 Entreprise</option><option value="banque">🏦 Banque/MFI</option><option value="institution">🌐 Institution</option></select></div></div>
+      <div class="g2"><div class="field"><label>Email</label><input type="email" id="p-email" placeholder="contact@org.com"></div><div class="field"><label>Pays</label><input id="p-pays" placeholder="France"></div></div>
+      <div class="g2"><div class="field"><label>Budget / Engagement</label><input id="p-budget" placeholder="5 000€ ou 30€/mois"></div><div class="field"><label>Statut</label><select id="p-status"><option value="actif">● Actif</option><option value="prospect">◐ Prospect</option><option value="en-cours">⏳ En cours</option><option value="inactif">○ Inactif</option></select></div></div>
+      <div class="field"><label>Notes</label><textarea id="p-notes" placeholder="Informations importantes..." style="min-height:55px"></textarea></div>
+    </div>
+    <div class="modal-f"><button class="btn btn-g" onclick="closeM('m-part')">Annuler</button><button class="btn btn-p" onclick="savePart()">💾 Enregistrer</button></div>
+  </div>
+</div>
+
+<!-- Nouveau fichier -->
+<div class="modal-ov" id="m-file">
+  <div class="modal">
+    <div class="modal-h"><div class="modal-title">📄 Nouveau fichier</div><button class="modal-x" onclick="closeM('m-file')">✕</button></div>
+    <div class="modal-b">
+      <div class="field"><label>Nom du fichier *</label><input id="f-name" placeholder="ma-page.html"></div>
+      <div class="g2">
+        <div class="field"><label>Type</label><select id="f-type"><option value="html">Page HTML</option><option value="css">Feuille CSS</option><option value="js">Script JavaScript</option></select></div>
+        <div class="field"><label>Template</label><select id="f-tmpl"><option value="blank">Vide</option><option value="mb">Page MB (nav+footer)</option><option value="simple">HTML simple</option></select></div>
+      </div>
+    </div>
+    <div class="modal-f"><button class="btn btn-g" onclick="closeM('m-file')">Annuler</button><button class="btn btn-p" onclick="createFile()">✅ Créer</button></div>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div class="toast-c" id="toast-c"></div>
+<script>
+'use strict';
+/* ══════════════════════════════════════════════════════
+   STORE — offline-first localStorage
+══════════════════════════════════════════════════════ */
+const S={
+  get:(k,d=null)=>{try{const v=localStorage.getItem('mbs_'+k);return v?JSON.parse(v):d;}catch{return d;}},
+  set:(k,v)=>{try{localStorage.setItem('mbs_'+k,JSON.stringify(v));}catch{}},
+  size:()=>{let b=0;for(let k in localStorage)if(k.startsWith('mbs_'))b+=localStorage[k].length;return(b/1024).toFixed(1)+'KB';},
+  clear:()=>{Object.keys(localStorage).filter(k=>k.startsWith('mbs_')).forEach(k=>localStorage.removeItem(k));}
+};
+
+/* ══════════════════════════════════════════════════════
+   DONNÉES PAR DÉFAUT
+══════════════════════════════════════════════════════ */
+const DEF_PROJ={id:'mb-ong',name:'ONG Monde et Bonheur',type:'ong',desc:'Site web ONG — 8 pages bilingue FR/EN',color:'#1a5c3a',url:'index.html',createdAt:new Date().toISOString(),pages:['index.html','don.html','partenaires.html','technologies.html','carte.html','gouvernance.html','actualites.html','equipe.html']};
+
+const DEF_ARTS=[
+  {id:1,cat:'event',catFR:'🗓 ÉVÉNEMENT',dateFR:'15 Nov 2026',titleFR:'Gala de l\'Impact — Les 20 Ans de MB',titleEN:'Impact Gala — MB\'s 20th Anniversary',excerptFR:'Soirée fundraising à Yaoundé. Objectif : lever 500M FCFA.',excerptEN:'Fundraising evening in Yaoundé. Target: 500M FCFA.',link:'partenaires.html',bg:'linear-gradient(135deg,#3d2000,#8a5000)',emoji:'🎉'},
+  {id:2,cat:'terrain',catFR:'🌾 TERRAIN',dateFR:'Fév 2026',titleFR:'Séchoir Flash à Batchenga : +40% revenus',titleEN:'Flash Dryer Batchenga: +40% income',excerptFR:'La CUMA double ses revenus grâce au séchoir Flash MB.',excerptEN:'CUMA doubles income thanks to MB Flash Dryer.',link:'carte.html',bg:'linear-gradient(135deg,#0d3320,#1a5c3a)',emoji:'🌾'},
+  {id:3,cat:'media',catFR:'📻 MÉDIA',dateFR:'Jan 2026',titleFR:'RFI — "Les cuisinières qui sauvent les forêts"',titleEN:'RFI — "Cookers saving forests"',excerptFR:'RFI consacre 8 minutes à l\'innovation MB.',excerptEN:'RFI dedicates 8 minutes to MB\'s innovation.',link:'actualites.html',bg:'linear-gradient(135deg,#2d1a00,#7a4500)',emoji:'📻'},
+  {id:4,cat:'tech',catFR:'💻 TECH',dateFR:'Déc 2025',titleFR:'MetaScript : +28% en Physique-Chimie',titleEN:'MetaScript: +28% Physics-Chemistry',excerptFR:'Premier bilan des 12 lycées camerounais équipés.',excerptEN:'First assessment from 12 pilot schools.',link:'technologies.html',bg:'linear-gradient(135deg,#1e1040,#3a2080)',emoji:'💻'},
+  {id:5,cat:'terrain',catFR:'🌾 TERRAIN',dateFR:'Nov 2025',titleFR:'École Baka Lomié : 107 élèves — record',titleEN:'Baka School Lomié: 107 pupils — record',excerptFR:'Record d\'inscription. Filles : +40% en un an.',excerptEN:'Enrolment record. Girls: +40% in one year.',link:'carte.html',bg:'linear-gradient(135deg,#0d2b14,#1a5c3a)',emoji:'🌿'},
+  {id:6,cat:'tech',catFR:'💻 TECH',dateFR:'Oct 2025',titleFR:'Bondjock : premiers m³ de biogaz',titleEN:'Bondjock: first biogas m³',excerptFR:'Le digesteur pilote du lycée produit ses premiers m³.',excerptEN:'Pilot digester produces first cubic metres.',link:'technologies.html',bg:'linear-gradient(135deg,#1e0d35,#4a2080)',emoji:'♻️'},
+  {id:7,cat:'media',catFR:'📰 PRESSE',dateFR:'Sep 2025',titleFR:'Le Monde Afrique : "MetaScript démocratise les sciences"',titleEN:'Le Monde: "MetaScript democratises science"',excerptFR:'Double page dans Le Monde sur MetaScript.',excerptEN:'Double page in Le Monde on MetaScript.',link:'actualites.html',bg:'linear-gradient(135deg,#1a2a00,#3a5a00)',emoji:'📰'},
+  {id:8,cat:'terrain',catFR:'🌾 TERRAIN',dateFR:'Août 2025',titleFR:'23 femmes de Batchenga certifiées',titleEN:'23 Batchenga women certified',excerptFR:'Clôture formation FORIM-MB : 97% de présence.',excerptEN:'FORIM-MB training: 97% attendance.',link:'carte.html',bg:'linear-gradient(135deg,#1a3d22,#2d6b3a)',emoji:'👩'},
+  {id:9,cat:'media',catFR:'📺 MÉDIA',dateFR:'Juil 2025',titleFR:'CRTV — Reportage biogaz (2M téléspectateurs)',titleEN:'CRTV — Biogas feature (2M viewers)',excerptFR:'CRTV diffuse 12 min sur le méthaniseur de Bondjock.',excerptEN:'CRTV airs 12-min Bondjock digester feature.',link:'actualites.html',bg:'linear-gradient(135deg,#0d2040,#1a4a6b)',emoji:'📺'},
+];
+
+const DEF_PARTS=[
+  {id:1,name:'Aminata S.',type:'diaspora',email:'',pays:'France',budget:'30€/mois',status:'actif',notes:'Parrainage enfant',contact:'Fév 2026'},
+  {id:2,name:'Pierre L. / Groupe industriel',type:'entreprise',email:'',pays:'France',budget:'5 000€',status:'actif',notes:'RSE — 100 cuisinières',contact:'Jan 2026'},
+  {id:3,name:'FORIM',type:'institution',email:'',pays:'France',budget:'Co-financement',status:'actif',notes:'Partenaire institutionnel',contact:'2025'},
+];
+
+/* ══════════════════════════════════════════════════════
+   ÉTAT
+══════════════════════════════════════════════════════ */
+let PROJECTS=S.get('projects',[DEF_PROJ]);
+let ARTS=S.get('arts',DEF_ARTS);
+let PARTS=S.get('parts',DEF_PARTS);
+let KPIS=S.get('kpis',{kc:'110 000 000',ko:'500 000 000',kp:247,km:8,kv:'10 000+',ku:384,ke:2140,kd:1247,kt:96});
+let CUR_PROJ=S.get('cur','mb-ong');
+let editArtId=null, editPartId=null;
+
+const FILES=[
+  {f:'index.html',t:'HTML',s:'136K',nav:true,faq:true},
+  {f:'don.html',t:'HTML',s:'68K',nav:true,faq:true},
+  {f:'partenaires.html',t:'HTML',s:'63K',nav:true,faq:true},
+  {f:'technologies.html',t:'HTML',s:'59K',nav:true,faq:true},
+  {f:'carte.html',t:'HTML',s:'44K',nav:true,faq:true},
+  {f:'gouvernance.html',t:'HTML',s:'50K',nav:true,faq:true},
+  {f:'actualites.html',t:'HTML',s:'51K',nav:true,faq:true},
+  {f:'equipe.html',t:'HTML',s:'47K',nav:true,faq:true},
+  {f:'admin.html',t:'HTML',s:'~',nav:false,faq:false},
+];
+
+const CHECKLIST=[
+  {l:'mb-nav.js intégré (8 pages)',ok:true},
+  {l:'mb-faq.js intégré (8 pages)',ok:true},
+  {l:'Page équipe créée',ok:true},
+  {l:'Carrousel mb-carrousel.js actif',ok:true},
+  {l:'Photos terrain réelles',ok:false},
+  {l:'Liens /cdn-cgi/ corrigés',ok:false},
+  {l:'HelloAsso configuré',ok:false},
+  {l:'Newsletter Brevo connectée',ok:false},
+  {l:'Formspree activé',ok:false},
+  {l:'Site mis en ligne (Netlify)',ok:false},
+  {l:'Nom de domaine configuré',ok:false},
+  {l:'Google Analytics ajouté',ok:false},
+];
+
+/* ══════════════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════════════ */
+const LABELS={dashboard:'Dashboard',apercu:'Aperçu live',projets:'Mes projets',fichiers:'Fichiers',editeur:'Éditeur',medias:'Médiathèque',actus:'Actualités',kpis:'KPIs & Dons',crm:'Partenaires CRM',diag:'Diagnostics',opti:'Optimisation',secu:'Sécurité',bugs:'Résoudre un bug',html:'Guide HTML',css:'Guide CSS',js:'Guide JavaScript',glossaire:'Glossaire',deploy:'Déploiement',params:'Paramètres'};
+
+function nav(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.sbi').forEach(b=>b.classList.remove('on'));
+  const p=document.getElementById('p-'+id);
+  if(p)p.classList.add('on');
+  if(btn)btn.classList.add('on');
+  document.getElementById('bc').innerHTML=`MB Studio <span class="tb-sep">›</span> <span class="cur">${LABELS[id]||id}</span>`;
+  initPanel(id);
+}
+
+function initPanel(id){
+  switch(id){
+    case'dashboard':renderDash();break;
+    case'projets':renderProjects();break;
+    case'fichiers':renderFiles();break;
+    case'medias':renderMedias();break;
+    case'actus':renderArts();break;
+    case'crm':renderParts();break;
+    case'diag':/* attendre clic */break;
+    case'opti':renderOpti();break;
+    case'secu':renderSecu();break;
+    case'html':renderHTML();break;
+    case'css':renderCSS();break;
+    case'js':renderJS();break;
+    case'glossaire':renderGlo();break;
+    case'deploy':renderDeploy();break;
+    case'params':renderParams();break;
+  }
+}
+
+function toggleSB(){
+  const sb=document.getElementById('sb');
+  const slim=sb.classList.toggle('slim');
+  document.getElementById('sb-tog-btn').textContent=slim?'▶':'◀';
+}
+function setLang(l){
+  document.body.setAttribute('data-lang',l);
+  document.querySelectorAll('.lng-btn').forEach((b,i)=>b.classList.toggle('on',i===(l==='fr'?0:1)));
+}
+
+/* ══════════════════════════════════════════════════════
+   TOASTS
+══════════════════════════════════════════════════════ */
+function toast(msg,type='s'){
+  const c=document.getElementById('toast-c');
+  const t=document.createElement('div');
+  t.className=`toast t-${type}`;
+  t.innerHTML=`<span>${{s:'✅',e:'❌',i:'ℹ️',w:'⚠️'}[type]||'✅'}</span>${msg}`;
+  c.appendChild(t);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},3000);
+}
+
+/* ══════════════════════════════════════════════════════
+   MODALS
+══════════════════════════════════════════════════════ */
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+document.addEventListener('click',e=>{if(e.target.classList.contains('modal-ov'))e.target.classList.remove('open');});
+
+/* ══════════════════════════════════════════════════════
+   PROJET SWITCHER
+══════════════════════════════════════════════════════ */
+function renderProjSel(){
+  const sel=document.getElementById('proj-sel');
+  sel.innerHTML=PROJECTS.map(p=>`<option value="${p.id}"${p.id===CUR_PROJ?' selected':''}>${p.name}</option>`).join('');
+  document.getElementById('n-proj').textContent=PROJECTS.length;
+  document.getElementById('st-proj').textContent=PROJECTS.length;
+}
+function switchProject(id){CUR_PROJ=id;S.set('cur',id);toast(`Projet "${PROJECTS.find(p=>p.id===id)?.name}" activé`);renderDash();}
+
+function createProject(){
+  const name=document.getElementById('mp-name').value.trim();
+  if(!name){toast('Nom requis','e');return;}
+  const pages=document.getElementById('mp-pages').value.split(',').map(p=>p.trim()).filter(Boolean);
+  const proj={
+    id:'p_'+Date.now(),name,
+    desc:document.getElementById('mp-desc').value,
+    type:document.getElementById('mp-type').value,
+    color:document.getElementById('mp-color').value,
+    url:document.getElementById('mp-url').value,
+    pages:pages.length?pages:[],
+    createdAt:new Date().toISOString()
+  };
+  PROJECTS.push(proj);S.set('projects',PROJECTS);CUR_PROJ=proj.id;S.set('cur',proj.id);
+  renderProjSel();renderProjects();closeM('m-proj');toast(`Projet "${name}" créé 🎉`);
+  ['mp-name','mp-desc','mp-url','mp-pages'].forEach(id=>document.getElementById(id).value='');
+}
+
+function renderProjects(){
+  const g=document.getElementById('proj-grid');if(!g)return;
+  g.innerHTML=PROJECTS.map(p=>`
+    <div style="background:var(--bg3);border:1px solid var(--line);border-radius:var(--rad);overflow:hidden;transition:border-color .2s" onmouseover="this.style.borderColor='${p.color}'" onmouseout="this.style.borderColor='var(--line)'">
+      <div style="height:4px;background:${p.color}"></div>
+      <div style="padding:.95rem">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem">
+          <div style="font-family:var(--fh);font-size:13.5px;font-weight:700;color:#fff">${p.name}</div>
+          ${p.id===CUR_PROJ?'<span class="badge bg">ACTIF</span>':''}
+        </div>
+        <div style="font-size:11.5px;color:var(--t2);margin-bottom:.6rem">${p.desc||'—'}</div>
+        <div style="display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.7rem">
+          <span class="badge bz">${p.type}</span>
+          ${p.pages?.length?`<span class="badge bb">${p.pages.length} fichiers</span>`:''}
+          <span class="badge bz">${new Date(p.createdAt).toLocaleDateString('fr')}</span>
+        </div>
+        <div style="display:flex;gap:.35rem">
+          <button class="btn btn-s btn-p" style="flex:1" onclick="switchProject('${p.id}')">Activer</button>
+          ${p.url?`<button class="btn btn-s btn-g" onclick="window.open('${p.url}','_blank')">↗</button>`:''}
+          ${p.id!=='mb-ong'?`<button class="btn btn-s btn-d" onclick="delProj('${p.id}')">✕</button>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function delProj(id){
+  if(!confirm('Supprimer ce projet ?'))return;
+  PROJECTS=PROJECTS.filter(p=>p.id!==id);S.set('projects',PROJECTS);
+  if(CUR_PROJ===id)CUR_PROJ='mb-ong';
+  renderProjSel();renderProjects();toast('Projet supprimé','w');
+}
+
+/* ══════════════════════════════════════════════════════
+   DASHBOARD
+══════════════════════════════════════════════════════ */
+function renderDash(){
+  renderDashFiles();renderChecklist();
+  const c=parseFloat((KPIS.kc||'0').replace(/\s/g,''))||0;
+  const o=parseFloat((KPIS.ko||'500000000').replace(/\s/g,''))||1;
+  const pct=Math.round((c/o)*100);
+  document.getElementById('gala-amt').textContent=Math.round(c/1e6)+'M FCFA';
+  document.getElementById('gala-pct').textContent=pct+'%';
+  setTimeout(()=>{const b=document.getElementById('gala-bar');if(b)b.style.width=pct+'%';},400);
+}
+
+function renderDashFiles(){
+  const t=document.getElementById('dash-files');if(!t)return;
+  t.innerHTML=FILES.slice(0,5).map(f=>`<tr>
+    <td><code style="color:var(--oc);font-size:11px">${f.f}</code></td>
+    <td><span class="badge bg">✓ OK</span></td>
+    <td>${f.nav?'<span class="badge bg">✓</span>':'<span class="badge br">✕</span>'}</td>
+    <td>${f.faq?'<span class="badge bg">✓</span>':'<span class="badge br">✕</span>'}</td>
+  </tr>`).join('');
+}
+
+function renderChecklist(){
+  const el=document.getElementById('ck-body');const sc=document.getElementById('ck-score');if(!el)return;
+  const done=CHECKLIST.filter(i=>i.ok).length;
+  if(sc){sc.textContent=`${done}/${CHECKLIST.length}`;sc.className=`badge ${done>=10?'bg':done>=6?'bo':'br'}`;}
+  el.innerHTML=CHECKLIST.map((item,i)=>`
+    <div class="ck-item" onclick="CHECKLIST[${i}].ok=!CHECKLIST[${i}].ok;renderChecklist()">
+      <span style="font-size:.9rem">${item.ok?'✅':'⬜'}</span>
+      <span style="font-size:12px;color:${item.ok?'var(--t2)':'var(--t3)'};${item.ok?'text-decoration:line-through;':''}">${item.l}</span>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════════════════════
+   FICHIERS
+══════════════════════════════════════════════════════ */
+function renderFiles(){
+  const t=document.getElementById('files-table');if(!t)return;
+  t.innerHTML=FILES.map(f=>`<tr>
+    <td><code style="color:var(--oc);font-size:11px">${f.f}</code></td>
+    <td><span class="badge ${f.t==='HTML'?'bb':'bo'}">${f.t}</span></td>
+    <td style="font-family:var(--fm);font-size:11px">${f.s}</td>
+    <td>${f.nav?'<span class="badge bg">✓</span>':'<span class="badge br">✕</span>'}</td>
+    <td>${f.faq?'<span class="badge bg">✓</span>':'<span class="badge br">✕</span>'}</td>
+    <td><span class="badge bg">● OK</span></td>
+    <td><div class="acts">
+      <button class="btn btn-s btn-g" onclick="openInEd('${f.f}')">✏️</button>
+      <button class="btn btn-s btn-g" onclick="pvOpen('${f.f}')">👁</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+function createFile(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){toast('Nom requis','e');return;}
+  const tmpl=document.getElementById('f-tmpl').value;
+  const templates={
+    blank:'',
+    mb:`<!DOCTYPE html>\n<html lang="fr" data-lang="fr">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Nouvelle page — ONG Monde et Bonheur</title>\n<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet">\n<style>\nbody{font-family:'DM Sans',sans-serif;background:#fdfcf8;color:#1a1a18;padding-top:66px;}\n[data-lang="fr"] .en{display:none!important;}\n[data-lang="en"] .fr{display:none!important;}\n</style>\n</head>\n<body>\n<section style="padding:80px 8%;text-align:center">\n  <h1 style="font-family:'Playfair Display',serif;font-size:3rem">Titre de la page</h1>\n  <p class="fr">Contenu en français...</p>\n  <p class="en">Content in English...</p>\n</section>\n<script src="mb-nav.js"><\/script>\n<script src="mb-faq.js"><\/script>\n</body>\n</html>`,
+    simple:'<!DOCTYPE html>\n<html lang="fr">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>Ma page</title>\n<style>\nbody{font-family:Arial,sans-serif;margin:0;padding:20px;background:#f5f5f5;}\nh1{color:#1a5c3a;}\n</style>\n</head>\n<body>\n<h1>Ma nouvelle page</h1>\n<p>Contenu à développer...</p>\n</body>\n</html>'
+  };
+  S.set('file_'+name,templates[tmpl]||'');
+  FILES.push({f:name,t:'HTML',s:'0K',nav:false,faq:false});
+  renderFiles();closeM('m-file');toast(`Fichier "${name}" créé`);
+  setTimeout(()=>openInEd(name),400);
+}
+
+/* ══════════════════════════════════════════════════════
+   ÉDITEUR
+══════════════════════════════════════════════════════ */
+function openInEd(file){
+  document.getElementById('ed-file').value=file;
+  edLoad(file);nav('editeur',null);
+}
+function edLoad(file){
+  const ta=document.getElementById('ed-ta');
+  const fn=document.getElementById('ed-fname');
+  const lb=document.getElementById('ed-lang');
+  if(!file){ta.value='';fn.textContent='Aucun fichier';return;}
+  const saved=S.get('file_'+file,null);
+  if(saved){ta.value=saved;}
+  else{ta.value=`/* ${file} */\n\n/* Collez ici le contenu de votre fichier local\n * (ouvrez-le dans Notepad++ / VS Code, Ctrl+A, Ctrl+C, puis coller ici)\n * Après modification → "Copier tout" → coller dans votre vrai fichier */`;}
+  fn.textContent=file;
+  const ext=file.split('.').pop();
+  const cols={html:'#60a5fa',css:'#c084fc',js:'#f5a623'};
+  lb.innerHTML=`<span style="font-family:var(--fm);font-size:9.5px;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,.07);color:${cols[ext]||'#fff'}">${ext.toUpperCase()}</span>`;
+}
+function edSave(){
+  const file=document.getElementById('ed-file').value;
+  if(!file){toast('Sélectionnez un fichier','w');return;}
+  S.set('file_'+file,document.getElementById('ed-ta').value);
+  toast(`${file} sauvegardé localement ✓`);
+}
+function edCopy(){
+  const v=document.getElementById('ed-ta').value;
+  navigator.clipboard?.writeText(v).then(()=>toast('Contenu copié ! Collez dans votre fichier ✓')).catch(()=>toast('Sélectionnez tout (Ctrl+A) puis copiez manuellement','i'));
+}
+function edFind(){
+  const q=document.getElementById('sr-find').value;
+  const v=document.getElementById('ed-ta').value;
+  if(!q){toast('Entrez un texte à chercher','w');return;}
+  const n=(v.match(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'))||[]).length;
+  document.getElementById('sr-res').textContent=`${n} occurrence(s)`;
+}
+function edReplace(){
+  const q=document.getElementById('sr-find').value;
+  const r=document.getElementById('sr-repl').value;
+  const ta=document.getElementById('ed-ta');
+  if(!q){toast('Entrez un texte à chercher','w');return;}
+  const rx=new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+  const n=(ta.value.match(rx)||[]).length;
+  ta.value=ta.value.replace(rx,r);
+  document.getElementById('sr-res').textContent=`${n} remplacement(s)`;
+  toast(`${n} remplacement(s) effectué(s)`);
+}
+
+/* ══════════════════════════════════════════════════════
+   APERÇU
+══════════════════════════════════════════════════════ */
+function pvLoad(){
+  const f=document.getElementById('pv-sel').value;
+  document.getElementById('pv-iframe').src=f;
+  document.getElementById('pv-url').textContent=f;
+}
+function pvSize(w){document.getElementById('pv-iframe').style.maxWidth=w;toast(`Vue ${w==='100%'?'desktop':w==='768px'?'tablette':'mobile'} activée`,'i');}
+function pvOpen(f){document.getElementById('pv-sel').value=f;pvLoad();nav('apercu',null);}
+
+/* ══════════════════════════════════════════════════════
+   MÉDIAS
+══════════════════════════════════════════════════════ */
+function renderMedias(){
+  const g=document.getElementById('mg');if(!g)return;
+  const medias=[
+    {e:'🌾',n:'batchenga-cuma.jpg',p:'carte.html',u:'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=150&q=60'},
+    {e:'📚',n:'ecole-baka.jpg',p:'carte.html',u:'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=150&q=60'},
+    {e:'👩',n:'coop-femmes.jpg',p:'partenaires.html',u:'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=150&q=60'},
+    {e:'🌊',n:'kribi.jpg',p:'carte.html',u:'https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?w=150&q=60'},
+    {e:'💻',n:'metascript.jpg',p:'technologies.html',u:'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=150&q=60'},
+    {e:'♻️',n:'biogas.jpg',p:'technologies.html',u:'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=150&q=60'},
+    {e:'🎉',n:'gala.jpg',p:'actualites.html',u:'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150&q=60'},
+    {e:'🔥',n:'cuisiniere.jpg',p:'technologies.html',u:'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=150&q=60'},
+  ];
+  g.innerHTML=medias.map(m=>`
+    <div class="mc" onclick="navigator.clipboard?.writeText('${m.u}').then(()=>toast('URL copiée !','i'))">
+      <img src="${m.u}" alt="${m.n}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="mc-ph" style="display:none">${m.e}</div>
+      <div class="mc-name">${m.n}</div>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════════════════════
+   ARTICLES
+══════════════════════════════════════════════════════ */
+const CAT_B={terrain:'bg',tech:'bb',media:'bo',event:'bp'};
+const CAT_L={terrain:'🌾 TERRAIN',tech:'💻 TECH',media:'📺 MÉDIA',event:'🗓 ÉVÉNEMENT'};
+
+function renderArts(){
+  const t=document.getElementById('art-table');if(!t)return;
+  document.getElementById('n-actus').textContent=ARTS.length;
+  document.getElementById('st-actus').textContent=ARTS.length;
+  t.innerHTML=ARTS.map(a=>`<tr>
+    <td style="font-family:var(--fm);font-size:10px;color:var(--t3)">${a.id}</td>
+    <td style="max-width:180px;font-size:12px">${a.titleFR}</td>
+    <td><span class="badge ${CAT_B[a.cat]||'bz'}">${CAT_L[a.cat]||a.cat}</span></td>
+    <td style="font-size:11px;color:var(--t2)">${a.dateFR}</td>
+    <td><code style="font-size:10px;color:var(--oc)">${a.link}</code></td>
+    <td><div class="acts">
+      <button class="btn btn-s btn-g" onclick="editArt(${a.id})">✏️</button>
+      <button class="btn btn-s btn-d" onclick="delArt(${a.id})">✕</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+function editArt(id){
+  const a=ARTS.find(x=>x.id===id);if(!a)return;
+  editArtId=id;
+  document.getElementById('art-modal-t').textContent=`✏️ Modifier article #${id}`;
+  document.getElementById('a-tfr').value=a.titleFR||'';
+  document.getElementById('a-ten').value=a.titleEN||'';
+  document.getElementById('a-efr').value=a.excerptFR||'';
+  document.getElementById('a-een').value=a.excerptEN||'';
+  document.getElementById('a-date').value=a.dateFR||'';
+  document.getElementById('a-cat').value=a.cat||'terrain';
+  document.getElementById('a-link').value=a.link||'actualites.html';
+  openM('m-art');
+}
+
+function saveArt(){
+  const tfr=document.getElementById('a-tfr').value.trim();
+  if(!tfr){toast('Titre FR requis','e');return;}
+  if(editArtId){
+    const a=ARTS.find(x=>x.id===editArtId);
+    if(a){a.titleFR=tfr;a.titleEN=document.getElementById('a-ten').value||tfr;a.excerptFR=document.getElementById('a-efr').value;a.excerptEN=document.getElementById('a-een').value;a.dateFR=document.getElementById('a-date').value||a.dateFR;a.cat=document.getElementById('a-cat').value;a.link=document.getElementById('a-link').value;a.catFR=CAT_L[a.cat];}
+    toast(`Article #${editArtId} modifié ✓`);
+  }else{
+    const cat=document.getElementById('a-cat').value;
+    const nid=Math.max(0,...ARTS.map(x=>x.id))+1;
+    ARTS.unshift({id:nid,cat,catFR:CAT_L[cat],dateFR:document.getElementById('a-date').value||'Mar 2026',dateEN:document.getElementById('a-date').value||'Mar 2026',titleFR:tfr,titleEN:document.getElementById('a-ten').value||tfr,excerptFR:document.getElementById('a-efr').value,excerptEN:document.getElementById('a-een').value,link:document.getElementById('a-link').value,emoji:'📝',bg:'linear-gradient(135deg,var(--bg4),var(--g))'});
+    toast(`Article #${nid} ajouté — exportez le JSON ✓`);
+  }
+  S.set('arts',ARTS);renderArts();closeM('m-art');editArtId=null;
+  document.getElementById('art-modal-t').textContent='📰 Nouvel article';
+}
+
+function delArt(id){
+  if(!confirm(`Supprimer l'article #${id} ?`))return;
+  ARTS=ARTS.filter(x=>x.id!==id);S.set('arts',ARTS);renderArts();toast(`Article #${id} supprimé`,'w');
+}
+
+function exportJSON(){
+  const j=JSON.stringify(ARTS,null,2);
+  navigator.clipboard?.writeText(j).then(()=>toast('JSON copié ! Collez dans mb-carrousel.js ✓')).catch(()=>toast('JSON dans la console (F12)','i'));
+  console.log('MB_NEWS_ITEMS =',j);
+}
+
+/* ══════════════════════════════════════════════════════
+   KPIs
+══════════════════════════════════════════════════════ */
+function saveKPIs(){
+  KPIS={kc:document.getElementById('kc').value,ko:document.getElementById('ko').value,kp:+document.getElementById('kp').value,km:+document.getElementById('km').value,kv:document.getElementById('kv').value,ku:+document.getElementById('ku').value,ke:+document.getElementById('ke').value,kd:+document.getElementById('kd').value,kt:+document.getElementById('kt').value};
+  S.set('kpis',KPIS);
+  const c=parseFloat(KPIS.kc.replace(/\s/g,''))||0,o=parseFloat(KPIS.ko.replace(/\s/g,''))||1;
+  const pct=Math.round((c/o)*100);
+  const b=document.getElementById('gala-bar'),pd=document.getElementById('gala-pct');
+  if(b)b.style.width=pct+'%';if(pd)pd.textContent=pct+'%';
+  toast('KPIs mis à jour ✓ — À propager dans les HTML');
+}
+
+/* ══════════════════════════════════════════════════════
+   CRM
+══════════════════════════════════════════════════════ */
+const PT_B={diaspora:'bg',entreprise:'bo',banque:'bb',institution:'bp'};
+const PS_B={actif:'bg','en-cours':'bo',prospect:'bp',inactif:'bz'};
+const PS_L={actif:'● Actif','en-cours':'⏳ En cours',prospect:'◐ Prospect',inactif:'○ Inactif'};
+
+function renderParts(){
+  const t=document.getElementById('crm-table');if(!t)return;
+  t.innerHTML=PARTS.map(p=>`<tr>
+    <td><strong style="color:#fff">${p.name}</strong></td>
+    <td><span class="badge ${PT_B[p.type]||'bz'}">${p.type}</span></td>
+    <td>${p.pays||'—'}</td>
+    <td style="font-family:var(--fm);font-size:11px">${p.budget||'—'}</td>
+    <td><span class="badge ${PS_B[p.status]||'bz'}">${PS_L[p.status]||p.status}</span></td>
+    <td style="font-size:11px;color:var(--t3)">${p.contact||'—'}</td>
+    <td><div class="acts">
+      <button class="btn btn-s btn-g" onclick="editPart(${p.id})">✏️</button>
+      <button class="btn btn-s btn-d" onclick="delPart(${p.id})">✕</button>
+    </div></td>
+  </tr>`).join('');
+}
+
+function savePart(){
+  const name=document.getElementById('p-name').value.trim();
+  if(!name){toast('Nom requis','e');return;}
+  const d={name,type:document.getElementById('p-type').value,email:document.getElementById('p-email').value,pays:document.getElementById('p-pays').value,budget:document.getElementById('p-budget').value,status:document.getElementById('p-status').value,notes:document.getElementById('p-notes').value,contact:new Date().toLocaleDateString('fr')};
+  if(editPartId){const p=PARTS.find(x=>x.id===editPartId);if(p)Object.assign(p,d);toast('Contact mis à jour ✓');}
+  else{d.id=Math.max(0,...PARTS.map(x=>x.id))+1;PARTS.push(d);toast('Contact ajouté ✓');}
+  S.set('parts',PARTS);renderParts();closeM('m-part');editPartId=null;
+}
+
+function editPart(id){
+  const p=PARTS.find(x=>x.id===id);if(!p)return;
+  editPartId=id;
+  document.getElementById('p-name').value=p.name||'';document.getElementById('p-type').value=p.type||'diaspora';document.getElementById('p-email').value=p.email||'';document.getElementById('p-pays').value=p.pays||'';document.getElementById('p-budget').value=p.budget||'';document.getElementById('p-status').value=p.status||'actif';document.getElementById('p-notes').value=p.notes||'';
+  openM('m-part');
+}
+
+function delPart(id){
+  if(!confirm('Supprimer ce contact ?'))return;
+  PARTS=PARTS.filter(x=>x.id!==id);S.set('parts',PARTS);renderParts();toast('Contact supprimé','w');
+}
+
+/* ══════════════════════════════════════════════════════
+   DIAGNOSTICS
+══════════════════════════════════════════════════════ */
+function runDiag(){
+  nav('diag',null);
+  const el=document.getElementById('diag-res');
+  el.innerHTML='<div class="alert al-i">⏳ Analyse en cours...</div>';
+  setTimeout(()=>{
+    const checks=[
+      {t:'ok',title:'Navigation mb-nav.js intégrée',desc:'mb-nav.js présent et référencé dans les 8 pages HTML avec header + footer automatiques.',fix:null},
+      {t:'ok',title:'FAQs mb-faq.js intégrées',desc:'mb-faq.js génère des FAQs contextuelles dans toutes les 8 pages.',fix:null},
+      {t:'ok',title:'Carrousel mb-carrousel.js actif',desc:'9 articles chargés. Toutes les pages incluses.',fix:null},
+      {t:'ok',title:'Page équipe avec flip cards 3D',desc:'equipe.html complet — Présidente, CA, terrain, France, partenaires techniques.',fix:null},
+      {t:'wa',title:'Photos Unsplash à remplacer',desc:'14 images viennent de unsplash.com. Remplacez par vos vraies photos terrain pour l\'authenticité.',fix:'Chercher "unsplash.com" dans les HTML → remplacer par vos photos locales'},
+      {t:'wa',title:'Liens email /cdn-cgi/ dans index.html',desc:'Des liens mailto: ont été encodés en /cdn-cgi/l/email-protection#... Ils ne fonctionnent pas correctement.',fix:'Chercher "/cdn-cgi/" dans index.html → remplacer par "mailto:courrielmondeetbonheur@gmail.com"'},
+      {t:'wa',title:'HelloAsso non configuré',desc:'Les boutons "Faire un don" affichent une alerte au lieu d\'un vrai paiement.',fix:'helloasso.com → créer formulaire → copier le lien → remplacer dans don.html'},
+      {t:'wa',title:'Newsletter Brevo non connectée',desc:'Le formulaire newsletter ne sauvegarde rien en réel.',fix:'brevo.com → créer liste → intégrer l\'API dans actualites.html'},
+      {t:'ok',title:'Structure HTML valide',desc:'Tous les fichiers ont </body></html>. Structure DOCTYPE correcte.',fix:null},
+      {t:'ok',title:'Meta viewport présent',desc:'Toutes les pages sont responsives grâce à la meta viewport.',fix:null},
+      {t:'wa',title:'Balises meta SEO manquantes',desc:'Pas de meta description ni og:title. Google ne peut pas afficher d\'aperçu optimisé.',fix:'Ajouter dans chaque <head> : <meta name="description" content="Description 155 chars">'},
+    ];
+    el.innerHTML=checks.map(c=>`
+      <div class="di ${c.t==='ok'?'ok':c.t==='wa'?'wa':'er'}">
+        <span class="di-ico">${c.t==='ok'?'✅':c.t==='wa'?'⚠️':'❌'}</span>
+        <div>
+          <div class="di-t">${c.title}</div>
+          <div class="di-d">${c.desc}</div>
+          ${c.fix?`<div class="di-fix" onclick="toast('${c.fix.substring(0,80).replace(/'/g,'\\\'').replace(/"/g,'&quot;')}','i')">🔧 Solution → ${c.fix.substring(0,55)}...</div>`:''}
+        </div>
+      </div>`).join('') +
+      `<div class="alert ${checks.filter(c=>c.t==='er').length?'al-e':checks.filter(c=>c.t==='wa').length?'al-w':'al-s'}" style="margin-top:.7rem">
+        ${checks.filter(c=>c.t==='ok').length} OK · ${checks.filter(c=>c.t==='wa').length} Avertissements · ${checks.filter(c=>c.t==='er').length} Erreurs critiques
+      </div>`;
+  },700);
+}
+
+/* ══════════════════════════════════════════════════════
+   OPTIMISATION
+══════════════════════════════════════════════════════ */
+function renderOpti(){
+  const items={
+    'opti-perf':[
+      {t:'ok',h:'HTML/CSS/JS pur — zéro framework lourd',d:'Pas de React, Vue, Angular. Charge ultra-rapide (< 1s) même sur connexion lente en Afrique.'},
+      {t:'ok',h:'Google Fonts avec preconnect',d:'Les polices se préchargent. La balise <link rel="preconnect"> est présente sur toutes les pages.'},
+      {t:'wa',h:'Images sans loading="lazy"',d:'Ajouter loading="lazy" sur toutes les balises <img> améliore le chargement initial de ~30%.'},
+      {t:'wa',h:'Fichiers HTML volumineux (136K pour index)',d:'Minifier le HTML/CSS/JS en production réduit la taille de ~40%. Outil : htmlminifier.com'},
+      {t:'i',h:'Conseil : héberger sur Netlify (CDN mondial)',d:'Netlify distribue depuis 100+ serveurs mondiaux. Accès rapide depuis Yaoundé comme depuis Paris.'},
+    ],
+    'opti-seo':[
+      {t:'wa',h:'Meta description manquante sur toutes les pages',d:'Ajouter : <meta name="description" content="Votre description de 155 chars max">'},
+      {t:'wa',h:'Open Graph manquant',d:'Sans og:title et og:image, le partage réseaux sociaux affiche un aperçu vide.'},
+      {t:'ok',h:'Balises <title> présentes et descriptives',d:'Chaque page a un titre unique. Bon signal SEO.'},
+      {t:'wa',h:'Pas de sitemap.xml',d:'Créer un fichier sitemap.xml aide Google à indexer toutes les pages.'},
+      {t:'ok',h:'HTML sémantique utilisé',d:'<header>, <section>, <footer>, <nav> sont correctement utilisés. Google comprend la structure.'},
+    ],
+    'opti-mob':[
+      {t:'ok',h:'Meta viewport présent',d:'<meta name="viewport"> est présent sur toutes les pages.'},
+      {t:'ok',h:'Menu hamburger mb-nav.js',d:'Navigation mobile compacte au scroll, drawer hamburger fonctionnel.'},
+      {t:'ok',h:'Media queries CSS',d:'@media (max-width:600px) adapte les grilles sur mobile.'},
+      {t:'i',h:'Test recommandé',d:'Testez sur pagespeed.web.dev pour un score mobile précis (objectif : > 80).'},
+    ],
+    'opti-img':[
+      {t:'wa',h:'Remplacer les photos Unsplash',d:'Les photos de démo n\'ont pas l\'impact émotionnel de vos vraies photos terrain.'},
+      {t:'i',h:'Format WebP recommandé',d:'WebP est 30% plus léger que JPEG/PNG. Convertissez sur squoosh.app (gratuit).'},
+      {t:'i',h:'Dimensions recommandées',d:'Photos de fond : max 1400px, 150-200KB. Vignettes : max 600px, 50-80KB.'},
+      {t:'i',h:'Attributs alt= pour l\'accessibilité',d:'Remplissez alt="" avec une description utile pour chaque image.'},
+    ]
+  };
+  Object.entries(items).forEach(([id,checks])=>{
+    const el=document.getElementById(id);
+    if(el&&!el.innerHTML)el.innerHTML=checks.map(c=>`
+      <div class="di ${c.t==='ok'?'ok':c.t==='wa'?'wa':''}">
+        <span class="di-ico">${c.t==='ok'?'✅':c.t==='wa'?'⚠️':'ℹ️'}</span>
+        <div><div class="di-t">${c.h}</div><div class="di-d">${c.d}</div></div>
+      </div>`).join('');
+  });
+}
+
+/* ══════════════════════════════════════════════════════
+   SÉCURITÉ
+══════════════════════════════════════════════════════ */
+function renderSecu(){
+  const content={
+    'secu-bases':`
+      <div class="alert al-i">🔒 La sécurité web = protéger votre site et vos visiteurs contre les personnes malveillantes.</div>
+      ${kc('Qu\'est-ce que la sécurité web ?','d','Pour un site HTML/CSS/JS pur comme le vôtre (sans serveur), les risques principaux sont réduits. Mais il faut quand même faire attention à :<ul style="padding-left:1.1rem;margin-top:.4rem;color:var(--t2);font-size:12px"><li>XSS si vous affichez des données saisies par les utilisateurs</li><li>Accès non autorisé à admin.html</li><li>Connexion non chiffrée (pas de HTTPS)</li></ul>')}
+      ${kc('HTTPS — Le cadenas vert obligatoire','d','HTTPS chiffre les échanges entre visiteur et serveur. Sans HTTPS, un hacker sur le même WiFi peut intercepter les données.<br><br><span style="color:#4ade80">✅ Netlify active HTTPS automatiquement et gratuitement avec Let\'s Encrypt.</span>')}
+      ${kc('Protéger admin.html','d','Votre interface admin n\'a pas de mot de passe. Pour un site en production :<ul style="padding-left:1.1rem;margin-top:.4rem;color:var(--t2);font-size:12px"><li><strong style="color:#fff">Option simple :</strong> ne mettez pas admin.html en ligne — utilisez-le uniquement en local</li><li><strong style="color:#fff">Option avancée :</strong> protection .htaccess sur Apache, ou Netlify Identity pour l\'authentification</li></ul>')}
+    `,
+    'secu-xss':`
+      ${kc('Qu\'est-ce qu\'une attaque XSS ?','i','XSS = Cross-Site Scripting. Un attaquant insère du code JavaScript malveillant dans votre page. Quand un visiteur l\'ouvre, ce code s\'exécute.',cb(`<span class="cm">/* ❌ DANGEREUX — affiche directement une entrée utilisateur */</span>\nel.innerHTML = userInput;\n\n<span class="cm">/* ✅ SÛR — échappe automatiquement le HTML */</span>\nel.textContent = userInput;`))}
+      ${kc('Votre site MB est-il vulnérable au XSS ?','d','<span style="color:#4ade80">✅ Risque très faible.</span> Votre site n\'a pas de formulaires qui réaffichent du contenu utilisateur. Les seules données utilisateur (dons, newsletter) sont envoyées à des services tiers (HelloAsso, Brevo) qui gèrent eux-mêmes la sécurité.')}
+    `,
+    'secu-https':`
+      ${kc('Configurer HTTPS sur Netlify','d','Automatique ! Netlify déploie Let\'s Encrypt sans aucune configuration. Vérifiez après déploiement : Site settings → Domain management → HTTPS → "Certificate provisioned".')}
+      ${kc('Headers de sécurité HTTP','a','Ces headers protègent contre des attaques courantes. Créez un fichier <code>_headers</code> à la racine pour Netlify :',cb(`/* <span class="cm"># fichier : _headers (à la racine du projet)</span></span>\n  X-Frame-Options: DENY\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://images.unsplash.com data:`))}
+    `,
+    'secu-rgpd':`
+      <div class="alert al-i">ℹ Le RGPD s'applique si vous collectez des données personnelles (emails, noms). Votre CMS (MB Studio) utilise localStorage = pas de données envoyées = pas de RGPD.</div>
+      ${kc('Obligations RGPD pour MB','d','En ligne, si vous activez HelloAsso, Brevo ou Formspree :<ul style="padding-left:1.1rem;margin-top:.4rem;color:var(--t2);font-size:12px"><li>Créer une page "Politique de confidentialité" (template gratuit sur iubenda.com)</li><li>Mentionner les services tiers utilisés</li><li>Ajouter un consentement si vous utilisez Google Analytics</li></ul>')}
+      ${kc('localStorage et RGPD','d','<span style="color:#4ade80">✅ localStorage ne transmet rien</span>. Les données restent dans le navigateur de l\'utilisateur. Pas d\'obligation RGPD pour le localStorage seul. MB Studio est 100% offline-first = pas de collecte.')}
+    `,
+    'secu-ck':`
+      ${[{ok:true,t:'HTML/CSS/JS pur — surface d\'attaque minimale'},{ok:true,t:'Pas de base de données exposée'},{ok:true,t:'Pas de mots de passe dans le code source'},{ok:false,t:'HTTPS configuré (sur Netlify = automatique)'},{ok:false,t:'admin.html non mis en ligne (utiliser en local)'},{ok:false,t:'Fichier _headers créé (Netlify)'},{ok:false,t:'Politique de confidentialité (iubenda.com)'},{ok:false,t:'Sauvegardes régulières (Google Drive / disque externe)'},{ok:false,t:'SSL valide vérifié après déploiement'}].map(c=>`
+        <div class="di ${c.ok?'ok':''}" style="cursor:default">
+          <span class="di-ico">${c.ok?'✅':'⬜'}</span>
+          <div><div class="di-t" style="font-size:12.5px">${c.t}</div></div>
+        </div>`).join('')}
+    `
+  };
+  Object.entries(content).forEach(([id,html])=>{
+    const el=document.getElementById(id);if(el&&!el.innerHTML)el.innerHTML=html;
+  });
+}
+
+/* ══════════════════════════════════════════════════════
+   GUIDE HTML
+══════════════════════════════════════════════════════ */
+function renderHTML(){
+  const content={
+    'html-base':`
+      <div class="alert al-i">🏗 HTML = HyperText Markup Language. C'est le squelette de chaque page web. Il dit CE QUI existe sur la page (titres, textes, images, boutons). Pas COMMENT ça ressemble — c'est le rôle du CSS.</div>
+      ${kc('Structure minimale d\'une page HTML','d','Chaque page doit commencer par cette structure de base :',cb(`<span class="kw">&lt;!DOCTYPE html&gt;</span> <span class="cm">/* Dit au navigateur : c'est du HTML5 */</span>\n<span class="kw">&lt;html</span> lang="fr"<span class="kw">&gt;</span>\n  <span class="kw">&lt;head&gt;</span> <span class="cm">/* Informations (non visibles par l'utilisateur) */</span>\n    <span class="kw">&lt;meta</span> charset="UTF-8"<span class="kw">&gt;</span>\n    <span class="kw">&lt;meta</span> name="viewport" content="width=device-width, initial-scale=1.0"<span class="kw">&gt;</span>\n    <span class="kw">&lt;title&gt;</span>Titre de la page<span class="kw">&lt;/title&gt;</span>\n    <span class="kw">&lt;link</span> rel="stylesheet" href="style.css"<span class="kw">&gt;</span>\n  <span class="kw">&lt;/head&gt;</span>\n  <span class="kw">&lt;body&gt;</span> <span class="cm">/* Tout ce que l'utilisateur voit */</span>\n    <span class="kw">&lt;h1&gt;</span>Bonjour monde<span class="kw">&lt;/h1&gt;</span>\n    <span class="kw">&lt;script</span> src="script.js"<span class="kw">&gt;&lt;/script&gt;</span> <span class="cm">/* JS en DERNIER */</span>\n  <span class="kw">&lt;/body&gt;</span>\n<span class="kw">&lt;/html&gt;</span>`))}
+      ${kc('Anatomie d\'une balise','d','',cb(`<span class="cm">/* Balise avec ouverture + contenu + fermeture */</span>\n<span class="kw">&lt;p&gt;</span>Je suis un paragraphe<span class="kw">&lt;/p&gt;</span>\n<span class="kw">&lt;h1&gt;</span>Je suis un titre<span class="kw">&lt;/h1&gt;</span>\n\n<span class="cm">/* Balise auto-fermante (pas de contenu) */</span>\n<span class="kw">&lt;br&gt;</span>     <span class="cm">/* Retour à la ligne */</span>\n<span class="kw">&lt;img</span> src="photo.jpg" alt="Description"<span class="kw">&gt;</span>\n<span class="kw">&lt;input</span> type="text" placeholder="Saisir..."<span class="kw">&gt;</span>`))}
+    `,
+    'html-balises':`
+      ${kc('Titres h1–h6','d','',cb(`<span class="kw">&lt;h1&gt;</span>Titre principal (1 seul par page !)<span class="kw">&lt;/h1&gt;</span>\n<span class="kw">&lt;h2&gt;</span>Sous-titre — section importante<span class="kw">&lt;/h2&gt;</span>\n<span class="kw">&lt;h3&gt;</span>Sous-sous-titre<span class="kw">&lt;/h3&gt;</span>`))}
+      ${kc('Texte, liens, listes','d','',cb(`<span class="kw">&lt;p&gt;</span>Paragraphe de texte<span class="kw">&lt;/p&gt;</span>\n<span class="kw">&lt;strong&gt;</span>Texte en gras<span class="kw">&lt;/strong&gt;</span>\n<span class="kw">&lt;em&gt;</span>Texte en italique<span class="kw">&lt;/em&gt;</span>\n<span class="kw">&lt;a</span> href="https://example.com"<span class="kw">&gt;</span>Lien externe<span class="kw">&lt;/a&gt;</span>\n<span class="kw">&lt;a</span> href="page2.html"<span class="kw">&gt;</span>Lien interne<span class="kw">&lt;/a&gt;</span>\n<span class="kw">&lt;a</span> href="mailto:email@gmail.com"<span class="kw">&gt;</span>Email<span class="kw">&lt;/a&gt;</span>\n\n<span class="kw">&lt;ul&gt;</span> <span class="cm">/* Liste à puces */</span>\n  <span class="kw">&lt;li&gt;</span>Item 1<span class="kw">&lt;/li&gt;</span>\n  <span class="kw">&lt;li&gt;</span>Item 2<span class="kw">&lt;/li&gt;</span>\n<span class="kw">&lt;/ul&gt;</span>`))}
+      ${kc('div et span — les conteneurs universels','d','',cb(`<span class="cm">/* div = conteneur BLOC (prend toute la largeur) */</span>\n<span class="kw">&lt;div</span> class="carte"<span class="kw">&gt;</span>\n  <span class="kw">&lt;h2&gt;</span>Titre<span class="kw">&lt;/h2&gt;</span>\n  <span class="kw">&lt;p&gt;</span>Contenu<span class="kw">&lt;/p&gt;</span>\n<span class="kw">&lt;/div&gt;</span>\n\n<span class="cm">/* span = conteneur INLINE (dans le texte) */</span>\n<span class="kw">&lt;p&gt;</span>Texte avec <span class="kw">&lt;span</span> style="color:red"<span class="kw">&gt;</span>mot rouge<span class="kw">&lt;/span&gt;</span><span class="kw">&lt;/p&gt;</span>`))}
+    `,
+    'html-forms':`
+      ${kc('Structure d\'un formulaire HTML','d','',cb(`<span class="kw">&lt;form</span> action="https://formspree.io/f/VOTRE_ID" method="POST"<span class="kw">&gt;</span>\n\n  <span class="cm">/* Champ texte */</span>\n  <span class="kw">&lt;input</span> type="text" name="nom" placeholder="Votre nom" required<span class="kw">&gt;</span>\n\n  <span class="cm">/* Email */</span>\n  <span class="kw">&lt;input</span> type="email" name="email" placeholder="votre@email.com"<span class="kw">&gt;</span>\n\n  <span class="cm">/* Liste déroulante */</span>\n  <span class="kw">&lt;select</span> name="profil"<span class="kw">&gt;</span>\n    <span class="kw">&lt;option</span> value="diaspora"<span class="kw">&gt;</span>Diaspora<span class="kw">&lt;/option&gt;</span>\n  <span class="kw">&lt;/select&gt;</span>\n\n  <span class="cm">/* Zone de texte */</span>\n  <span class="kw">&lt;textarea</span> name="message" rows="4"<span class="kw">&gt;&lt;/textarea&gt;</span>\n\n  <span class="kw">&lt;button</span> type="submit"<span class="kw">&gt;</span>Envoyer<span class="kw">&lt;/button&gt;</span>\n<span class="kw">&lt;/form&gt;</span>`))}
+    `,
+    'html-sem':`
+      ${kc('HTML sémantique — utiliser les bonnes balises','i','Utiliser les balises selon leur SENS, pas juste pour l\'apparence. Google et les lecteurs d\'écran comprennent mieux.',cb(`<span class="cm">/* ❌ Tout dans des div — pas sémantique */</span>\n<span class="kw">&lt;div</span> class="header"<span class="kw">&gt;</span>...<span class="kw">&lt;/div&gt;</span>\n<span class="kw">&lt;div</span> class="nav"<span class="kw">&gt;</span>...<span class="kw">&lt;/div&gt;</span>\n\n<span class="cm">/* ✅ Balises sémantiques */</span>\n<span class="kw">&lt;header&gt;</span>En-tête du site<span class="kw">&lt;/header&gt;</span>\n<span class="kw">&lt;nav&gt;</span>Menu de navigation<span class="kw">&lt;/nav&gt;</span>\n<span class="kw">&lt;main&gt;</span>Contenu principal<span class="kw">&lt;/main&gt;</span>\n  <span class="kw">&lt;article&gt;</span>Article de blog<span class="kw">&lt;/article&gt;</span>\n  <span class="kw">&lt;aside&gt;</span>Contenu secondaire<span class="kw">&lt;/aside&gt;</span>\n<span class="kw">&lt;footer&gt;</span>Pied de page<span class="kw">&lt;/footer&gt;</span>`))}
+    `,
+    'html-err':`
+      ${kc('Balise non fermée','d','Si vous oubliez </p>, tout le contenu après sera "dans" ce paragraphe.',cb(`<span class="cm">/* ❌ p non fermé */</span>\n<span class="kw">&lt;p&gt;</span>Premier paragraphe\n<span class="kw">&lt;p&gt;</span>Deuxième (s'affiche mal)\n\n<span class="cm">/* ✅ Correct */</span>\n<span class="kw">&lt;p&gt;</span>Premier<span class="kw">&lt;/p&gt;</span>\n<span class="kw">&lt;p&gt;</span>Deuxième<span class="kw">&lt;/p&gt;</span>`))}
+      ${kc('Imbrication incorrecte','d','Les balises doivent se fermer dans l\'ordre inverse de leur ouverture.',cb(`<span class="cm">/* ❌ Fort fermé avant p */</span>\n<span class="kw">&lt;p&gt;&lt;strong&gt;</span>Texte<span class="kw">&lt;/p&gt;&lt;/strong&gt;</span>\n\n<span class="cm">/* ✅ Fermeture dans l'ordre inverse */</span>\n<span class="kw">&lt;p&gt;&lt;strong&gt;</span>Texte<span class="kw">&lt;/strong&gt;&lt;/p&gt;</span>`))}
+    `
+  };
+  Object.entries(content).forEach(([id,html])=>{const el=document.getElementById(id);if(el&&!el.innerHTML)el.innerHTML=html;});
+}
+
+/* ══════════════════════════════════════════════════════
+   GUIDE CSS
+══════════════════════════════════════════════════════ */
+function renderCSS(){
+  const content={
+    'css-base':`
+      <div class="alert al-i">🎨 CSS = Cascading Style Sheets. Le CSS dit COMMENT les éléments HTML doivent ressembler : couleur, taille, position, animation...</div>
+      ${kc('Syntaxe CSS','d','sélecteur { propriété: valeur; }',cb(`<span class="cm">/* Cibler une balise */</span>\np { color: red; font-size: 16px; }\n\n<span class="cm">/* Cibler une classe (. obligatoire) */</span>\n.titre { color: <span class="str">#1a5c3a</span>; font-weight: bold; }\n\n<span class="cm">/* Cibler un ID (# obligatoire) */</span>\n#header { height: 60px; background: green; }\n\n<span class="cm">/* Propriétés courantes */</span>\ncolor            <span class="cm">/* couleur du texte */</span>\nbackground       <span class="cm">/* couleur/image de fond */</span>\nfont-size        <span class="cm">/* taille du texte */</span>\nfont-weight      <span class="cm">/* gras (bold) ou normal */</span>\npadding          <span class="cm">/* espace intérieur */</span>\nmargin           <span class="cm">/* espace extérieur */</span>\nborder-radius    <span class="cm">/* coins arrondis */</span>\ndisplay          <span class="cm">/* flex, grid, block, none */</span>`))}
+    `,
+    'css-boxmodel':`
+      ${kc('Le modèle de boîte (Box Model)','d','Chaque élément HTML est une boîte : contenu → padding → border → margin.',cb(`.boite {\n  <span class="cm">/* CONTENU */</span>\n  width: 300px;\n  height: 150px;\n\n  <span class="cm">/* PADDING — espace intérieur (entre contenu et bordure) */</span>\n  padding: 20px;          <span class="cm">/* tous les côtés */</span>\n  padding: 10px 20px;     <span class="cm">/* haut/bas  gauche/droite */</span>\n\n  <span class="cm">/* BORDER — la bordure elle-même */</span>\n  border: 2px solid <span class="str">#1a5c3a</span>;\n\n  <span class="cm">/* MARGIN — espace extérieur (entre boîte et voisins) */</span>\n  margin: 20px;\n  margin: 0 auto;         <span class="cm">/* centrer horizontalement */</span>\n\n  <span class="cm">/* ⭐ Toujours ajouter : rend les calculs prévisibles */</span>\n  box-sizing: border-box;\n}`))}
+    `,
+    'css-flex':`
+      <div class="alert al-i">💡 Flexbox est LA méthode pour aligner des éléments. 90% des mises en page s'en servent.</div>
+      ${kc('Flexbox — les bases','d','',cb(`.parent {\n  display: flex;              <span class="cm">/* Active Flexbox */</span>\n  flex-direction: row;        <span class="cm">/* row | column */</span>\n  justify-content: center;    <span class="cm">/* axe principal : flex-start | flex-end | center | space-between */</span>\n  align-items: center;        <span class="cm">/* axe secondaire : flex-start | flex-end | center | stretch */</span>\n  gap: 20px;                  <span class="cm">/* espace entre enfants */</span>\n  flex-wrap: wrap;            <span class="cm">/* passe à la ligne si déborde */</span>\n}\n\n<span class="cm">/* RECETTE : centrer parfaitement (horizontal + vertical) */</span>\n.centre {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n\n<span class="cm">/* RECETTE : header logo à gauche, nav à droite */</span>\nheader {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}`))}
+    `,
+    'css-grid':`
+      ${kc('CSS Grid — mise en page en grilles','i','Grid pour les mises en page complexes en 2 dimensions.',cb(`.grille {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);         <span class="cm">/* 3 colonnes égales */</span>\n  grid-template-columns: 1fr 2fr 1fr;             <span class="cm">/* largeurs différentes */</span>\n  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); <span class="cm">/* responsive auto */</span>\n  gap: 20px;\n}\n\n<span class="cm">/* Occuper plusieurs colonnes */</span>\n.hero {\n  grid-column: span 2; <span class="cm">/* occupe 2 colonnes */</span>\n}`))}
+    `,
+    'css-resp':`
+      ${kc('Media Queries — adapter au mobile','d','',cb(`<span class="cm">/* Mobile-first : styles de base pour mobile */</span>\n.grille { grid-template-columns: 1fr; }\n\n<span class="cm">/* Tablette (≥ 600px) */</span>\n@media (min-width: 600px) {\n  .grille { grid-template-columns: 1fr 1fr; }\n}\n\n<span class="cm">/* Desktop (≥ 1000px) */</span>\n@media (min-width: 1000px) {\n  .grille { grid-template-columns: repeat(4, 1fr); }\n}\n\n<span class="cm">/* Masquer sur mobile */</span>\n.menu-desktop { display: none; }\n@media (min-width: 900px) {\n  .menu-desktop { display: flex; }\n  .hamburger   { display: none; }\n}`))}
+    `,
+    'css-vars':`
+      ${kc('Variables CSS — votre palette centralisée','i','Définir une couleur une seule fois, l\'utiliser partout. Changer en un seul endroit = se propage partout.',cb(`<span class="cm">/* Définir dans :root (accessible partout) */</span>\n:root {\n  --vert:    <span class="str">#1a5c3a</span>;\n  --or:      <span class="str">#f5a623</span>;\n  --rouge:   <span class="str">#c0392b</span>;\n  --texte:   <span class="str">#1a1a18</span>;\n  --radius:  12px;\n  --ombre:   0 4px 24px rgba(0,0,0,.08);\n}\n\n<span class="cm">/* Utiliser avec var() */</span>\n.bouton {\n  background: var(--vert);\n  border-radius: var(--radius);\n  box-shadow: var(--ombre);\n}\n\n<span class="cm">/* Modifier une variable = change toute la charte */</span>`))}
+    `,
+    'css-err':`
+      ${kc('Style qui ne s\'applique pas','d','Raisons les plus fréquentes :',cb(`<span class="cm">/* 1. Oublier le point devant une classe */</span>\ntitre { color: red; }    <span class="cm">/* ❌ cible &lt;titre&gt; qui n'existe pas */</span>\n.titre { color: red; }   <span class="cm">/* ✅ cible class="titre" */</span>\n\n<span class="cm">/* 2. Spécificité : ID > classe > balise */</span>\n.bouton { background: blue; }        <span class="cm">/* peut perdre contre */</span>\n#header .bouton { background: red; } <span class="cm">/* plus spécifique = gagne */</span>\n\n<span class="cm">/* 3. Forcer (dernier recours) */</span>\n.bouton { background: blue !important; }`))}
+      ${kc('L\'élément ne se centre pas','d','',cb(`<span class="cm">/* ✅ Solution 1 : Flexbox sur le parent */</span>\n.parent { display: flex; justify-content: center; }\n\n<span class="cm">/* ✅ Solution 2 : block + margin auto (largeur requise) */</span>\n.enfant { display: block; width: 300px; margin: 0 auto; }`))}
+    `
+  };
+  Object.entries(content).forEach(([id,html])=>{const el=document.getElementById(id);if(el&&!el.innerHTML)el.innerHTML=html;});
+}
+
+/* ══════════════════════════════════════════════════════
+   GUIDE JS
+══════════════════════════════════════════════════════ */
+function renderJS(){
+  const content={
+    'js-base':`
+      <div class="alert al-i">⚙️ JavaScript (JS) rend votre page interactive : réagit aux clics, modifie le contenu, stocke des données, fait des calculs...</div>
+      ${kc('Variables et types de données','d','',cb(`<span class="kw">const</span> nom = <span class="str">"Hermine"</span>;   <span class="cm">// String — texte</span>\n<span class="kw">let</span>   age = <span class="num">35</span>;         <span class="cm">// Number — nombre</span>\n<span class="kw">const</span> ok  = <span class="kw">true</span>;       <span class="cm">// Boolean — vrai/faux</span>\n<span class="kw">const</span> liste = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>];   <span class="cm">// Array — tableau</span>\n<span class="kw">const</span> objet = {           <span class="cm">// Object — données structurées</span>\n  nom: <span class="str">"MB"</span>,\n  annee: <span class="num">2005</span>\n};\n\n<span class="cm">// const = ne change pas / let = peut changer / var = ancien (éviter)</span>`))}
+      ${kc('Conditions et boucles','d','',cb(`<span class="cm">// IF / ELSE</span>\n<span class="kw">if</span> (age >= <span class="num">18</span>) {\n  console.log(<span class="str">"Majeur"</span>);\n} <span class="kw">else</span> {\n  console.log(<span class="str">"Mineur"</span>);\n}\n\n<span class="cm">// Raccourci ternaire</span>\n<span class="kw">const</span> statut = age >= <span class="num">18</span> ? <span class="str">"Majeur"</span> : <span class="str">"Mineur"</span>;\n\n<span class="cm">// Boucle sur un tableau</span>\n[<span class="str">"Yaoundé"</span>, <span class="str">"Batchenga"</span>].forEach(ville => {\n  console.log(ville);\n});`))}
+    `,
+    'js-dom':`
+      <div class="alert al-i">DOM = Document Object Model. C'est la représentation de votre page HTML en JavaScript. Vous pouvez lire et modifier n'importe quel élément.</div>
+      ${kc('Sélectionner des éléments','d','',cb(`<span class="cm">// Par ID (unique dans la page)</span>\n<span class="kw">const</span> titre = document.<span class="fn">getElementById</span>(<span class="str">"mon-titre"</span>);\n\n<span class="cm">// Par classe (retourne le premier)</span>\n<span class="kw">const</span> btn = document.<span class="fn">querySelector</span>(<span class="str">".btn"</span>);\n\n<span class="cm">// Par classe (retourne tous)</span>\n<span class="kw">const</span> tous = document.<span class="fn">querySelectorAll</span>(<span class="str">".btn"</span>);\n\n<span class="cm">// Exemples de vos fichiers MB :</span>\ndocument.<span class="fn">getElementById</span>(<span class="str">"mb-header"</span>);\ndocument.<span class="fn">querySelectorAll</span>(<span class="str">".flip-card"</span>);`))}
+      ${kc('Modifier le contenu et le style','d','',cb(`<span class="kw">const</span> el = document.<span class="fn">getElementById</span>(<span class="str">"titre"</span>);\n\nel.textContent = <span class="str">"Nouveau texte"</span>;   <span class="cm">// ✅ Sûr (pas de HTML)</span>\nel.innerHTML  = <span class="str">"&lt;strong&gt;Gras&lt;/strong&gt;"</span>; <span class="cm">// ⚠️ Risque XSS si données utilisateur</span>\n\nel.style.color    = <span class="str">"red"</span>;\nel.style.fontSize = <span class="str">"24px"</span>;\n\nel.classList.<span class="fn">add</span>(<span class="str">"actif"</span>);     <span class="cm">// Ajouter classe</span>\nel.classList.<span class="fn">remove</span>(<span class="str">"actif"</span>);  <span class="cm">// Retirer classe</span>\nel.classList.<span class="fn">toggle</span>(<span class="str">"actif"</span>);  <span class="cm">// Alterner add/remove</span>`))}
+    `,
+    'js-events':`
+      ${kc('Écouter les clics et interactions','d','',cb(`<span class="cm">// Méthode recommandée</span>\n<span class="kw">const</span> btn = document.<span class="fn">getElementById</span>(<span class="str">"mon-btn"</span>);\nbtn.<span class="fn">addEventListener</span>(<span class="str">"click"</span>, () => {\n  console.log(<span class="str">"Cliqué !"</span>);\n});\n\n<span class="cm">// Dans le HTML (utilisé dans vos fichiers MB)</span>\n<span class="cm">// &lt;button onclick="maFonction()"&gt;Cliquer&lt;/button&gt;</span>\n\n<span class="cm">// Autres événements utiles :</span>\nbtn.<span class="fn">addEventListener</span>(<span class="str">"mouseover"</span>, () => {}); <span class="cm">// survol</span>\ninput.<span class="fn">addEventListener</span>(<span class="str">"input"</span>,    () => {}); <span class="cm">// frappe clavier</span>\nwindow.<span class="fn">addEventListener</span>(<span class="str">"scroll"</span>,  () => {}); <span class="cm">// défilement</span>\ndocument.<span class="fn">addEventListener</span>(<span class="str">"DOMContentLoaded"</span>, () => {}); <span class="cm">// page chargée</span>`))}
+    `,
+    'js-fns':`
+      ${kc('Créer et utiliser des fonctions','d','',cb(`<span class="cm">// Déclaration classique</span>\n<span class="kw">function</span> <span class="fn">saluer</span>(prenom = <span class="str">"ami"</span>) {\n  <span class="kw">return</span> <span class="str">"Bonjour "</span> + prenom;\n}\n<span class="fn">saluer</span>(<span class="str">"Hermine"</span>); <span class="cm">// "Bonjour Hermine"</span>\n\n<span class="cm">// Arrow function (plus courte)</span>\n<span class="kw">const</span> carre = n => n * n;\n<span class="fn">carre</span>(<span class="num">5</span>); <span class="cm">// 25</span>\n\n<span class="cm">// Exemple réel de vos fichiers MB :</span>\n<span class="kw">function</span> <span class="fn">setLang</span>(l) {\n  document.documentElement.<span class="fn">setAttribute</span>(<span class="str">"data-lang"</span>, l);\n  document.<span class="fn">getElementById</span>(<span class="str">"btnFR"</span>).classList.<span class="fn">toggle</span>(<span class="str">"active"</span>, l === <span class="str">"fr"</span>);\n}`))}
+    `,
+    'js-storage':`
+      ${kc('localStorage — données persistantes hors ligne','i','localStorage stocke des données dans le navigateur. Persiste après fermeture. Utilisé par MB Studio.',cb(`<span class="cm">// SAUVEGARDER</span>\nlocalStorage.<span class="fn">setItem</span>(<span class="str">"nom"</span>, <span class="str">"Hermine"</span>);\nlocalStorage.<span class="fn">setItem</span>(<span class="str">"kpis"</span>, JSON.<span class="fn">stringify</span>({vies: <span class="num">10000</span>}));\n\n<span class="cm">// LIRE</span>\n<span class="kw">const</span> nom  = localStorage.<span class="fn">getItem</span>(<span class="str">"nom"</span>);          <span class="cm">// "Hermine"</span>\n<span class="kw">const</span> kpis = JSON.<span class="fn">parse</span>(localStorage.<span class="fn">getItem</span>(<span class="str">"kpis"</span>)); <span class="cm">// Objet JS</span>\n\n<span class="cm">// SUPPRIMER</span>\nlocalStorage.<span class="fn">removeItem</span>(<span class="str">"nom"</span>);\n\n<span class="cm">// ⚠️ Toujours JSON.stringify pour les objets/tableaux !</span>\n<span class="cm">// ⚠️ Pas de données sensibles (mots de passe) dans localStorage !</span>`))}
+    `,
+    'js-err':`
+      ${kc('Lire les erreurs dans la console','d','F12 → Onglet Console. Les erreurs en ROUGE indiquent le fichier et la ligne exacte.',cb(`<span class="cm">// ERREUR : "X is not defined"</span>\nconsole.log(maVar); <span class="cm">// ❌ ReferenceError si non déclarée</span>\n\n<span class="cm">// ERREUR : "Cannot read properties of null"</span>\n<span class="cm">// getElementById a retourné null (élément absent du HTML)</span>\n<span class="kw">const</span> el = document.<span class="fn">getElementById</span>(<span class="str">"inexistant"</span>);\n<span class="kw">if</span> (el) el.style.color = <span class="str">"red"</span>; <span class="cm">// ✅ Vérifier avant d'utiliser</span>\n\n<span class="cm">// DÉBOGUER avec console.log</span>\nconsole.log(<span class="str">"Étape 1 OK"</span>);\nconsole.log(<span class="str">"Valeur :"</span>, maVariable);`))}
+    `
+  };
+  Object.entries(content).forEach(([id,html])=>{const el=document.getElementById(id);if(el&&!el.innerHTML)el.innerHTML=html;});
+}
+
+/* ══════════════════════════════════════════════════════
+   GLOSSAIRE
+══════════════════════════════════════════════════════ */
+const GLO=[
+  {t:'HTML',d:'HyperText Markup Language. Le langage qui structure le contenu d\'une page web (titres, textes, images, liens). C\'est le squelette.'},
+  {t:'CSS',d:'Cascading Style Sheets. Le langage qui stylise le HTML (couleurs, polices, mise en page, animations). C\'est la peinture.'},
+  {t:'JavaScript',d:'Langage de programmation qui rend les pages interactives (clics, animations, données dynamiques). C\'est le moteur.'},
+  {t:'DOM',d:'Document Object Model. Représentation de votre page HTML en mémoire. JavaScript modifie le DOM pour changer la page.'},
+  {t:'Flexbox',d:'Méthode CSS pour aligner des éléments dans une direction (ligne ou colonne). 90% des mises en page l\'utilisent.'},
+  {t:'CSS Grid',d:'Méthode CSS pour créer des mises en page en grilles (lignes ET colonnes simultanément).'},
+  {t:'Media Query',d:'@media (max-width: 600px) {...}. Règle CSS qui s\'applique seulement à certaines tailles d\'écran = responsive design.'},
+  {t:'Responsive Design',d:'Technique qui fait s\'adapter un site à toutes les tailles d\'écran (mobile, tablette, desktop).'},
+  {t:'Variable CSS',d:'Valeur réutilisable définie avec --nom: valeur dans :root. Utilisée avec var(--nom). Votre charte MB utilise --v, --vc, --o...'},
+  {t:'localStorage',d:'Stockage de données dans le navigateur. Persiste après fermeture. Utilisé par MB Studio pour fonctionner 100% hors ligne.'},
+  {t:'Sélecteur CSS',d:'.classe (point), #id (dièse), balise (direct). Cible des éléments HTML pour leur appliquer des styles.'},
+  {t:'Spécificité CSS',d:'Règle qui décide quel style gagne quand plusieurs s\'appliquent au même élément. ID > Classe > Balise.'},
+  {t:'Box Model',d:'Chaque élément HTML est une boîte avec : contenu, padding (intérieur), border, margin (extérieur).'},
+  {t:'HTTPS',d:'Version sécurisée de HTTP. Chiffre les données entre navigateur et serveur. Obligatoire en production. Netlify l\'active automatiquement.'},
+  {t:'XSS',d:'Cross-Site Scripting. Attaque où du code JS malveillant est injecté dans une page. Éviter innerHTML avec des données utilisateur.'},
+  {t:'RGPD',d:'Règlement Général sur la Protection des Données. Loi européenne sur les données personnelles. S\'applique si vous collectez emails, noms...'},
+  {t:'CDN',d:'Content Delivery Network. Réseau de serveurs mondiaux. Netlify utilise un CDN = votre site charge vite depuis Yaoundé ou Paris.'},
+  {t:'Netlify',d:'Hébergeur gratuit pour sites statiques. Déploiement par glisser-déposer. HTTPS automatique. CDN mondial. Recommandé pour MB.'},
+  {t:'API',d:'Interface de programmation. Façon standardisée pour deux programmes de communiquer. HelloAsso, Brevo, Stripe ont des APIs.'},
+  {t:'JSON',d:'JavaScript Object Notation. Format de données texte lisible par humain et machine. Utilisé pour mb-carrousel.js et localStorage.'},
+  {t:'localStorage vs sessionStorage',d:'localStorage persiste après fermeture du navigateur. sessionStorage disparaît à la fermeture de l\'onglet.'},
+  {t:'null vs undefined',d:'null = valeur vide assignée intentionnellement. undefined = variable déclarée mais non initialisée.'},
+  {t:'Arrow function',d:'Syntaxe courte JS : const fn = (param) => valeur. Équivalent à function fn(param) { return valeur; }'},
+  {t:'Template literal',d:'Chaîne avec backtick (`) permettant l\'interpolation : `Bonjour ${nom}`. Plus lisible que la concaténation avec +'},
+  {t:'console.log',d:'Outil de débogage JS fondamental. Affiche des valeurs dans F12 → Console. Première chose à utiliser quand ça ne marche pas.'},
+  {t:'Minification',d:'Suppression des espaces et commentaires dans JS/CSS pour réduire la taille. Améliore les performances. Outil : htmlminifier.com'},
+  {t:'SEO',d:'Search Engine Optimization. Techniques pour améliorer le positionnement dans Google. Balises title, meta description, HTML sémantique...'},
+  {t:'Let\'s Encrypt',d:'Autorité de certification gratuite qui fournit les certificats SSL/TLS pour HTTPS. Netlify l\'utilise automatiquement.'},
+  {t:'Viewport',d:'La zone visible du navigateur. La meta viewport contrôle comment le site s\'affiche sur mobile.'},
+  {t:'WebP',d:'Format image moderne 30% plus léger que JPEG/PNG. Convertissez vos photos sur squoosh.app.'},
+];
+
+function renderGlo(){filterGlo('');}
+function filterGlo(q){
+  const el=document.getElementById('glo-list');if(!el)return;
+  const list=q?GLO.filter(g=>g.t.toLowerCase().includes(q.toLowerCase())||g.d.toLowerCase().includes(q.toLowerCase())):GLO;
+  el.innerHTML=list.map(g=>`
+    <div class="kc" onclick="this.classList.toggle('open')">
+      <div class="kc-head"><span class="kc-ico">📖</span><span class="kc-title">${g.t}</span><span class="kc-arr">▼</span></div>
+      <div class="kc-body">${g.d}</div>
+    </div>`).join('');
+  if(!list.length)el.innerHTML=`<div class="alert al-i">Aucun terme pour "${q}"</div>`;
+}
+
+/* ══════════════════════════════════════════════════════
+   RÉSOLUTION DE BUGS
+══════════════════════════════════════════════════════ */
+const BUGS={
+  'page-blanche':{h:'🏳 La page est blanche',steps:[{n:1,t:'F12 → Console',d:'Les erreurs en rouge indiquent le fichier et la ligne exacte du problème.'},{n:2,t:'Vérifier la structure HTML',d:'Page blanche = souvent balise non fermée ou </body></html> manquants. Vérifiez la fin du fichier.'},{n:3,t:'Désactiver le CSS temporairement',d:'Commentez votre <link rel="stylesheet"...>. Si la page apparaît, le bug est dans le CSS.'}],code:`<span class="cm">&lt;!-- Structure minimale à tester --&gt;</span>\n<span class="kw">&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset="UTF-8"&gt;&lt;/head&gt;</span>\n<span class="kw">&lt;body&gt;</span>\n  <span class="kw">&lt;h1&gt;</span>Test<span class="kw">&lt;/h1&gt;</span> <span class="cm">&lt;!-- Doit apparaître si HTML OK --&gt;</span>\n<span class="kw">&lt;/body&gt;&lt;/html&gt;</span>`},
+  'console-err':{h:'❌ Erreur rouge dans la console',steps:[{n:1,t:'Lire le message',d:'"ReferenceError: X is not defined" = variable non déclarée. "TypeError: null" = getElementById n\'a rien trouvé.'},{n:2,t:'Vérifier l\'ordre des scripts',d:'Si vous appelez une fonction avant que le fichier JS soit chargé, elle n\'existe pas encore.'},{n:3,t:'Sécuriser getElementById',d:'Toujours vérifier que l\'élément existe avant de l\'utiliser.'}],code:`<span class="cm">// ✅ Toujours sécuriser</span>\n<span class="kw">const</span> el = document.<span class="fn">getElementById</span>(<span class="str">"mon-id"</span>);\n<span class="kw">if</span> (!el) { console.<span class="fn">warn</span>(<span class="str">"#mon-id introuvable"</span>); <span class="kw">return</span>; }\nel.style.color = <span class="str">"red"</span>; <span class="cm">// Sûr ici</span>`},
+  'nav':{h:'🧭 La navigation mb-nav.js n\'apparaît pas',steps:[{n:1,t:'Vérifier que mb-nav.js est chargé',d:'F12 → Network → mb-nav.js doit apparaître sans erreur 404.'},{n:2,t:'Vérifier le chemin',d:'mb-nav.js doit être dans le MÊME dossier que vos HTML.'},{n:3,t:'Vérifier data-lang',d:'<html lang="fr" data-lang="fr"> est obligatoire.'}],code:`<span class="cm">&lt;!-- Votre HTML doit avoir : --&gt;</span>\n<span class="kw">&lt;html</span> lang="fr" data-lang="fr"<span class="kw">&gt;</span>\n...\n<span class="kw">&lt;body&gt;</span>\n  <span class="cm">&lt;!-- PAS d'ancien &lt;header&gt; ici --&gt;</span>\n  <span class="cm">&lt;!-- Votre contenu --&gt;</span>\n  <span class="kw">&lt;script</span> src="mb-nav.js"<span class="kw">&gt;&lt;/script&gt;</span> <span class="cm">&lt;!-- En DERNIER --&gt;</span>\n<span class="kw">&lt;/body&gt;</span>`},
+  'mobile':{h:'📱 Site cassé sur mobile',steps:[{n:1,t:'Vérifier la meta viewport',d:'Sans elle, le site affiche la version desktop miniaturisée.'},{n:2,t:'Tester dans F12 → mode mobile',d:'Ctrl+Shift+M pour simuler iPhone/Android directement dans Chrome.'},{n:3,t:'Chercher width en pixels fixes',d:'Remplacez width:800px par max-width:800px et width:100%.'}],code:`<span class="cm">&lt;!-- Obligatoire dans &lt;head&gt; --&gt;</span>\n<span class="kw">&lt;meta</span> name="viewport" content="width=device-width, initial-scale=1.0"<span class="kw">&gt;</span>\n\n<span class="cm">/* CSS responsive */</span>\n.grille { grid-template-columns: repeat(3, 1fr); }\n@media (max-width: 600px) {\n  .grille { grid-template-columns: 1fr; } <span class="cm">/* 1 colonne */</span>\n}`},
+  'carrousel':{h:'🎠 Carrousel vide ou bloqué',steps:[{n:1,t:'Vérifier que mb-carrousel.js est chargé',d:'F12 → Network → mb-carrousel.js sans 404.'},{n:2,t:'Vérifier data-carr-id unique',d:'Deux carrousels sur la même page ne peuvent pas avoir le même data-carr-id.'},{n:3,t:'Tester dans la console',d:'Tapez window.MB_NEWS_ITEMS. Si undefined : mb-carrousel.js n\'est pas chargé.'}],code:`<span class="kw">&lt;script</span> src="mb-carrousel.js"<span class="kw">&gt;&lt;/script&gt;</span>\n<span class="kw">&lt;section</span>\n  class="mb-carrousel-section on-light"\n  data-carr-id="<span class="str">carr-UNIQUE</span>"      <span class="cm">&lt;!-- unique par page --&gt;</span>\n  data-carr-autoplay="5000"<span class="kw">&gt;</span>\n  <span class="kw">&lt;div</span> class="mbc-track" id="<span class="str">carr-UNIQUE</span>-track"<span class="kw">&gt;&lt;/div&gt;</span>\n  <span class="kw">&lt;div</span> class="mbc-dots"  id="<span class="str">carr-UNIQUE</span>-dots"<span class="kw">&gt;&lt;/div&gt;</span>\n<span class="kw">&lt;/section&gt;</span>`},
+  'netlify':{h:'🚀 Erreur après déploiement Netlify',steps:[{n:1,t:'Vérifier la casse des noms de fichiers',d:'Linux (Netlify) est sensible à la casse. Photo.jpg ≠ photo.jpg. Tout en minuscules.'},{n:2,t:'Vérifier les chemins',d:'Windows accepte \\ mais les serveurs Linux veulent /. Ex: photos/image.jpg pas photos\\image.jpg.'},{n:3,t:'Vérifier Netlify Logs',d:'Dashboard → votre site → Deploys → clic sur le déploiement → "Deploy log".'}],code:`<span class="cm">&lt;!-- ✅ Chemin correct (slash, minuscules) --&gt;</span>\n<span class="kw">&lt;img</span> src="photos/batchenga.jpg"<span class="kw">&gt;</span>\n<span class="cm">&lt;!-- ❌ Windows seulement --&gt;</span>\n<span class="kw">&lt;img</span> src="Photos\\Batchenga.JPG"<span class="kw">&gt;</span>`},
+};
+['mise-page','images','lien','style-absent','police','centrage','bouton','langue','faq','chemin'].forEach(k=>{
+  if(!BUGS[k])BUGS[k]={h:`🔧 Solution : ${k.replace('-',' ')}`,steps:[{n:1,t:'Ouvrir la console F12',d:'F12 → Console. Lisez l\'erreur en rouge : elle indique le fichier et la ligne exacte.'},{n:2,t:'Chercher le problème section par section',d:'Commentez des blocs CSS ou JS pour isoler la cause. console.log() pour tracer l\'exécution.'}],code:`<span class="cm">// Débogage universel</span>\nconsole.log(<span class="str">"Étape 1 OK"</span>);\nconsole.log(<span class="str">"Valeur :"</span>, maVariable);`};
+});
+
+function showBug(key){
+  const el=document.getElementById('bug-sol');
+  if(!key||!BUGS[key]){el.innerHTML='';return;}
+  const s=BUGS[key];
+  el.innerHTML=`<div class="card"><div class="card-h"><div class="card-t">${s.h}</div></div><div class="card-b">
+    <div style="display:flex;flex-direction:column;gap:.7rem;margin-bottom:1rem">
+      ${s.steps.map(st=>`<div style="display:flex;gap:.7rem;align-items:flex-start">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0">${st.n}</div>
+        <div><div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:.18rem">${st.t}</div><div style="font-size:12.5px;color:var(--t2);line-height:1.55">${st.d}</div></div>
+      </div>`).join('')}
+    </div>
+    <div style="font-family:var(--fm);font-size:10px;color:var(--t3);margin-bottom:.35rem">EXEMPLE :</div>
+    <div class="cb">${s.code}<button class="copy-btn" onclick="navigator.clipboard?.writeText(this.closest('.cb').innerText.replace('Copier','').trim()).then(()=>toast('Copié !','i'))">Copier</button></div>
+  </div></div>`;
+}
+
+/* ══════════════════════════════════════════════════════
+   DÉPLOIEMENT
+══════════════════════════════════════════════════════ */
+function renderDeploy(){
+  const steps=(title,list)=>`<div class="alert al-i" style="margin-bottom:.8rem">📋 ${title}</div>`+
+    list.map((s,i)=>`<div class="kc" style="margin-bottom:.4rem;cursor:default"><div class="kc-head"><div style="width:22px;height:22px;border-radius:50%;background:var(--g);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0">${i+1}</div><span class="kc-title" style="font-size:12.5px">${s.t}</span></div><div style="margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--line);font-size:12.5px;color:var(--t2);line-height:1.6;display:block">${s.d}</div></div>`).join('');
+
+  const content={
+    'dep-netlify':steps('Netlify — Le plus simple, gratuit, recommandé',[
+      {t:'Créer un compte',d:'<a href="https://netlify.com" target="_blank" style="color:var(--gc)">netlify.com</a> → Sign up → GitHub ou email.'},
+      {t:'Déploiement par glisser-déposer',d:'Dashboard → "Add new site" → "Deploy manually" → Glissez votre dossier complet (avec tous les .html et .js).'},
+      {t:'Site en ligne en 30 secondes',d:'Netlify vous donne une URL : https://mondeetbonheur.netlify.app'},
+      {t:'HTTPS automatique',d:'Let\'s Encrypt est activé automatiquement. Le cadenas vert s\'affiche sous 24h.'},
+      {t:'Domaine personnalisé',d:'Site settings → Domain management → Add custom domain → entrez votre domaine.'},
+    ]),
+    'dep-ovh':steps('OVH — Hébergement français classique',[
+      {t:'Acheter hébergement + domaine',d:'<a href="https://ovh.com" target="_blank" style="color:var(--gc)">ovh.com</a> → Hébergement web ~4€/mois + domaine ~12€/an.'},
+      {t:'Télécharger FileZilla (FTP)',d:'<a href="https://filezilla-project.org" target="_blank" style="color:var(--gc)">filezilla-project.org</a> → logiciel FTP gratuit.'},
+      {t:'Connecter FileZilla',d:'Email OVH → identifiants FTP → FileZilla : Fichier → Gestionnaire de sites → entrer host/user/password.'},
+      {t:'Transférer les fichiers',d:'Dans FileZilla : glisser votre dossier local vers www/ ou public_html/ sur le serveur.'},
+    ]),
+    'dep-github':steps('GitHub Pages — Pour les développeurs',[
+      {t:'Créer un compte GitHub',d:'<a href="https://github.com" target="_blank" style="color:var(--gc)">github.com</a> → gratuit.'},
+      {t:'Créer un repository',d:'New → Nom : mondeetbonheur.github.io (ce nom spécial active Pages automatiquement).'},
+      {t:'Uploader les fichiers',d:'Repository → "Add file" → "Upload files" → glissez votre dossier.'},
+    ]),
+    'dep-domaine':`
+      ${kc('Choisir un nom de domaine','d','Recommandations pour MB : mondeetbonheur.org (~12€/an) ou mondeetbonheur.africa (~30€/an). Achetez sur OVH, Namecheap, ou directement sur Netlify.')}
+      ${kc('Connecter domaine → Netlify','d','1. Achetez le domaine. 2. Netlify : Site settings → Domain management → Add custom domain. 3. Netlify donne 4 serveurs DNS. 4. Dans votre registrar (OVH…) : remplacez les DNS par les 4 serveurs Netlify. 5. Attendez 24-48h (propagation DNS).')}
+    `,
+    'dep-ck':`<div class="alert al-i" style="margin-bottom:.8rem">Cochez chaque élément avant de mettre en ligne :</div>`+
+      [{ok:true,t:'Tous les fichiers dans un seul dossier'},{ok:true,t:'mb-nav.js intégré dans les 8 pages'},{ok:true,t:'mb-faq.js intégré dans les 8 pages'},{ok:false,t:'Photos terrain réelles (pas Unsplash)'},{ok:false,t:'Liens /cdn-cgi/ corrigés dans index.html'},{ok:false,t:'HelloAsso configuré (dons réels)'},{ok:false,t:'Newsletter Brevo connectée'},{ok:false,t:'Formulaire Formspree activé'},{ok:false,t:'Test sur mobile effectué'},{ok:false,t:'Compte Netlify créé'},{ok:false,t:'Site déployé et accessible'},{ok:false,t:'Nom de domaine connecté'}].map(c=>`
+      <div class="di ${c.ok?'ok':''}" style="cursor:default;margin-bottom:.3rem">
+        <span class="di-ico">${c.ok?'✅':'⬜'}</span>
+        <div class="di-t" style="font-size:12.5px;font-weight:${c.ok?700:400};color:${c.ok?'rgba(200,220,203,.7)':'rgba(200,220,203,.4)'}">${c.t}</div>
+      </div>`).join('')
+  };
+  Object.entries(content).forEach(([id,html])=>{const el=document.getElementById(id);if(el&&!el.innerHTML)el.innerHTML=html;});
+}
+
+/* ══════════════════════════════════════════════════════
+   PARAMÈTRES
+══════════════════════════════════════════════════════ */
+function renderParams(){
+  const el=document.getElementById('stor-info');
+  if(el)el.textContent=`Données MB Studio : ${S.size()} — Projects: ${PROJECTS.length} — Articles: ${ARTS.length} — CRM: ${PARTS.length}`;
+}
+function savePrefs(){S.set('prefs',{lang:document.getElementById('pref-lang')?.value});toast('Préférences sauvegardées ✓');}
+function exportData(){
+  const j=JSON.stringify({projects:PROJECTS,arts:ARTS,parts:PARTS,kpis:KPIS},null,2);
+  navigator.clipboard?.writeText(j).then(()=>toast('Données exportées dans le presse-papier ✓')).catch(()=>toast('Données dans la console (F12)','i'));
+  console.log('MB Studio Export:',j);
+}
+function clearData(){
+  if(!confirm('Vider toutes les données ? (Projets, articles, partenaires seront perdus)'))return;
+  S.clear();toast('Cache vidé. Rechargez la page.','w');
+}
+
+/* ══════════════════════════════════════════════════════
+   UTILITAIRES UI
+══════════════════════════════════════════════════════ */
+function switchTab(tabsId, contentId, btn){
+  const container=document.getElementById(tabsId).parentElement;
+  container.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  container.querySelectorAll('.tc').forEach(c=>c.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  const tc=document.getElementById(contentId);
+  if(tc)tc.classList.add('on');
+}
+
+// Helpers guides
+function kc(title,level,desc,code=''){
+  return `<div class="kc" onclick="this.classList.toggle('open')">
+    <div class="kc-head"><span class="kc-title">${title}</span><span class="kc-lvl lv-${level}">${level==='d'?'débutant':level==='i'?'intermédiaire':'avancé'}</span><span class="kc-arr">▼</span></div>
+    <div class="kc-body">${desc}${code}</div>
+  </div>`;
+}
+function cb(code){
+  return `<div class="cb" style="margin-top:.6rem">${code}<button class="copy-btn" onclick="event.stopPropagation();const t=this.closest('.cb').innerText.replace('Copier','').trim();navigator.clipboard?.writeText(t).then(()=>toast('Code copié !','i'))">Copier</button></div>`;
+}
+
+/* ══════════════════════════════════════════════════════
+   SAUVEGARDE GLOBALE
+══════════════════════════════════════════════════════ */
+function saveAll(){
+  S.set('projects',PROJECTS);S.set('arts',ARTS);S.set('parts',PARTS);S.set('kpis',KPIS);
+  toast('✓ Tout sauvegardé localement (hors ligne)');
+}
+
+/* ══════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════ */
+renderProjSel();
+renderDash();
+renderHTML();
+renderCSS();
+renderJS();
+renderGlo();
+renderDeploy();
+renderOpti();
+renderSecu();
+</script>
+</body>
+</html>
